@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What is in-home care?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "In-home care (also called home care) provides non-medical assistance to seniors and adults in their own homes. Services typically include help with daily activities like bathing, dressing, meal preparation, medication reminders, light housekeeping, and companionship. Unlike home health care, in-home care does not require medical licensing and focuses on helping people maintain independence."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How much does home care cost?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Home care costs vary by location, level of care needed, and hours required. The national average is $25-35 per hour. Live-in care typically costs $200-400 per day. Costs are higher in metropolitan areas and for specialized care like dementia support. Many agencies offer free consultations to provide personalized cost estimates."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does Medicare pay for home care?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Medicare generally does not cover non-medical home care services like bathing, dressing, or companionship. However, Medicare does cover home health care (skilled nursing, physical therapy) if ordered by a doctor. Medicaid may cover some home care services depending on your state. Long-term care insurance and VA benefits are other payment options."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What's the difference between home care and home health care?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Home care provides non-medical assistance with daily living activities like bathing, meals, and companionship. Home health care provides medical services like skilled nursing, wound care, and physical therapy prescribed by a doctor. Home care helps maintain independence; home health care addresses specific medical conditions."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How do I choose a home care agency?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Look for agencies that are licensed in your state, conduct background checks on caregivers, provide training and supervision, and have good reviews. Ask about their caregiver matching process, backup coverage if your regular caregiver is unavailable, and how they handle concerns. Request references and meet potential caregivers before starting."
+            }
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-16 md:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+            Find Trusted Home Care for Your Loved Ones
+        </h1>
+        <p class="text-xl md:text-2xl text-primary-100 mb-10 max-w-2xl mx-auto">
+            Compare in-home care agencies, read reviews, and find compassionate caregivers in your area.
+        </p>
+
+        <!-- State Search -->
+        <div class="bg-white rounded-xl p-2 shadow-2xl max-w-lg mx-auto flex gap-2">
+            <select id="state-select" class="flex-grow px-4 py-3 text-gray-700 bg-transparent focus:outline-none text-sm rounded-lg">
+                <option value="">Select a state...</option>
+                {% for state in us_states %}
+                <option value="{{ state.slug }}">{{ state.name }}</option>
+                {% endfor %}
+            </select>
+            <button onclick="goToState()" class="px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors text-sm whitespace-nowrap">
+                Find Care
+            </button>
+        </div>
+
+        <!-- Quick service links -->
+        <div class="mt-6 flex flex-wrap justify-center gap-2">
+            <span class="text-primary-200 text-sm self-center">Popular services:</span>
+            {% for service in services[:4] %}
+            <a href="/services/{{ service.slug }}.html"
+               class="bg-white/20 hover:bg-white/30 text-white text-sm px-3 py-1 rounded-full transition-colors border border-white/20">
+                {{ service.icon }} {{ service.name }}
+            </a>
+            {% endfor %}
+        </div>
+
+        <p class="mt-8 text-primary-200 text-sm">{{ total_count }}+ home care agencies listed across all 50 states</p>
+    </div>
+</section>
+
+<!-- Trust Signals -->
+<section class="bg-white border-b border-gray-100 py-6">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-500">
+            <span class="flex items-center gap-2"><span class="text-secondary-500">&#10003;</span> Verified agencies</span>
+            <span class="flex items-center gap-2"><span class="text-secondary-500">&#10003;</span> Real reviews</span>
+            <span class="flex items-center gap-2"><span class="text-secondary-500">&#10003;</span> Free to search</span>
+            <span class="flex items-center gap-2"><span class="text-secondary-500">&#10003;</span> No commitment</span>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Agencies -->
+{% if featured_agencies %}
+<section class="py-12" id="featured">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Featured Agencies</h2>
+                <p class="text-gray-500 text-sm mt-1">Top-rated home care providers</p>
+            </div>
+            <a href="#browse-states" class="text-sm text-primary-600 hover:text-primary-700 font-medium hidden sm:block">Browse by state &#8594;</a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for agency in featured_agencies %}
+            {% include '_agency_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Browse by State -->
+<section class="py-12 bg-gray-50" id="browse-states">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Browse by State</h2>
+            <p class="text-gray-500">Find home care agencies near you</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {% for state in us_states %}
+            {% set count = state_counts.get(state.slug, 0) %}
+            <a href="/state/{{ state.slug }}.html"
+               class="flex items-center justify-between bg-white border border-gray-200 hover:border-primary-400 hover:shadow-sm rounded-lg px-3 py-2.5 transition-all group">
+                <span class="font-medium text-sm text-gray-800 group-hover:text-primary-700">{{ state.name }}</span>
+                {% if count > 0 %}
+                <span class="text-xs bg-primary-100 text-primary-700 font-semibold px-2 py-0.5 rounded-full">{{ count }}</span>
+                {% else %}
+                <span class="text-xs text-gray-300 font-medium">{{ state.abbr }}</span>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Browse by Service -->
+<section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Browse by Service</h2>
+            <p class="text-gray-500">Find agencies that specialize in what you need</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {% for service in services %}
+            <a href="/services/{{ service.slug }}.html"
+               class="bg-primary-50 hover:bg-primary-100 border border-primary-100 hover:border-primary-300 rounded-xl p-5 text-center transition-all group">
+                <div class="text-3xl mb-2">{{ service.icon }}</div>
+                <h3 class="font-semibold text-sm text-gray-900 group-hover:text-primary-700 mb-1">{{ service.name }}</h3>
+                <p class="text-xs text-gray-500 leading-tight line-clamp-2">{{ service.description }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- SEO Text Block -->
+<section class="py-12 bg-secondary-50 border-t border-secondary-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Finding the Right Home Care Doesn't Have to Be Hard</h2>
+        <p class="text-gray-600 leading-relaxed mb-4">
+            Senior Home Care Finder helps families across America find trusted, compassionate in-home care
+            for their aging loved ones. We make it easy to compare agencies, read reviews, and understand
+            your options &mdash; whether you need companion care, personal care, or specialized memory care.
+        </p>
+        <p class="text-gray-600 leading-relaxed">
+            Our directory includes detailed information about services offered, payment options accepted,
+            and what makes each agency unique. Start your search today and take the first step toward
+            peace of mind for your family.
+        </p>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-12 bg-white border-t border-gray-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h2>
+            <p class="text-gray-500">Common questions about home care</p>
+        </div>
+
+        <div class="space-y-4" id="faq-list">
+
+            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
+                        aria-expanded="false">
+                    <span>What is in-home care?</span>
+                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
+                    In-home care (also called home care) provides non-medical assistance to seniors and adults in their own homes. Services typically include help with daily activities like bathing, dressing, meal preparation, medication reminders, light housekeeping, and companionship. Unlike home health care, in-home care does not require medical licensing and focuses on helping people maintain independence and quality of life.
+                </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
+                        aria-expanded="false">
+                    <span>How much does home care cost?</span>
+                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
+                    Home care costs vary significantly by location, level of care needed, and hours required. The national average is approximately $25-35 per hour. Live-in care typically costs $200-400 per day. Costs tend to be higher in metropolitan areas and for specialized care like dementia support. Many agencies offer free consultations to provide personalized cost estimates based on your specific needs.
+                </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
+                        aria-expanded="false">
+                    <span>Does Medicare pay for home care?</span>
+                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
+                    Medicare generally does not cover non-medical home care services like bathing assistance, meal preparation, or companionship. However, Medicare does cover home health care (skilled nursing, physical therapy) when prescribed by a doctor for homebound patients. Medicaid may cover some home care services depending on your state's programs. Other payment options include long-term care insurance and <a href="/services/veterans-care.html" class="text-primary-600 hover:underline">VA benefits for veterans</a>.
+                </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
+                        aria-expanded="false">
+                    <span>What's the difference between home care and home health care?</span>
+                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
+                    <strong>Home care</strong> (non-medical) provides assistance with daily living activities like bathing, dressing, meal preparation, medication reminders, light housekeeping, and companionship. <strong>Home health care</strong> (medical) provides skilled nursing services, wound care, physical therapy, and other medical treatments prescribed by a doctor. Home care helps maintain independence and quality of life; home health care addresses specific medical conditions and recovery needs.
+                </div>
+            </div>
+
+            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
+                        aria-expanded="false">
+                    <span>How do I choose a home care agency?</span>
+                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
+                    Look for agencies that are licensed in your state, conduct thorough background checks on caregivers, provide ongoing training and supervision, and have positive reviews from families. Ask about their caregiver matching process, backup coverage policies, and how they handle concerns or complaints. Request references from current clients and arrange to meet potential caregivers before services begin. Accreditations from organizations like the Joint Commission or CHAP indicate quality standards.
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+function goToState() {
+    const slug = document.getElementById('state-select').value;
+    if (slug) window.location.href = '/state/' + slug + '.html';
+}
+document.getElementById('state-select').addEventListener('change', function() {
+    if (this.value) goToState();
+});
+
+// FAQ accordion
+document.querySelectorAll('.faq-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const answer = this.nextElementSibling;
+        const icon = this.querySelector('.faq-icon');
+        const isOpen = !answer.classList.contains('hidden');
+
+        document.querySelectorAll('.faq-answer').forEach(function(a) { a.classList.add('hidden'); });
+        document.querySelectorAll('.faq-icon').forEach(function(i) { i.style.transform = ''; });
+        document.querySelectorAll('.faq-btn').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
+
+        if (!isOpen) {
+            answer.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+            this.setAttribute('aria-expanded', 'true');
+        }
+    });
+});
+</script>
+
+{% endblock %}

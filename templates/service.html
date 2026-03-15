@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Breadcrumbs -->
+<nav class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <ol class="flex items-center text-sm text-gray-500">
+            <li><a href="/" class="hover:text-primary-600">Home</a></li>
+            <li class="mx-2">/</li>
+            <li><a href="/#services" class="hover:text-primary-600">Services</a></li>
+            <li class="mx-2">/</li>
+            <li class="text-gray-900 font-medium">{{ service.name }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="bg-gradient-to-br from-secondary-600 to-secondary-700 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-4 mb-4">
+            <span class="text-4xl">{{ service.icon }}</span>
+            <h1 class="text-3xl md:text-4xl font-bold">{{ service.name }}</h1>
+        </div>
+        <p class="text-secondary-100 text-lg max-w-2xl">{{ service.description }}</p>
+        <p class="mt-4 text-secondary-200 text-sm">{{ agencies|length }} agencies offer this service</p>
+    </div>
+</section>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="lg:flex lg:gap-8">
+        <!-- Sidebar - States filter -->
+        {% if state_list %}
+        <aside class="lg:w-64 flex-shrink-0 mb-6 lg:mb-0">
+            <div class="bg-white rounded-xl border border-gray-100 p-4 sticky top-20">
+                <h3 class="font-bold text-gray-900 mb-3">Filter by State</h3>
+                <div class="max-h-96 overflow-y-auto space-y-1">
+                    {% for state_name, count in state_list %}
+                    <a href="/state/{{ state_name | slugify }}.html"
+                       class="flex items-center justify-between px-3 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors">
+                        <span>{{ state_name }}</span>
+                        <span class="text-xs text-gray-400">{{ count }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+        {% endif %}
+
+        <!-- Main Content -->
+        <div class="flex-1">
+            {% if agencies %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for agency in agencies %}
+                {% include '_agency_card.html' %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Empty state -->
+            <div class="text-center py-16">
+                <div class="text-5xl mb-4 opacity-30">{{ service.icon }}</div>
+                <h2 class="text-xl font-semibold text-gray-900 mb-2">No agencies found</h2>
+                <p class="text-gray-500 mb-6">We're adding more agencies that offer {{ service.name }} services.</p>
+                <a href="/" class="inline-block px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                    Browse All Agencies
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Service Info -->
+<section class="bg-gray-50 border-t border-gray-100 py-10">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 text-center">What is {{ service.name }}?</h2>
+        <div class="prose prose-gray max-w-none text-center">
+            <p class="text-gray-600 leading-relaxed">
+                {{ service.description }}
+                Browse our directory to find agencies that specialize in {{ service.name | lower }} services in your area.
+                Each listing includes contact information, reviews, and details about additional services offered.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Other Services -->
+<section class="bg-white border-t border-gray-100 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 text-center">Explore Other Services</h2>
+        <div class="flex flex-wrap justify-center gap-2">
+            {% for s in services %}
+            {% if s.slug != service.slug %}
+            <a href="/services/{{ s.slug }}.html"
+               class="bg-gray-100 hover:bg-primary-50 text-gray-700 hover:text-primary-700 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                {{ s.icon }} {{ s.name }}
+            </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

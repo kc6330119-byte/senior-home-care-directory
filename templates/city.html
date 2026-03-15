@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Breadcrumbs -->
+<nav class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <ol class="flex items-center text-sm text-gray-500">
+            <li><a href="/" class="hover:text-primary-600">Home</a></li>
+            <li class="mx-2">/</li>
+            <li><a href="/state/{{ state.slug }}.html" class="hover:text-primary-600">{{ state.name }}</a></li>
+            <li class="mx-2">/</li>
+            <li class="text-gray-900 font-medium">{{ city }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="bg-gradient-to-br from-primary-600 to-primary-700 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Home Care Agencies in {{ city }}, {{ state.abbr or state.name }}</h1>
+        <p class="text-primary-100 text-lg max-w-2xl">
+            Compare {{ agencies|length }} in-home care providers in {{ city }}. Read reviews, view services, and find compassionate caregivers for your loved ones.
+        </p>
+    </div>
+</section>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {% if agencies %}
+
+    <!-- Agencies grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for agency in agencies %}
+        {% include '_agency_card.html' %}
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty state -->
+    <div class="text-center py-16">
+        <div class="text-5xl mb-4 opacity-30">&#128106;</div>
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">No agencies listed yet</h2>
+        <p class="text-gray-500 mb-6">We're working on adding home care agencies in {{ city }}.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="/state/{{ state.slug }}.html" class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+                View all {{ state.name }} agencies
+            </a>
+            <a href="/submit.html" class="inline-block px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                Submit an Agency
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- SEO Text -->
+<section class="bg-gray-50 border-t border-gray-100 py-10">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">In-Home Care Services in {{ city }}, {{ state.name }}</h2>
+        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+            Finding quality home care in {{ city }} is easier with Senior Home Care Finder. Our directory features
+            local agencies that provide companion care, personal care, homemaking services, and specialized care
+            for conditions like Alzheimer's and dementia. Each listing includes contact information, services offered,
+            and payment options accepted.
+        </p>
+        <p class="text-gray-600 text-sm leading-relaxed">
+            Whether you need a few hours of help each week or around-the-clock care, {{ city }} agencies can create
+            a customized care plan for your family's needs.
+        </p>
+    </div>
+</section>
+
+<!-- Back to state -->
+<div class="bg-white border-t border-gray-100 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <a href="/state/{{ state.slug }}.html" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+            &larr; View all agencies in {{ state.name }}
+        </a>
+    </div>
+</div>
+
+{% endblock %}

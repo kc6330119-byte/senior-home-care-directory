@@ -1,0 +1,39 @@
+[build]
+  command = "pip install -r requirements.txt && python build.py"
+  publish = "dist"
+
+# Pretty URLs - remove .html extension
+
+[[redirects]]
+  from = "/state/:state"
+  to = "/state/:state.html"
+  status = 200
+
+[[redirects]]
+  from = "/state/:state/:city"
+  to = "/state/:state/:city.html"
+  status = 200
+
+[[redirects]]
+  from = "/agency/:slug"
+  to = "/agency/:slug.html"
+  status = 200
+
+[[redirects]]
+  from = "/services/:service"
+  to = "/services/:service.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/:slug"
+  to = "/blog/:slug.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
