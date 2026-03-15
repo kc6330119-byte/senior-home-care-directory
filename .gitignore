@@ -20,3 +20,11 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Data files
+*.csv
+*.xlsx
+
+# Data pipeline scripts
+outscraper_to_airtable.py
+auto_descriptions.py
