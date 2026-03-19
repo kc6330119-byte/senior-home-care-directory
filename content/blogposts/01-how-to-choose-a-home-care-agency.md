@@ -7,6 +7,7 @@ Excerpt: Choosing a home care agency is one of the most important decisions your
 Status: Published
 Published Date: 2026-03-19
 Category: Guides
+Featured Image: https://res.cloudinary.com/dnmrgvjdm/image/upload/v1773944336/SeniorGuide_ybruqy.png
 ```
 
 # How to Choose a Home Care Agency: A Complete Guide for Families
