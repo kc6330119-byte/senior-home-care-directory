@@ -188,10 +188,17 @@ def fetch_from_airtable():
 
     try:
         from pyairtable import Api
+        import time
 
-        api = Api(config.AIRTABLE_API_KEY)
+        api = Api(config.AIRTABLE_API_KEY, timeout=(30, 60))
         table = api.table(config.AIRTABLE_BASE_ID, config.AIRTABLE_TABLE_NAME)
-        records = table.all()
+
+        # Fetch in pages to avoid gateway timeouts on Netlify
+        records = []
+        for page in table.iterate(page_size=100):
+            records.extend(page)
+            print(f"  Fetched {len(records)} records so far...")
+            time.sleep(0.2)  # Brief pause to avoid rate limits
 
         agencies = []
         for record in records:
