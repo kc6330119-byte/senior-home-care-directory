@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
+{% block extra_head %}
+<!-- Leaflet CSS -->
+{% if agencies %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" crossorigin="">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" crossorigin="">
+{% endif %}
+{% endblock %}
+
 {% block content %}
 
 <!-- Breadcrumbs -->
@@ -14,43 +23,133 @@
 </nav>
 
 <!-- Hero -->
-<section class="bg-gradient-to-br from-primary-600 to-primary-700 text-white py-12">
+<section class="bg-gradient-to-br from-primary-600 to-primary-700 text-white py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl md:text-4xl font-bold mb-3">Home Care Agencies in {{ state.name }}</h1>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Home Care Agencies in {{ state.name }}</h1>
         <p class="text-primary-100 text-lg max-w-2xl">
             Find trusted in-home care providers in {{ state.name }}. Compare services, read reviews, and connect with local caregivers.
         </p>
-        <p class="mt-4 text-primary-200 text-sm">{{ agencies|length }} agencies found</p>
     </div>
 </section>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     {% if agencies %}
+    <div class="lg:flex lg:gap-8">
 
-    <!-- Cities in this state -->
-    {% if cities %}
-    <section class="mb-10">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">Browse by City</h2>
-        <div class="flex flex-wrap gap-2">
-            {% for (city_name, city_slug), city_agencies in cities.items() %}
-            <a href="/state/{{ state.slug }}/{{ city_slug }}.html"
-               class="bg-white border border-gray-200 hover:border-primary-400 px-3 py-2 rounded-lg text-sm text-gray-700 hover:text-primary-700 transition-all">
-                {{ city_name }} <span class="text-gray-400">({{ city_agencies|length }})</span>
-            </a>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
+        <!-- Left Sidebar -->
+        <aside class="lg:w-80 flex-shrink-0 mb-8 lg:mb-0">
 
-    <!-- All agencies grid -->
-    <section>
-        <h2 class="text-xl font-bold text-gray-900 mb-6">All Agencies in {{ state.name }}</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {% for agency in agencies %}
-            {% include '_agency_card.html' %}
-            {% endfor %}
+            <!-- Map -->
+            <div class="bg-white rounded-xl border border-gray-100 p-4 mb-4">
+                <h3 class="font-bold text-gray-900 mb-3 text-sm">View Results on Map</h3>
+                <div id="state-map" class="rounded-lg overflow-hidden" style="height: 250px;"></div>
+            </div>
+
+            <!-- Cities List -->
+            {% if cities %}
+            <div class="bg-white rounded-xl border border-gray-100 p-4 sticky top-20">
+                <h3 class="font-bold text-gray-900 mb-3">Cities in {{ state.name }}</h3>
+                <div class="max-h-96 overflow-y-auto space-y-0.5">
+                    {% for (city_name, city_slug), city_agencies in cities.items()|sort(attribute='0.0') %}
+                    <a href="/state/{{ state.slug }}/{{ city_slug }}.html"
+                       class="flex items-center justify-between px-3 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors">
+                        <span>{{ city_name }}</span>
+                        <span class="text-xs text-gray-400">{{ city_agencies|length }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </aside>
+
+        <!-- Main Content — List Cards -->
+        <div class="flex-1">
+            <p class="text-sm text-gray-500 mb-6">{{ agencies|length }} results in {{ state.name }}</p>
+
+            <div class="space-y-4">
+                {% for agency in agencies %}
+                <div class="bg-white rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                    <div class="p-5">
+                        <div class="flex items-start gap-4">
+                            <!-- Photo -->
+                            {% if agency.photo_url %}
+                            <div class="hidden sm:block w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-primary-50">
+                                <img src="{{ agency.photo_url }}" alt="{{ agency.name }}"
+                                     class="w-full h-full object-cover"
+                                     loading="lazy" referrerpolicy="no-referrer"
+                                     onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100\'><span class=\'text-2xl opacity-30\'>&#128106;</span></div>';">
+                            </div>
+                            {% endif %}
+
+                            <!-- Info -->
+                            <div class="flex-1 min-w-0">
+                                <h2 class="text-lg font-bold text-gray-900 mb-1">{{ agency.name }}</h2>
+
+                                <!-- Services badges -->
+                                {% if agency.services or agency.care_types %}
+                                <div class="flex flex-wrap gap-1.5 mb-2">
+                                    {% set all_services = (agency.services or [])[:3] + (agency.care_types or [])[:2] %}
+                                    {% for svc in all_services[:4] %}
+                                    <span class="bg-primary-50 text-primary-700 px-2 py-0.5 rounded text-xs font-medium">{{ svc }}</span>
+                                    {% endfor %}
+                                    {% set remaining = (agency.services or [])|length + (agency.care_types or [])|length - 4 %}
+                                    {% if remaining > 0 %}
+                                    <span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-xs">+{{ remaining }} more</span>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                <!-- Rating -->
+                                {% if agency.rating %}
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <span class="text-accent-500 text-sm">&#9733;</span>
+                                    <span class="font-semibold text-sm text-gray-900">{{ agency.rating }}</span>
+                                    {% if agency.review_count %}
+                                    <span class="text-gray-400 text-xs">({{ agency.review_count }} reviews)</span>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                <!-- Description -->
+                                {% if agency.description %}
+                                <p class="text-sm text-gray-500 leading-relaxed mb-3 line-clamp-2">{{ agency.description }}</p>
+                                {% endif %}
+
+                                <!-- Contact -->
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                    {% if agency.phone %}
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                        </svg>
+                                        {{ agency.phone }}
+                                    </span>
+                                    {% endif %}
+                                    {% if agency.website_url %}
+                                    <a href="{{ agency.website_url }}" target="_blank" rel="noopener" class="flex items-center gap-1 hover:text-primary-600">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/>
+                                        </svg>
+                                        Website
+                                    </a>
+                                    {% endif %}
+                                    <span class="text-gray-400">{{ agency.city }}, {{ state.abbr }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- View Details -->
+                    <div class="border-t border-gray-100 px-5 py-3 text-center">
+                        <a href="/agency/{{ agency.slug }}.html" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+                            View Details &rsaquo;
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-    </section>
+    </div>
 
     {% else %}
     <!-- Empty state -->
@@ -79,5 +178,68 @@
         </p>
     </div>
 </section>
+
+<!-- Leaflet Map Script -->
+{% if agencies %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" crossorigin=""></script>
+<script>
+(function() {
+    var agencies = [
+        {% for agency in agencies %}
+        {% if agency.latitude and agency.longitude %}
+        {
+            name: {{ agency.name | tojson | safe }},
+            slug: {{ agency.slug | tojson | safe }},
+            city: {{ agency.city | tojson | safe }},
+            rating: {{ agency.rating | tojson | safe }},
+            lat: {{ agency.latitude }},
+            lng: {{ agency.longitude }}
+        },
+        {% endif %}
+        {% endfor %}
+    ];
+
+    if (agencies.length === 0) {
+        document.getElementById('state-map').innerHTML = '<p class="text-sm text-gray-400 text-center py-8">No location data available</p>';
+        return;
+    }
+
+    var map = L.map('state-map', {
+        scrollWheelZoom: false,
+        zoomControl: true
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+        maxZoom: 18
+    }).addTo(map);
+
+    var markers = L.markerClusterGroup({
+        maxClusterRadius: 50,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false
+    });
+
+    var blueIcon = L.divIcon({
+        className: '',
+        html: '<div style="background:#2563eb;width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>',
+        iconSize: [12, 12],
+        iconAnchor: [6, 6]
+    });
+
+    agencies.forEach(function(a) {
+        var star = a.rating ? ' &#9733; ' + a.rating : '';
+        var popup = '<a href="/agency/' + a.slug + '.html" style="font-weight:600;color:#2563eb;text-decoration:none">' +
+                    a.name + '</a><br><span style="color:#666;font-size:12px">' + a.city + star + '</span>';
+        var marker = L.marker([a.lat, a.lng], {icon: blueIcon}).bindPopup(popup);
+        markers.addLayer(marker);
+    });
+
+    map.addLayer(markers);
+    map.fitBounds(markers.getBounds().pad(0.1));
+})();
+</script>
+{% endif %}
 
 {% endblock %}
