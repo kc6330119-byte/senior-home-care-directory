@@ -74,9 +74,11 @@
 <section class="bg-gray-50 border-t border-gray-100 py-10">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-xl font-bold text-gray-900 mb-4 text-center">What is {{ service.name }}?</h2>
-        <div class="prose prose-gray max-w-none text-center">
-            <p class="text-gray-600 leading-relaxed">
-                {{ service.description }}
+        <div class="prose prose-gray max-w-none">
+            {% if service.intro %}
+            <p class="text-gray-600 leading-relaxed mb-4">{{ service.intro }}</p>
+            {% endif %}
+            <p class="text-gray-600 leading-relaxed text-center">
                 Browse our directory to find agencies that specialize in {{ service.name | lower }} services in your area.
                 Each listing includes contact information, reviews, and details about additional services offered.
             </p>

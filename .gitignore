@@ -28,3 +28,9 @@ Thumbs.db
 # Data pipeline scripts
 outscraper_to_airtable.py
 auto_descriptions.py
+enrich_descriptions.py
+
+# AdSense plans (reference only)
+ADSENSE_RESUBMISSION_PLAN.md
+ADSENSE_PRESUBMISSION_PLAN.md
+ADSENSE_PRESUBMISSION_PLAN_SENIOR.md

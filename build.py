@@ -253,48 +253,106 @@ def get_agencies():
     return agencies
 
 
+def load_local_blog_posts():
+    """Load blog posts from local markdown files in content/blogposts/."""
+    blog_dir = config.BASE_DIR / "content" / "blogposts"
+    if not blog_dir.exists():
+        return []
+
+    posts = []
+    for md_file in sorted(blog_dir.glob("*.md")):
+        text = md_file.read_text(encoding="utf-8")
+
+        # Parse frontmatter between ``` markers
+        meta = {}
+        content = text
+        if text.startswith("```"):
+            parts = text.split("```", 2)
+            if len(parts) >= 3:
+                # Parse key: value pairs from frontmatter
+                for line in parts[1].strip().split("\n"):
+                    if ":" in line:
+                        key, _, value = line.partition(":")
+                        meta[key.strip().lower()] = value.strip()
+                content = parts[2].strip()
+
+        status = meta.get("status", "Published")
+        if status != "Published":
+            continue
+
+        title = meta.get("title", md_file.stem)
+        post = {
+            "title": title,
+            "slug": meta.get("slug", slugify(title)),
+            "content": content,
+            "excerpt": meta.get("excerpt", ""),
+            "author": meta.get("author", "Senior Home Care Finder Staff"),
+            "publish_date": meta.get("published date", meta.get("publish date", "")),
+            "featured_image": meta.get("featured image", ""),
+            "meta_description": meta.get("meta description", ""),
+            "status": status,
+            "featured": meta.get("featured", "").lower() == "true",
+            "category": meta.get("category", ""),
+        }
+        posts.append(post)
+
+    if posts:
+        print(f"Loaded {len(posts)} blog posts from content/blogposts/.")
+    return posts
+
+
 def fetch_blog_posts():
-    """Fetch published blog posts from Airtable."""
-    if not config.AIRTABLE_API_KEY or not config.AIRTABLE_BASE_ID:
-        return []
+    """Fetch published blog posts from Airtable, merged with local markdown files."""
+    # Load local posts first
+    local_posts = load_local_blog_posts()
+    local_slugs = {p["slug"] for p in local_posts}
 
-    try:
-        from pyairtable import Api
+    # Then try Airtable
+    airtable_posts = []
+    if config.AIRTABLE_API_KEY and config.AIRTABLE_BASE_ID:
+        try:
+            from pyairtable import Api
 
-        api = Api(config.AIRTABLE_API_KEY)
-        table = api.table(config.AIRTABLE_BASE_ID, config.AIRTABLE_BLOG_TABLE_NAME)
-        records = table.all()
+            api = Api(config.AIRTABLE_API_KEY)
+            table = api.table(config.AIRTABLE_BASE_ID, config.AIRTABLE_BLOG_TABLE_NAME)
+            records = table.all()
 
-        posts = []
-        for record in records:
-            fields = record.get("fields", {})
+            for record in records:
+                fields = record.get("fields", {})
 
-            if fields.get("Status") != "Published":
-                continue
+                if fields.get("Status") != "Published":
+                    continue
 
-            title = fields.get("Title", "")
-            post = {
-                "title": title,
-                "slug": (fields.get("Slug", "") or slugify(title)).strip(),
-                "content": fields.get("Content", ""),
-                "excerpt": fields.get("Excerpt", ""),
-                "author": fields.get("Author", "Senior Home Care Finder Staff"),
-                "publish_date": fields.get("Publish Date", ""),
-                "featured_image": fields.get("Featured Image", ""),
-                "meta_description": fields.get("Meta Description", ""),
-                "status": fields.get("Status", "Published"),
-                "featured": fields.get("Featured", False),
-                "category": fields.get("Category", ""),
-            }
-            posts.append(post)
+                title = fields.get("Title", "")
+                slug = (fields.get("Slug", "") or slugify(title)).strip()
 
-        posts.sort(key=lambda x: x.get("publish_date", ""), reverse=True)
-        print(f"Fetched {len(posts)} blog posts from Airtable.")
-        return posts
+                # Skip if local file already has this slug (local takes priority)
+                if slug in local_slugs:
+                    continue
 
-    except Exception as e:
-        print(f"Note: Could not fetch blog posts ({e})")
-        return []
+                post = {
+                    "title": title,
+                    "slug": slug,
+                    "content": fields.get("Content", ""),
+                    "excerpt": fields.get("Excerpt", ""),
+                    "author": fields.get("Author", "Senior Home Care Finder Staff"),
+                    "publish_date": fields.get("Publish Date", ""),
+                    "featured_image": fields.get("Featured Image", ""),
+                    "meta_description": fields.get("Meta Description", ""),
+                    "status": fields.get("Status", "Published"),
+                    "featured": fields.get("Featured", False),
+                    "category": fields.get("Category", ""),
+                }
+                airtable_posts.append(post)
+
+            print(f"Fetched {len(airtable_posts)} blog posts from Airtable.")
+
+        except Exception as e:
+            print(f"Note: Could not fetch blog posts ({e})")
+
+    all_posts = local_posts + airtable_posts
+    all_posts.sort(key=lambda x: x.get("publish_date", ""), reverse=True)
+    return all_posts
 
 
 def setup_output_directory():
@@ -413,10 +471,16 @@ def build_homepage(env, agencies, posts):
     print(f"Built: index.html ({len(agencies)} total agencies)")
 
 
+MIN_AGENCIES_FOR_INDEX = 3  # Noindex state/city pages below this threshold
+
+
 def build_state_pages(env, agencies):
     """Build one page per US state."""
     template = env.get_template("state.html")
     grouped = group_agencies_by_state(agencies)
+
+    indexed_states = []
+    noindexed_states = []
 
     for state in config.US_STATES:
         state_agencies = grouped.get(state["slug"], [])
@@ -429,10 +493,18 @@ def build_state_pages(env, agencies):
             city_slug = agency.get("city_slug", "unknown")
             cities.setdefault((city, city_slug), []).append(agency)
 
+        noindex = len(state_agencies) < MIN_AGENCIES_FOR_INDEX
+
+        if noindex:
+            noindexed_states.append(state["name"])
+        else:
+            indexed_states.append(state["slug"])
+
         html = template.render(
             state=state,
             agencies=state_agencies,
             cities=cities,
+            noindex=noindex,
             page_title=f"Home Care Agencies in {state['name']} - {config.SITE_NAME}",
             meta_description=f"Find {len(state_agencies)} trusted home care agencies in {state['name']}. Compare services, read reviews, and connect with local caregivers.",
             request_path=f"/state/{state['slug']}.html",
@@ -440,13 +512,21 @@ def build_state_pages(env, agencies):
 
         output_path = config.OUTPUT_DIR / "state" / f"{state['slug']}.html"
         output_path.write_text(html)
-        print(f"Built: state/{state['slug']}.html ({len(state_agencies)} agencies)")
+        print(f"Built: state/{state['slug']}.html ({len(state_agencies)} agencies{' [noindex]' if noindex else ''})")
+
+    if noindexed_states:
+        print(f"  Noindexed {len(noindexed_states)} state pages (< {MIN_AGENCIES_FOR_INDEX} agencies)")
+
+    return indexed_states  # Return for sitemap filtering
 
 
 def build_city_pages(env, agencies):
     """Build one page per city (within state folders)."""
     template = env.get_template("city.html")
     grouped = group_agencies_by_city(agencies)
+
+    indexed_cities = []
+    noindex_count = 0
 
     for (state_slug, city_slug, city_name, state_name), city_agencies in grouped.items():
         city_agencies.sort(key=lambda x: x.get("name", ""))
@@ -458,11 +538,19 @@ def build_city_pages(env, agencies):
         # Find state info
         state_info = next((s for s in config.US_STATES if s["slug"] == state_slug), {"name": state_name, "slug": state_slug, "abbr": ""})
 
+        noindex = len(city_agencies) < MIN_AGENCIES_FOR_INDEX
+
+        if noindex:
+            noindex_count += 1
+        else:
+            indexed_cities.append(f"{state_slug}/{city_slug}")
+
         html = template.render(
             city=city_name,
             city_slug=city_slug,
             state=state_info,
             agencies=city_agencies,
+            noindex=noindex,
             page_title=f"Home Care Agencies in {city_name}, {state_info['abbr'] or state_name} - {config.SITE_NAME}",
             meta_description=f"Find {len(city_agencies)} home care agencies in {city_name}, {state_name}. Compare in-home care services, read reviews, and get help for your loved ones.",
             request_path=f"/state/{state_slug}/{city_slug}.html",
@@ -470,7 +558,12 @@ def build_city_pages(env, agencies):
 
         output_path = state_folder / f"{city_slug}.html"
         output_path.write_text(html)
-        print(f"Built: state/{state_slug}/{city_slug}.html ({len(city_agencies)} agencies)")
+        print(f"Built: state/{state_slug}/{city_slug}.html ({len(city_agencies)} agencies{' [noindex]' if noindex else ''})")
+
+    if noindex_count:
+        print(f"  Noindexed {noindex_count} city pages (< {MIN_AGENCIES_FOR_INDEX} agencies)")
+
+    return indexed_cities  # Return for sitemap filtering
 
 
 def build_agency_pages(env, agencies):
@@ -591,8 +684,8 @@ def build_search_index(agencies):
     print(f"Built: search-index.json ({len(index)} agencies)")
 
 
-def build_sitemap(agencies, posts):
-    """Generate sitemap.xml."""
+def build_sitemap(agencies, posts, indexed_states=None, indexed_cities=None):
+    """Generate sitemap.xml — only includes indexable pages."""
     urls = [
         f"{config.SITE_URL}/",
         f"{config.SITE_URL}/blog.html",
@@ -603,20 +696,28 @@ def build_sitemap(agencies, posts):
         f"{config.SITE_URL}/terms.html",
     ]
 
-    # State pages
-    for state in config.US_STATES:
-        urls.append(f"{config.SITE_URL}/state/{state['slug']}.html")
+    # State pages — only indexed ones
+    if indexed_states:
+        for state_slug in indexed_states:
+            urls.append(f"{config.SITE_URL}/state/{state_slug}.html")
+    else:
+        for state in config.US_STATES:
+            urls.append(f"{config.SITE_URL}/state/{state['slug']}.html")
 
-    # City pages
-    cities_added = set()
-    for agency in agencies:
-        state_slug = agency.get("state_slug", "")
-        city_slug = agency.get("city_slug", "")
-        if state_slug and city_slug:
-            city_key = f"{state_slug}/{city_slug}"
-            if city_key not in cities_added:
-                urls.append(f"{config.SITE_URL}/state/{state_slug}/{city_slug}.html")
-                cities_added.add(city_key)
+    # City pages — only indexed ones
+    if indexed_cities:
+        for city_key in indexed_cities:
+            urls.append(f"{config.SITE_URL}/state/{city_key}.html")
+    else:
+        cities_added = set()
+        for agency in agencies:
+            state_slug = agency.get("state_slug", "")
+            city_slug = agency.get("city_slug", "")
+            if state_slug and city_slug:
+                city_key = f"{state_slug}/{city_slug}"
+                if city_key not in cities_added:
+                    urls.append(f"{config.SITE_URL}/state/{state_slug}/{city_slug}.html")
+                    cities_added.add(city_key)
 
     # Service pages
     for service in config.SERVICES:
@@ -739,8 +840,8 @@ def main():
 
     print("\nBuilding pages...")
     build_homepage(env, agencies, posts)
-    build_state_pages(env, agencies)
-    build_city_pages(env, agencies)
+    indexed_states = build_state_pages(env, agencies)
+    indexed_cities = build_city_pages(env, agencies)
     build_agency_pages(env, agencies)
     build_service_pages(env, agencies)
     build_static_pages(env, agencies)
@@ -748,7 +849,7 @@ def main():
     build_post_pages(env, posts)
 
     print("\nBuilding SEO files...")
-    build_sitemap(agencies, posts)
+    build_sitemap(agencies, posts, indexed_states, indexed_cities)
     build_robots()
     copy_ads_txt()
     build_search_index(agencies)

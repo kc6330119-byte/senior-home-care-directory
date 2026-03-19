@@ -69,11 +69,13 @@
 <section class="bg-gray-50 border-t border-gray-100 py-10">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-lg font-semibold text-gray-900 mb-3">Finding Home Care in {{ state.name }}</h2>
+        {% if state.description %}
+        <p class="text-gray-600 text-sm leading-relaxed mb-4">{{ state.description }}</p>
+        {% endif %}
         <p class="text-gray-600 text-sm leading-relaxed">
             Senior Home Care Finder helps families find trusted in-home care agencies throughout {{ state.name }}.
             Whether you need companion care, personal care, or specialized memory care, our directory makes it easy
-            to compare agencies and find the right fit for your loved ones. All agencies listed provide services
-            within {{ state.name }} and meet state licensing requirements.
+            to compare agencies and find the right fit for your loved ones.
         </p>
     </div>
 </section>
