@@ -180,6 +180,15 @@ def get_sample_data():
     ]
 
 
+def _to_list(val):
+    """Convert a value to a list — handles comma-separated strings from Airtable text fields."""
+    if isinstance(val, list):
+        return val
+    if isinstance(val, str) and val.strip():
+        return [s.strip() for s in val.split(",") if s.strip()]
+    return []
+
+
 def fetch_from_airtable():
     """Fetch agencies from Airtable API."""
     if not config.AIRTABLE_API_KEY or not config.AIRTABLE_BASE_ID:
@@ -226,12 +235,12 @@ def fetch_from_airtable():
                 "google_maps_url": fields.get("Google Maps URL", ""),
                 "photo_url": fields.get("Photo URL", ""),
                 "hours": fields.get("Hours", ""),
-                "services": fields.get("Services", []),
-                "care_types": fields.get("Care Types", []),
-                "payment_options": fields.get("Payment Options", []),
+                "services": _to_list(fields.get("Services", [])),
+                "care_types": _to_list(fields.get("Care Types", [])),
+                "payment_options": _to_list(fields.get("Payment Options", [])),
                 "licensing": fields.get("Licensing", ""),
-                "accreditation": fields.get("Accreditation", []),
-                "languages": fields.get("Languages", []),
+                "accreditation": _to_list(fields.get("Accreditation", [])),
+                "languages": _to_list(fields.get("Languages", [])),
                 "service_area": fields.get("Service Area", ""),
                 "year_established": fields.get("Year Established", ""),
                 "rating": fields.get("Rating", 0),
