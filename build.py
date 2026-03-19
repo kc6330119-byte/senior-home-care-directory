@@ -330,6 +330,11 @@ def fetch_blog_posts():
                 if slug in local_slugs:
                     continue
 
+                # Handle Featured Image — could be a URL string or Airtable attachment array
+                featured_image = fields.get("Featured Image", "")
+                if isinstance(featured_image, list) and featured_image:
+                    featured_image = featured_image[0].get("url", "")
+
                 post = {
                     "title": title,
                     "slug": slug,
@@ -337,7 +342,7 @@ def fetch_blog_posts():
                     "excerpt": fields.get("Excerpt", ""),
                     "author": fields.get("Author", "Senior Home Care Finder Staff"),
                     "publish_date": fields.get("Publish Date", ""),
-                    "featured_image": fields.get("Featured Image", ""),
+                    "featured_image": featured_image,
                     "meta_description": fields.get("Meta Description", ""),
                     "status": fields.get("Status", "Published"),
                     "featured": fields.get("Featured", False),
