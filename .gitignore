@@ -29,6 +29,7 @@ Thumbs.db
 outscraper_to_airtable.py
 auto_descriptions.py
 enrich_descriptions.py
+backfill_services.py
 
 # AdSense plans (reference only)
 ADSENSE_RESUBMISSION_PLAN.md

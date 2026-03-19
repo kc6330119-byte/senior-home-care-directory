@@ -86,15 +86,13 @@
                                 <h2 class="text-lg font-bold text-gray-900 mb-1">{{ agency.name }}</h2>
 
                                 <!-- Services badges -->
-                                {% if agency.services or agency.care_types %}
+                                {% if agency.services %}
                                 <div class="flex flex-wrap gap-1.5 mb-2">
-                                    {% set all_services = (agency.services or [])[:3] + (agency.care_types or [])[:2] %}
-                                    {% for svc in all_services[:4] %}
+                                    {% for svc in agency.services[:4] %}
                                     <span class="bg-primary-50 text-primary-700 px-2 py-0.5 rounded text-xs font-medium">{{ svc }}</span>
                                     {% endfor %}
-                                    {% set remaining = (agency.services or [])|length + (agency.care_types or [])|length - 4 %}
-                                    {% if remaining > 0 %}
-                                    <span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-xs">+{{ remaining }} more</span>
+                                    {% if agency.services|length > 4 %}
+                                    <span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-xs">+{{ agency.services|length - 4 }} more</span>
                                     {% endif %}
                                 </div>
                                 {% endif %}

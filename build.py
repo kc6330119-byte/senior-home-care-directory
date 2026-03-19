@@ -629,7 +629,7 @@ def build_service_pages(env, agencies):
         # Filter agencies that offer this service
         service_agencies = [
             a for a in agencies
-            if service["name"] in a.get("services", []) or service["name"] in a.get("care_types", [])
+            if service["name"] in a.get("services", [])
         ]
 
         # Build state list sorted by count desc for sidebar filter

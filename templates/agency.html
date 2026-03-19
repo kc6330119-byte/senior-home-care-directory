@@ -136,11 +136,11 @@
             {% endif %}
 
             <!-- Services -->
-            {% if agency.care_types or agency.services %}
+            {% if agency.services %}
             <div class="bg-white rounded-xl border border-gray-100 p-6 mb-6">
                 <h2 class="text-lg font-bold text-gray-900 mb-4">Services Offered</h2>
                 <div class="flex flex-wrap gap-2">
-                    {% for service in (agency.care_types or []) + (agency.services or []) %}
+                    {% for service in agency.services %}
                     <span class="bg-primary-50 text-primary-700 px-3 py-1.5 rounded-full text-sm font-medium">{{ service }}</span>
                     {% endfor %}
                 </div>
