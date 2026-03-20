@@ -474,6 +474,21 @@ def build_homepage(env, agencies, posts):
     featured_post = next((p for p in posts if p.get("featured")), None)
     recent_posts = [p for p in posts if p is not featured_post][:3]
 
+    # Blog categories with counts and descriptions
+    BLOG_CATEGORIES = [
+        {"name": "Guides", "slug": "guides", "icon": "📖", "description": "Step-by-step guides to help you navigate home care decisions with confidence."},
+        {"name": "Family Caregiving", "slug": "family-caregiving", "icon": "❤️", "description": "Support and advice for family members caring for aging loved ones."},
+        {"name": "Care Types", "slug": "care-types", "icon": "🏠", "description": "Understand the different types of in-home care and which is right for you."},
+        {"name": "Financial Planning", "slug": "financial-planning", "icon": "💰", "description": "How to pay for home care, including Medicare, Medicaid, and VA benefits."},
+        {"name": "Tips", "slug": "tips", "icon": "✅", "description": "Practical tips for senior safety, health, and independent living at home."},
+        {"name": "Resources", "slug": "resources", "icon": "📋", "description": "Helpful resources for seniors and the families who care for them."},
+    ]
+    for cat in BLOG_CATEGORIES:
+        cat["count"] = sum(1 for p in posts if p.get("category", "").lower() == cat["name"].lower())
+
+    # Only show categories with posts
+    blog_categories = [c for c in BLOG_CATEGORIES if c["count"] > 0]
+
     html = template.render(
         featured_agencies=featured,
         recent_agencies=recent,
@@ -482,6 +497,8 @@ def build_homepage(env, agencies, posts):
         total_count=len(agencies),
         featured_post=featured_post,
         recent_posts=recent_posts,
+        blog_categories=blog_categories,
+        total_posts=len(posts),
         page_title=config.DEFAULT_META_TITLE,
         meta_description=config.DEFAULT_META_DESCRIPTION,
         request_path="/",

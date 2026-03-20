@@ -24,6 +24,8 @@ Thumbs.db
 # Data files
 *.csv
 *.xlsx
+# Content folder (local data & blog drafts)
+content/
 
 # Data pipeline scripts
 outscraper_to_airtable.py
