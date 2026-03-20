@@ -32,6 +32,12 @@ outscraper_to_airtable.py
 auto_descriptions.py
 enrich_descriptions.py
 backfill_services.py
+validate_listings.py
+validate_from_csv.py
+validation_results.csv
+validation_flagged.csv
+validation_csv_results.csv
+validation_csv_flagged.csv
 
 # AdSense plans (reference only)
 ADSENSE_RESUBMISSION_PLAN.md

@@ -14,10 +14,34 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     {% if posts %}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    <!-- Category Filters -->
+    <div class="flex flex-wrap gap-2 mb-8">
+        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white transition-colors"
+                data-category="all">
+            All
+        </button>
+        {% set categories_seen = [] %}
+        {% for post in posts %}
+        {% if post.category and post.category not in categories_seen %}
+        {% if categories_seen.append(post.category) %}{% endif %}
+        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors"
+                data-category="{{ post.category | lower | replace(' ', '-') }}">
+            {{ post.category }}
+        </button>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Post Count -->
+    <p class="text-sm text-gray-500 mb-6" id="post-count">{{ posts|length }} articles</p>
+
+    <!-- Posts Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="posts-grid">
         {% for post in posts %}
         <a href="/blog/{{ post.slug }}.html"
-           class="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow flex flex-col group">
+           class="post-card bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow flex flex-col group"
+           data-category="{{ post.category | lower | replace(' ', '-') }}">
             <!-- Featured Image -->
             <div class="h-48 bg-primary-50 overflow-hidden flex-shrink-0">
                 {% if post.featured_image %}
@@ -73,5 +97,51 @@
     </div>
     {% endif %}
 </div>
+
+{% if posts %}
+<script>
+(function() {
+    var buttons = document.querySelectorAll('.filter-btn');
+    var cards = document.querySelectorAll('.post-card');
+    var countEl = document.getElementById('post-count');
+
+    function filterByCategory(category) {
+        var visible = 0;
+        cards.forEach(function(card) {
+            if (category === 'all' || card.getAttribute('data-category') === category) {
+                card.style.display = '';
+                visible++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        countEl.textContent = visible + ' article' + (visible !== 1 ? 's' : '');
+
+        buttons.forEach(function(btn) {
+            if (btn.getAttribute('data-category') === category) {
+                btn.className = 'filter-btn px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white transition-colors';
+            } else {
+                btn.className = 'filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors';
+            }
+        });
+    }
+
+    buttons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            filterByCategory(this.getAttribute('data-category'));
+        });
+    });
+
+    // Check for hash on page load (from homepage category cards)
+    var hash = window.location.hash.replace('#', '');
+    if (hash) {
+        var matchBtn = document.querySelector('.filter-btn[data-category="' + hash + '"]');
+        if (matchBtn) {
+            filterByCategory(hash);
+        }
+    }
+})();
+</script>
+{% endif %}
 
 {% endblock %}
