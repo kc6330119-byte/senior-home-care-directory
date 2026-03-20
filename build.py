@@ -630,6 +630,7 @@ def build_agency_pages(env, agencies):
             related_agencies=related,
             page_title=f"{agency['name']} - {agency['city']}, {agency['state']} - {config.SITE_NAME}",
             meta_description=agency.get("description", "")[:160] or f"{agency['name']} provides in-home care services in {agency['city']}, {agency['state']}.",
+            page_image=agency.get("photo_url", ""),
             request_path=f"/agency/{agency['slug']}.html",
         )
 
@@ -697,6 +698,7 @@ def build_post_pages(env, posts):
             all_posts=posts,
             page_title=f"{post['title']} - {config.SITE_NAME}",
             meta_description=post.get("meta_description") or post.get("excerpt", "")[:160],
+            page_image=post.get("featured_image", ""),
             request_path=f"/blog/{post['slug']}.html",
         )
         output_path = config.OUTPUT_DIR / "blog" / f"{post['slug']}.html"

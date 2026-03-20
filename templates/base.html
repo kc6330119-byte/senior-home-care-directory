@@ -14,14 +14,14 @@
     <meta property="og:url" content="{{ site_url }}{{ request_path | default('/') }}">
     <meta property="og:title" content="{{ page_title }}">
     <meta property="og:description" content="{{ meta_description }}">
-    <meta property="og:image" content="{{ site_url }}/static/images/og-image.png">
+    <meta property="og:image" content="{{ page_image or 'https://res.cloudinary.com/dnmrgvjdm/image/upload/v1773944336/SeniorGuide_ybruqy.png' }}">
     <meta property="og:site_name" content="{{ site_name }}">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ page_title }}">
     <meta name="twitter:description" content="{{ meta_description }}">
-    <meta name="twitter:image" content="{{ site_url }}/static/images/og-image.png">
+    <meta name="twitter:image" content="{{ page_image or 'https://res.cloudinary.com/dnmrgvjdm/image/upload/v1773944336/SeniorGuide_ybruqy.png' }}">
 
     <!-- SEO -->
     <meta name="robots" content="{% if noindex %}noindex, follow{% else %}index, follow{% endif %}">
