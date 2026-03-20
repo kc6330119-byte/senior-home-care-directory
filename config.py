@@ -85,7 +85,7 @@ US_STATES = [
 # Service categories for filter pages
 SERVICES = [
     {
-        "name": "Companion Care",
+        "name": "Companion Services",
         "slug": "companion-care",
         "description": "Companionship, conversation, and social engagement for seniors living at home",
         "icon": "🤝",
