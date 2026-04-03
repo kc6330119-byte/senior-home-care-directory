@@ -11,6 +11,7 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
+import requests
 import markdown as md_lib
 from jinja2 import Environment, FileSystemLoader
 from markupsafe import Markup
@@ -189,6 +190,80 @@ def _to_list(val):
     return []
 
 
+def clear_airtable_photo_url(airtable_id):
+    """Clear the Photo URL field in Airtable for an agency with an expired/broken URL."""
+    if not config.AIRTABLE_API_KEY or not config.AIRTABLE_BASE_ID or not airtable_id:
+        return
+    try:
+        from pyairtable import Api
+        api = Api(config.AIRTABLE_API_KEY)
+        table = api.table(config.AIRTABLE_BASE_ID, config.AIRTABLE_TABLE_NAME)
+        table.update(airtable_id, {"Photo URL": ""})
+    except Exception as e:
+        print(f"  Warning: could not clear Airtable photo_url for {airtable_id}: {e}")
+
+
+def download_agency_images(agencies):
+    """Download external photo URLs locally to avoid Google Places URL expiry."""
+    images_dir = config.OUTPUT_DIR / "static" / "images"
+    images_dir.mkdir(parents=True, exist_ok=True)
+
+    source_images_dir = config.STATIC_DIR / "images"
+    source_images_dir.mkdir(parents=True, exist_ok=True)
+
+    downloaded = 0
+    skipped = 0
+    failed = 0
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer": "https://www.google.com/",
+        "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    }
+
+    for agency in agencies:
+        url = agency.get("photo_url", "").strip()
+        slug = agency.get("slug", "").strip()
+
+        if not url or not slug:
+            skipped += 1
+            continue
+
+        if url.startswith("/static/"):
+            skipped += 1
+            continue
+
+        local_path = images_dir / f"{slug}.jpg"
+
+        if local_path.exists():
+            agency["photo_url"] = f"/static/images/{slug}.jpg"
+            skipped += 1
+            continue
+
+        try:
+            response = requests.get(url, headers=headers, timeout=15, stream=True)
+            if response.status_code == 200:
+                with open(local_path, "wb") as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                source_path = source_images_dir / f"{slug}.jpg"
+                if not source_path.exists():
+                    shutil.copy2(local_path, source_path)
+                agency["photo_url"] = f"/static/images/{slug}.jpg"
+                downloaded += 1
+            else:
+                print(f"  Image {response.status_code}: {agency.get('name', slug)} — clearing photo_url in Airtable")
+                agency["photo_url"] = ""
+                clear_airtable_photo_url(agency.get("_airtable_id", ""))
+                failed += 1
+        except Exception as e:
+            print(f"  Image error for {agency.get('name', slug)}: {e} — clearing photo_url")
+            agency["photo_url"] = ""
+            failed += 1
+
+    print(f"Images: {downloaded} downloaded, {skipped} skipped/cached, {failed} failed")
+
+
 def fetch_from_airtable():
     """Fetch agencies from Airtable API."""
     if not config.AIRTABLE_API_KEY or not config.AIRTABLE_BASE_ID:
@@ -249,6 +324,7 @@ def fetch_from_airtable():
                 "date_added": fields.get("Date Added", ""),
                 "latitude": fields.get("Latitude", ""),
                 "longitude": fields.get("Longitude", ""),
+                "_airtable_id": record.get("id", ""),
             }
             agencies.append(agency)
 
@@ -872,6 +948,9 @@ def main():
 
     print("\nFetching agencies...")
     agencies = get_agencies()
+
+    print("\nDownloading agency images...")
+    download_agency_images(agencies)
 
     print("\nFetching blog posts...")
     posts = fetch_blog_posts()
