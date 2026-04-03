@@ -8,8 +8,10 @@ Falls back to sample data if Airtable is not configured.
 import json
 import os
 import shutil
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
+from threading import Lock
 
 import requests
 import markdown as md_lib
@@ -204,16 +206,16 @@ def clear_airtable_photo_url(airtable_id):
 
 
 def download_agency_images(agencies):
-    """Download external photo URLs locally to avoid Google Places URL expiry."""
+    """Download external photo URLs locally to avoid Google Places URL expiry.
+
+    Uses a thread pool to download images concurrently, keeping build times
+    manageable even with thousands of listings.
+    """
     images_dir = config.OUTPUT_DIR / "static" / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
 
     source_images_dir = config.STATIC_DIR / "images"
     source_images_dir.mkdir(parents=True, exist_ok=True)
-
-    downloaded = 0
-    skipped = 0
-    failed = 0
 
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -221,25 +223,34 @@ def download_agency_images(agencies):
         "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
     }
 
+    # Separate agencies into cached (skip) vs needs download
+    to_download = []
+    skipped = 0
     for agency in agencies:
         url = agency.get("photo_url", "").strip()
         slug = agency.get("slug", "").strip()
 
-        if not url or not slug:
-            skipped += 1
-            continue
-
-        if url.startswith("/static/"):
+        if not url or not slug or url.startswith("/static/"):
             skipped += 1
             continue
 
         local_path = images_dir / f"{slug}.jpg"
-
         if local_path.exists():
             agency["photo_url"] = f"/static/images/{slug}.jpg"
             skipped += 1
-            continue
+        else:
+            to_download.append(agency)
 
+    print(f"  {skipped} cached, {len(to_download)} to download...")
+
+    downloaded = 0
+    failed = 0
+    counters_lock = Lock()
+
+    def fetch_one(agency):
+        url = agency["photo_url"].strip()
+        slug = agency["slug"].strip()
+        local_path = images_dir / f"{slug}.jpg"
         try:
             response = requests.get(url, headers=headers, timeout=15, stream=True)
             if response.status_code == 200:
@@ -250,16 +261,31 @@ def download_agency_images(agencies):
                 if not source_path.exists():
                     shutil.copy2(local_path, source_path)
                 agency["photo_url"] = f"/static/images/{slug}.jpg"
-                downloaded += 1
+                return "ok"
             else:
-                print(f"  Image {response.status_code}: {agency.get('name', slug)} — clearing photo_url in Airtable")
                 agency["photo_url"] = ""
-                clear_airtable_photo_url(agency.get("_airtable_id", ""))
-                failed += 1
+                return ("error", response.status_code, agency)
         except Exception as e:
-            print(f"  Image error for {agency.get('name', slug)}: {e} — clearing photo_url")
             agency["photo_url"] = ""
-            failed += 1
+            return ("exception", str(e), agency)
+
+    with ThreadPoolExecutor(max_workers=20) as pool:
+        futures = {pool.submit(fetch_one, a): a for a in to_download}
+        for future in as_completed(futures):
+            result = future.result()
+            with counters_lock:
+                if result == "ok":
+                    downloaded += 1
+                else:
+                    kind = result[0]
+                    agency = result[2]
+                    name = agency.get("name", agency.get("slug", ""))
+                    if kind == "error":
+                        print(f"  Image {result[1]}: {name} — clearing photo_url in Airtable")
+                    else:
+                        print(f"  Image error for {name}: {result[1]} — clearing photo_url")
+                    clear_airtable_photo_url(agency.get("_airtable_id", ""))
+                    failed += 1
 
     print(f"Images: {downloaded} downloaded, {skipped} skipped/cached, {failed} failed")
 
