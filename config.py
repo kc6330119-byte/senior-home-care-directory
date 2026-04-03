@@ -190,6 +190,16 @@ ACCREDITATIONS = [
 # Google Analytics
 GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
 
+# Mailchimp Newsletter
+MAILCHIMP_FORM_URL = os.getenv(
+    "MAILCHIMP_FORM_URL",
+    "https://doggroomerlocator.us12.list-manage.com/subscribe/post?u=21343a587fbb950d8b649ee6d&id=da581c84c9&f_id=0010dde3f0",
+)
+MAILCHIMP_HONEYPOT_NAME = os.getenv(
+    "MAILCHIMP_HONEYPOT_NAME",
+    "b_21343a587fbb950d8b649ee6d_da581c84c9",
+)
+
 # SEO Settings
 DEFAULT_META_TITLE = f"{SITE_NAME} - Find In-Home Care Agencies Near You"
 DEFAULT_META_DESCRIPTION = SITE_DESCRIPTION
