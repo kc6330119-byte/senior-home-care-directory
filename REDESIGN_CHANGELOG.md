@@ -8,6 +8,51 @@ For the terse one-line-per-decision log, see [`REDESIGN_NOTES.md`](REDESIGN_NOTE
 
 ---
 
+## Milestone 2 — Directory pages: state / city / agency (2026-04-20)
+
+**Branch:** `redesign/homepage-healthcare-native` (continuation)
+**Commits:** `82da513` (shared partial + breadcrumb macro + directory CSS), `e3ef689` (state + city rewrites), `c9d90e5` (agency rewrite + Medicare Care Compare swap), `de9d164` (M7b sitemap + noindex side-fixes)
+**Templates rewritten:** `state.html`, `city.html`, `agency.html`, `_agency_card.html`
+**New templates:** `_breadcrumb_schema.html` (macro)
+**Build:** `build.py` — sitemap truthy-check bug fixed (`is not None`), `success.html` STATIC_PAGES entry gets `noindex=True`, `build_static_pages` threads the flag through to the template.
+
+### What changed
+
+- **Shared `_agency_card.html` partial** rewritten to the tokenized `.agency-card` component and now drives listings on homepage (featured), state, city, and agency detail (related). One partial is the source of truth for listing UX — matches the sibling's single-partial pattern.
+- **`_breadcrumb_schema.html` macro** exposes `schema()` (JSON-LD `BreadcrumbList`) and `nav()` (visible breadcrumb markup). Called from state / city / agency; one import per template, three lines per call. No JSON-LD duplication.
+- **State page** rewritten: editorial page-head (eyebrow + Fraunces title + lede + meta row with tabular-figure counts), breadcrumb with schema, two-column directory-shell (left aside with state map + city filter, right main with ad slot + agency grid + ad slot), state editorial paragraph preserved verbatim from `config.py`, proper empty-state when no agencies.
+- **City page** rewritten: editorial page-head with "back to {state}" link in meta row, breadcrumb with schema, single-column agency grid, two ad slots, short editorial "finding home care in {city}" block with grade-8 voice, proper empty-state routing to state page + submit form.
+- **Agency detail page** rewritten: breadcrumb, HomeHealthCareService + BreadcrumbList JSON-LD, large hero with photo + Fraunces name + rating + primary actions, tokenized detail-card sections (About, Services, Payment, Agency details with two-column spec-list + accreditation chips), two ad slots, tokenized sidebar with Contact card + **Medicare Care Compare card (conditional)** + universal "How to verify this agency" guidance + Share card, related agencies band using the shared partial.
+- **Weather link → Medicare Care Compare swap.** The old agency sidebar linked to a National Weather Service forecast for the agency's lat/lng — decorative, not a trust signal. Replaced with a Care Compare card that opens `medicare.gov/care-compare` pre-filtered by the agency's zip + URL-encoded name. Shows only when the agency is Medicare-certified (`accreditation` contains "Medicare Certified" or `payment_options` contains "Medicare"); Care Compare only has data for home-health-certified providers, so showing it universally would be misleading.
+- **Universal "How to verify this agency" card** on every agency, Medicare-certified or not. Three-step checklist: (1) verify the state license number with the state licensing board — personalized with `agency.licensing` when present; (2) ask for references from current clients; (3) confirm background-check and training procedures. Real trust signal, consistent grade-8 voice.
+- **Leaflet state map** now uses CartoDB Positron tiles instead of OSM's default, giving the map a warm-neutral tone that reads with the `#FAF9F6` page background instead of against it. Markers use `--color-primary` (`#1E4D8C`). Popup HTML is now built with an inline `escapeHtml` helper before concatenation — closes the same class of Airtable-injection path the homepage search XSS fix closed in M1 polish.
+- **Six reserved ad slots** across the three templates (`state-a`, `state-b`, `city-a`, `city-b`, `agency-a`, `agency-b`), CLS-safe, `<ins>` tags omitted until Kevin picks AdSense slot IDs.
+- **M7b side-fixes** landed alongside the template work:
+  - `build.py:build_sitemap` uses `is not None` instead of truthy check for `indexed_states`/`indexed_cities` — prevents the noindex-leak bug where an explicitly-empty filter would fall through to "list every state/city." Same fix sibling landed in M7b.
+  - `success.html` marked noindex via STATIC_PAGES entry; `build_static_pages` now threads the flag to the template. Already absent from the sitemap URL list, so this is belt-and-suspenders.
+- **CSS additions** (~480 lines): `.breadcrumb`, `.page-head` (editorial headline row for listing/detail templates), `.directory-shell` two-column grid with optional sticky aside, `.state-map` wrapper, `.city-list` (state-page city filter), `.detail-shell` agency-detail grid, `.agency-hero` (photo + name + rating + actions), `.spec-list` (two-column `dl`), `.chip--accredited` and `.chip--payment` variants, `.contact-row`, `.detail-card--care-compare`, `.share-list`, `.related-agencies` band, `.empty-state`. Prose block from M1 stays as-is — used by blog in M4.
+
+### Why it helps
+
+- **Pattern continuity end-to-end.** Homepage → state → city → agency all use the same token system, the same editorial register, and the same agency-card component. Navigating between them is visually continuous instead of the bolted-on-feature feeling the old mix of templates had.
+- **Trust signals that actually signal.** Medicare Care Compare (where applicable) + state-licensing verification guidance (universal) replace a decorative weather link. YMYL healthcare content lives or dies by trust — replacing "here's the weather in Houston" with "here's how to verify this agency's license" is exactly the substitution audit reviewers look for.
+- **SEO hardening.** `BreadcrumbList` JSON-LD on every directory page makes breadcrumbs eligible for SERP display. Sitemap noindex-leak fix prevents 3-agency-or-below state/city pages from showing up in GSC as "submitted URL not selected as canonical" warnings.
+- **Accessibility.** Breadcrumb markup uses proper `<nav aria-label>` + `<ol>` + `aria-current="page"`. Agency hero rating stars use `aria-hidden` with a tabular-figure numeric value as the accessible reading.
+- **Map on-brand.** CartoDB Positron tiles on the state map integrate visually with the warm off-white palette; the old OSM tiles stood out as a bright-blue rectangle against everything else.
+- **Portfolio reuse.** The breadcrumb macro, agency-card partial, and page-head component port to the other three Kevin directory sites (holistic vet, splash pad, dog groomer) with only copy changes.
+
+### Known gaps
+
+- **`service.html`** still uses the old Tailwind markup but now inherits the new `_agency_card.html` partial (via `{% include %}`). The service page shell will look unstyled in production until its own milestone rewrite, but the cards inside it will render correctly.
+- **`blog.html`, `post.html`** still Tailwind-styled — M4.
+- **`about.html`, `contact.html`, `privacy.html`, `terms.html`, `submit.html`** still Tailwind-styled — M6.
+- **Photo aspect-ratio on agency detail hero** set to 4/3 on ≥700px viewports; mobile falls back to the card's own ratio. Some Google Places photos are square and will letterbox inside the container. Acceptable — fallback icon handles missing photos gracefully.
+- **No `HomeHealthCareService` schema nested inside `@graph` yet** — the per-agency schema is still top-level alongside the base.html sitewide `@graph`. Nesting is a future polish item; both are individually valid per schema.org.
+- **Map tiles loaded from CartoDB over HTTPS.** CartoDB's free tier allows production directory usage per their ToS, but watch for rate-limit headers if the Airtable agency count pushes tile requests up.
+- **`service.html` will visually break** on viewport between M2 deploy and M3/M6 rewrite. Acceptable per the plan's staged rollout; homepage and directory pages are the money pages.
+
+---
+
 ## Milestone 1 — Homepage + base.html redesign (2026-04-20)
 
 **Branch:** `redesign/homepage-healthcare-native`

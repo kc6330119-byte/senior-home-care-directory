@@ -2,6 +2,15 @@
 
 One line per non-obvious design decision. Newest at the top.
 
+- 2026-04-20 · **M2** · Medicare Care Compare card is conditional on `agency.accreditation` containing "Medicare Certified" OR `agency.payment_options` containing "Medicare". Non-certified agencies can't be looked up on Care Compare (it's home-health-specific); showing the link for everyone would be misleading.
+- 2026-04-20 · **M2** · Every agency gets a universal "How to verify this agency" sidebar card. Replaces the decorative weather link with a real trust signal (license lookup + client references + background-check confirmation). Step 1 personalizes with the license number when available.
+- 2026-04-20 · **M2** · Leaflet state maps swapped OSM → CartoDB Positron tiles. Warm-neutral basemap matches the `#FAF9F6` page background; OSM's blue-bright tiles clashed. Attribution updated per CARTO's ToS.
+- 2026-04-20 · **M2** · Leaflet popups now HTML-escape agency name/city via a local `escapeHtml` helper — previously the popup string concatenated Airtable-sourced fields directly (same class of issue as the search XSS from M1 polish; fixed preemptively here).
+- 2026-04-20 · **M2** · State/city/agency ad slots named `state-a/b`, `city-a/b`, `agency-a/b` with `data-slot` attributes — same reserved-but-empty pattern as homepage. No `<ins>` tags until Kevin picks slot IDs in AdSense.
+- 2026-04-20 · **M2** · Breadcrumb macro (`_breadcrumb_schema.html`) exposes both `schema()` (JSON-LD) and `nav()` (visible) — single import, single source of truth for breadcrumb paths. Call sites can use either or both.
+- 2026-04-20 · **M2** · `_agency_card.html` partial restored as the single listing component — used on index (featured), state, city, and agency (related). Same "one partial drives listing UX" pattern sibling established.
+- 2026-04-20 · **M2** · Sitemap truthy-check bug fixed via `is not None` — same M7b fix as sibling. Previously an explicitly-empty `indexed_states`/`indexed_cities` list would fall through to "list every state/city," leaking noindexed URLs.
+- 2026-04-20 · **M2** · `success.html` marked noindex via `STATIC_PAGES` entry; `build_static_pages` now threads the flag through. Already absent from sitemap list — this is belt-and-suspenders.
 - 2026-04-20 · M1 ships with three ad slots (`data-slot="home-a|home-b|home-c"`) and no AdSense `<ins>` tags yet — `data-slot` attributes name the positions so we can populate them in a separate scoped commit after Kevin picks slot IDs.
 - 2026-04-20 · Newsletter keeps the Netlify Forms fallback path — `base.html` currently reads `MAILCHIMP_FORM_URL` and falls back to Netlify if unset. Don't delete the fallback during redesign; it's the portable-to-sibling pattern.
 - 2026-04-20 · Inline SVG brand mark = simplified "house with roof peaks" on `#1E4D8C` ground. Replaces the `&#128106;` (family emoji) that rendered inconsistently across platforms. Zero image fetch on critical path.
