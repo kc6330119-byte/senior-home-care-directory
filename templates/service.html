@@ -1,101 +1,134 @@
 {% extends "base.html" %}
+{% import '_breadcrumb_schema.html' as bc %}
+
+{% block extra_head %}
+{{ bc.schema([
+    ('Home', '/'),
+    (service.name, '/services/' ~ service.slug ~ '.html'),
+]) }}
+{% endblock %}
 
 {% block content %}
 
-<!-- Breadcrumbs -->
-<nav class="bg-white border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <ol class="flex items-center text-sm text-gray-500">
-            <li><a href="/" class="hover:text-primary-600">Home</a></li>
-            <li class="mx-2">/</li>
-            <li><a href="/#services" class="hover:text-primary-600">Services</a></li>
-            <li class="mx-2">/</li>
-            <li class="text-gray-900 font-medium">{{ service.name }}</li>
-        </ol>
-    </div>
-</nav>
+{{ bc.nav([
+    ('Home', '/'),
+    (service.name, None),
+]) }}
 
-<!-- Hero -->
-<section class="bg-gradient-to-br from-secondary-600 to-secondary-700 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-4 mb-4">
-            <span class="text-4xl">{{ service.icon }}</span>
-            <h1 class="text-3xl md:text-4xl font-bold">{{ service.name }}</h1>
+<section class="page-head">
+    <div class="site-container">
+        <span class="page-head__eyebrow">Care service</span>
+        <div style="display: flex; align-items: flex-start; gap: var(--space-5); flex-wrap: wrap;">
+            <span class="service-head-icon" aria-hidden="true" style="font-size: 3rem; line-height: 1; margin-top: var(--space-1);">{{ service.icon }}</span>
+            <div>
+                <h1 class="page-head__title">{{ service.name }}.</h1>
+                <p class="page-head__lede">{{ service.description }}</p>
+                {% if agencies %}
+                <div class="page-head__meta">
+                    <span><strong>{{ "{:,}".format(agencies | length) }}</strong> {% if agencies | length == 1 %}agency offers{% else %}agencies offer{% endif %} this service</span>
+                    {% if state_list %}
+                    <span><strong>{{ state_list | length }}</strong> states with coverage</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
         </div>
-        <p class="text-secondary-100 text-lg max-w-2xl">{{ service.description }}</p>
-        <p class="mt-4 text-secondary-200 text-sm">{{ agencies|length }} agencies offer this service</p>
     </div>
 </section>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="lg:flex lg:gap-8">
-        <!-- Sidebar - States filter -->
+<div class="site-container">
+    {% if agencies %}
+
+    <div class="directory-shell">
         {% if state_list %}
-        <aside class="lg:w-64 flex-shrink-0 mb-6 lg:mb-0">
-            <div class="bg-white rounded-xl border border-gray-100 p-4 sticky top-20">
-                <h3 class="font-bold text-gray-900 mb-3">Filter by State</h3>
-                <div class="max-h-96 overflow-y-auto space-y-1">
+        <aside class="directory-aside">
+            <div class="detail-card detail-card--sticky">
+                <h2 class="detail-card__title--sm">Filter by state</h2>
+                <ul class="city-list">
                     {% for state_name, count in state_list %}
-                    <a href="/state/{{ state_name | slugify }}.html"
-                       class="flex items-center justify-between px-3 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors">
-                        <span>{{ state_name }}</span>
-                        <span class="text-xs text-gray-400">{{ count }}</span>
-                    </a>
+                    <li class="city-list__item">
+                        <a href="/state/{{ state_name | slugify }}.html" class="city-list__link">
+                            <span>{{ state_name }}</span>
+                            <span class="city-list__count">{{ count }}</span>
+                        </a>
+                    </li>
                     {% endfor %}
-                </div>
+                </ul>
             </div>
         </aside>
         {% endif %}
 
-        <!-- Main Content -->
-        <div class="flex-1">
-            {% if agencies %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="directory-main">
+            <div class="ad-slot ad-slot--leaderboard" data-slot="service-a" aria-hidden="true" style="margin: 0 0 var(--space-6); padding: 0;">
+                <div class="ad-slot__inner">Advertisement</div>
+            </div>
+
+            <div class="directory-results">
+                <span>Showing {{ agencies | length }} {% if agencies | length == 1 %}agency{% else %}agencies{% endif %} offering {{ service.name | lower }}</span>
+            </div>
+
+            <div class="agency-grid">
                 {% for agency in agencies %}
                 {% include '_agency_card.html' %}
                 {% endfor %}
             </div>
-            {% else %}
-            <!-- Empty state -->
-            <div class="text-center py-16">
-                <div class="text-5xl mb-4 opacity-30">{{ service.icon }}</div>
-                <h2 class="text-xl font-semibold text-gray-900 mb-2">No agencies found</h2>
-                <p class="text-gray-500 mb-6">We're adding more agencies that offer {{ service.name }} services.</p>
-                <a href="/" class="inline-block px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-                    Browse All Agencies
-                </a>
+
+            <div class="ad-slot ad-slot--in-content" data-slot="service-b" aria-hidden="true" style="margin: var(--space-10) 0 0; padding: 0;">
+                <div class="ad-slot__inner">Advertisement</div>
             </div>
-            {% endif %}
         </div>
     </div>
+
+    {% if service.intro %}
+    <section class="section section--tight" style="border-top: 1px solid var(--color-border); margin-top: var(--space-8);">
+        <div style="max-width: var(--measure-prose);">
+            <h2 class="section__title" style="font-size: var(--font-size-xl); margin-bottom: var(--space-4);">What is {{ service.name | lower }}?</h2>
+            <p style="font-size: var(--font-size-base); line-height: var(--line-height-prose); color: var(--color-text); margin: 0;">{{ service.intro }}</p>
+        </div>
+    </section>
+    {% endif %}
+
+    {% else %}
+
+    <div style="padding: var(--space-12) 0;">
+        <div class="empty-state">
+            <div class="empty-state__icon" aria-hidden="true">{{ service.icon }}</div>
+            <h2 class="empty-state__title">No agencies listed for {{ service.name | lower }} yet</h2>
+            <p class="empty-state__body">We're working on adding agencies that specialize in {{ service.name | lower }}. Browse the full directory or let us know about an agency that offers this service.</p>
+            <div class="empty-state__actions">
+                <a href="/" class="btn btn--primary">Browse all agencies</a>
+                <a href="/submit.html" class="btn btn--outline">List an agency</a>
+            </div>
+        </div>
+
+        {% if service.intro %}
+        <section class="section section--tight">
+            <div style="max-width: var(--measure-prose); margin: 0 auto;">
+                <h2 class="section__title" style="font-size: var(--font-size-xl); margin-bottom: var(--space-4);">What is {{ service.name | lower }}?</h2>
+                <p style="font-size: var(--font-size-base); line-height: var(--line-height-prose); color: var(--color-text); margin: 0;">{{ service.intro }}</p>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+    {% endif %}
 </div>
 
-<!-- Service Info -->
-<section class="bg-gray-50 border-t border-gray-100 py-10">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-xl font-bold text-gray-900 mb-4 text-center">What is {{ service.name }}?</h2>
-        <div class="prose prose-gray max-w-none">
-            {% if service.intro %}
-            <p class="text-gray-600 leading-relaxed mb-4">{{ service.intro }}</p>
-            {% endif %}
-            <p class="text-gray-600 leading-relaxed text-center">
-                Browse our directory to find agencies that specialize in {{ service.name | lower }} services in your area.
-                Each listing includes contact information, reviews, and details about additional services offered.
-            </p>
+<!-- Other services -->
+<section class="section section--alt" style="border-top: 1px solid var(--color-border);">
+    <div class="site-container">
+        <div class="section__head section__head--center">
+            <span class="section__eyebrow">Explore other services</span>
+            <h2 class="section__title" style="font-size: var(--font-size-2xl);">Every kind of home care is a little different.</h2>
+            <p class="section__lede">Browse agencies by the specific service your family needs.</p>
         </div>
-    </div>
-</section>
 
-<!-- Other Services -->
-<section class="bg-white border-t border-gray-100 py-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-lg font-bold text-gray-900 mb-4 text-center">Explore Other Services</h2>
-        <div class="flex flex-wrap justify-center gap-2">
+        <div class="service-chip-row">
             {% for s in services %}
             {% if s.slug != service.slug %}
-            <a href="/services/{{ s.slug }}.html"
-               class="bg-gray-100 hover:bg-primary-50 text-gray-700 hover:text-primary-700 px-4 py-2 rounded-full text-sm font-medium transition-colors">
-                {{ s.icon }} {{ s.name }}
+            <a href="/services/{{ s.slug }}.html" class="service-chip">
+                <span aria-hidden="true">{{ s.icon }}</span>
+                <span>{{ s.name }}</span>
             </a>
             {% endif %}
             {% endfor %}
