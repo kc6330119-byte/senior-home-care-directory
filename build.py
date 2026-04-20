@@ -840,16 +840,19 @@ def build_sitemap(agencies, posts, indexed_states=None, indexed_cities=None):
         f"{config.SITE_URL}/terms.html",
     ]
 
-    # State pages — only indexed ones
-    if indexed_states:
+    # State pages — only indexed ones.
+    # `is not None` so that an explicitly-empty list (caller filtered everything
+    # out as noindex) is honored — the old truthy check fell through to the
+    # "list every state" branch and leaked noindexed URLs into the sitemap.
+    if indexed_states is not None:
         for state_slug in indexed_states:
             urls.append(f"{config.SITE_URL}/state/{state_slug}.html")
     else:
         for state in config.US_STATES:
             urls.append(f"{config.SITE_URL}/state/{state['slug']}.html")
 
-    # City pages — only indexed ones
-    if indexed_cities:
+    # City pages — same pattern as states.
+    if indexed_cities is not None:
         for city_key in indexed_cities:
             urls.append(f"{config.SITE_URL}/state/{city_key}.html")
     else:
@@ -938,6 +941,7 @@ STATIC_PAGES = [
         "output": "success/index.html",
         "title": "Message Sent",
         "description": "Thank you for contacting us.",
+        "noindex": True,
     },
     {
         "template": "submit.html",
@@ -958,6 +962,7 @@ def build_static_pages(env, agencies=None):
             meta_description=page["description"],
             request_path=f"/{page['output']}",
             total_count=total_count,
+            noindex=page.get("noindex", False),
         )
         output_path = config.OUTPUT_DIR / page["output"]
         output_path.parent.mkdir(parents=True, exist_ok=True)
