@@ -1,58 +1,94 @@
 {% extends "base.html" %}
+{% import '_breadcrumb_schema.html' as bc %}
+
+{% block extra_head %}
+{{ bc.schema([
+    ('Home', '/'),
+    ('About', '/about.html'),
+]) }}
+{% endblock %}
 
 {% block content %}
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">About Senior Home Care Finder</h1>
+{{ bc.nav([
+    ('Home', '/'),
+    ('About', None),
+]) }}
 
-    <div class="prose prose-lg max-w-none text-gray-600">
-        <p class="lead text-xl text-gray-700 mb-8">
-            We help families find trusted in-home care for their aging loved ones. Our directory makes it easy to compare agencies, understand your options, and connect with compassionate caregivers.
+<section class="page-head">
+    <div class="site-container">
+        <span class="page-head__eyebrow">About</span>
+        <h1 class="page-head__title">A directory, built the way we'd want one for a parent.</h1>
+        <p class="page-head__lede">
+            {{ site_name }} is an independent directory of in-home care agencies across the United States. We don't take placement fees, we don't sell leads, and we're not a medical-advice site. We're a place to start when a family needs help at home.
         </p>
+    </div>
+</section>
 
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Our Mission</h2>
-        <p>
-            Finding the right home care shouldn't be overwhelming. When a family member needs assistance, you want answers quickly &mdash; not endless phone calls and confusing research. Senior Home Care Finder provides a clear, comprehensive directory of in-home care agencies across the United States.
-        </p>
+<div class="site-container static-page">
+    <div class="static-page__body" style="max-width: var(--measure-prose);">
 
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">What We Offer</h2>
-        <ul class="space-y-3">
-            <li><strong>Comprehensive listings:</strong> Browse thousands of home care agencies across all 50 states</li>
-            <li><strong>Detailed profiles:</strong> View services offered, payment options accepted, and contact information</li>
-            <li><strong>Local search:</strong> Find agencies in your city or state</li>
-            <li><strong>Service filters:</strong> Search by care type &mdash; companion care, personal care, dementia care, and more</li>
-            <li><strong>Free to use:</strong> Our directory is completely free for families</li>
-        </ul>
+        <div class="legal-prose">
+            <h2>Why this exists</h2>
+            <p>
+                Most home care directories are lead-generation funnels dressed up as public resources. You search for an agency, get asked for your phone number, and three agencies call you the same afternoon — because the directory sold your information to them.
+            </p>
+            <p>
+                This site is not that. Families find an agency, see the agency's real phone number, and call directly. The agencies don't pay to appear, and we don't know which ones you called.
+            </p>
 
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Our Commitment</h2>
-        <p>
-            We understand that choosing home care is a deeply personal decision. Our goal is to provide accurate, helpful information so you can make the best choice for your family. We don't make decisions for you &mdash; we give you the tools to make informed decisions yourself.
-        </p>
+            <h2>What you'll find here</h2>
+            <ul>
+                <li><strong>A comprehensive state-by-state directory</strong> of in-home care agencies with contact details, services offered, and — where available — Medicare certification and state license numbers.</li>
+                <li><strong>Guides written in plain English</strong> on paying for care, how to vet an agency, what Medicare does and doesn't cover, and how to tell a good caregiver from a bad one.</li>
+                <li><strong>Pointers to authoritative sources</strong>: Medicare Care Compare for quality ratings, your state's home-care licensing board for credentials, the Joint Commission and CHAP for accreditation.</li>
+            </ul>
 
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">The Story Behind This Site</h2>
-        <div class="flex flex-col sm:flex-row gap-6 items-start">
-            <div class="w-full sm:w-48 flex-shrink-0">
+            <h2>What we don't do</h2>
+            <ul class="anti-list">
+                <li>We don't take payment from agencies for listings or placement. There's no "featured" tier you can buy.</li>
+                <li>We don't sell your contact information. Nothing you do on this site generates a lead that gets passed to an agency.</li>
+                <li>We're not a medical-advice site. For care decisions, talk to a doctor, geriatric care manager, or discharge planner.</li>
+                <li>We're not a substitute for checking an agency's license and references yourself. Every agency page has a checklist for how to do that.</li>
+            </ul>
+
+            <h2>The story behind this site</h2>
+        </div>
+
+        <div class="founder-block">
+            <div class="founder-block__photo">
                 <img src="https://res.cloudinary.com/dnmrgvjdm/image/upload/v1774013029/WBC_WWII_demiz6.png"
-                     alt="Kevin's father, a WWII Navy veteran"
-                     class="w-full rounded-lg shadow-sm">
+                     alt="Kevin's father, a WWII Navy veteran">
             </div>
             <div>
-                <p>
-                    Senior Home Care Finder was created by Kevin Collins, inspired by his family's experience with hospice care for his father &mdash; a WWII Navy veteran who battled cancer in 1988 &mdash; and again for his mother eleven years later. Those experiences showed Kevin firsthand how the right home care can bring comfort, dignity, and peace to families during their most difficult days.
+                <p style="margin: 0 0 var(--space-4); line-height: var(--line-height-prose);">
+                    {{ site_name }} was built by Kevin Collins, inspired by his family's experience with hospice care for his father — a WWII Navy veteran who battled cancer in 1988 — and again for his mother eleven years later. Those experiences showed him firsthand how the right home care can bring comfort and dignity to families during their most difficult days.
                 </p>
-                <p class="mt-4">
-                    <a href="/blog/why-i-built-this-site.html" class="text-primary-600 hover:text-primary-700 font-medium">Read Kevin's full story &rarr;</a>
+                <p style="margin: 0; line-height: var(--line-height-prose);">
+                    The site is not a medical-advice service and Kevin is not a healthcare professional. He built the directory because the existing ones are broken for families trying to find real agencies without handing over their phone number first.
                 </p>
             </div>
         </div>
 
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Contact Us</h2>
-        <p>
-            Have questions or feedback? We'd love to hear from you. <a href="/contact.html" class="text-primary-600 hover:text-primary-700">Contact us</a> anytime.
-        </p>
-        <p>
-            Are you a home care agency? <a href="/submit.html" class="text-primary-600 hover:text-primary-700">Submit your listing</a> to be included in our directory.
-        </p>
+        <div class="legal-prose">
+            <h2>How listings get added</h2>
+            <p>
+                Agencies can <a href="/submit.html">submit a listing</a>. Every submission is reviewed before it goes live — usually within a week. We verify the basics (the agency exists, the phone number works, the website is theirs) and confirm anything that would be misleading if wrong (state license number, Medicare certification, service area).
+            </p>
+            <p>
+                If a listing has a factual error — wrong phone, wrong services, out-of-business — <a href="/contact.html">tell us</a> and we'll fix it. If you're an agency and want to be removed from the directory, tell us that too.
+            </p>
+
+            <h2>How the site makes money</h2>
+            <p>
+                Display ads through Google AdSense. No affiliate deals. No referral fees from agencies. No paid placements. That's the whole model.
+            </p>
+
+            <h2>Questions</h2>
+            <p>
+                <a href="/contact.html">Get in touch</a> with anything.
+            </p>
+        </div>
     </div>
 </div>
 

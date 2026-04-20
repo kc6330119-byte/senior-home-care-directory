@@ -1,66 +1,92 @@
 {% extends "base.html" %}
+{% import '_breadcrumb_schema.html' as bc %}
+
+{% block extra_head %}
+{{ bc.schema([
+    ('Home', '/'),
+    ('Terms of service', '/terms.html'),
+]) }}
+{% endblock %}
 
 {% block content %}
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Terms of Service</h1>
-    <p class="text-gray-500 text-sm mb-8">Last updated: {{ current_year }}</p>
+{{ bc.nav([
+    ('Home', '/'),
+    ('Terms of service', None),
+]) }}
 
-    <div class="prose prose-lg max-w-none text-gray-600 space-y-6">
-        <p>
-            Welcome to Senior Home Care Finder. By accessing or using our website, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our site.
-        </p>
+<section class="page-head">
+    <div class="site-container">
+        <span class="page-head__eyebrow">Legal</span>
+        <h1 class="page-head__title">Terms of service.</h1>
+    </div>
+</section>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Use of Our Service</h2>
-        <p>
-            Senior Home Care Finder provides a directory of home care agencies for informational purposes only. We do not provide medical advice, diagnose conditions, or recommend specific agencies. The information on our site is not a substitute for professional medical advice or care.
-        </p>
+<div class="site-container static-page">
+    <div class="static-page__body">
+        <div class="legal-prose">
+            <p class="legal-prose__timestamp">Last updated: {{ current_year }}</p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">No Endorsement</h2>
-        <p>
-            Listing an agency in our directory does not constitute an endorsement or recommendation. We do not verify the credentials, qualifications, or quality of services provided by listed agencies. Users should conduct their own due diligence before engaging any agency.
-        </p>
+            <p>
+                Welcome to {{ site_name }}. By using this site, you agree to the terms below. If you don't agree, please don't use the site.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Accuracy of Information</h2>
-        <p>
-            While we strive to provide accurate and up-to-date information, we make no warranties about the completeness, reliability, or accuracy of the information on our site. Agency information may change without notice.
-        </p>
+            <h2>What this site is — and isn't</h2>
+            <p>
+                {{ site_name }} is an informational directory of in-home care agencies. We are <strong>not</strong> a healthcare provider, referral service, care manager, or medical-advice site. We do not diagnose conditions, recommend specific agencies, or verify individual caregivers. The information on this site is not a substitute for professional medical advice or care.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">User Submissions</h2>
-        <p>
-            If you submit information to our site (such as agency listings or contact forms), you agree that:
-        </p>
-        <ul class="list-disc pl-6 space-y-2">
-            <li>The information you provide is accurate and complete</li>
-            <li>You have the right to submit such information</li>
-            <li>We may use, modify, or display the information as part of our service</li>
-            <li>We may decline to publish or remove any submission at our discretion</li>
-        </ul>
+            <h2>Listings are not endorsements</h2>
+            <p>
+                Inclusion of an agency in our directory does not mean we endorse or recommend it. We do not verify the credentials, licensing status, caregiver training, or quality of services of listed agencies on an ongoing basis. Every agency page includes a "How to verify this agency" checklist; please use it before engaging any agency.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Limitation of Liability</h2>
-        <p>
-            To the fullest extent permitted by law, Senior Home Care Finder shall not be liable for any damages arising from your use of our site or reliance on any information provided. This includes direct, indirect, incidental, consequential, or punitive damages.
-        </p>
+            <h2>Accuracy of information</h2>
+            <p>
+                We try to keep agency listings accurate, but agency information can change without notice. We make no warranties about completeness or accuracy. If you spot an error, <a href="/contact.html">tell us</a> and we'll fix it.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">External Links</h2>
-        <p>
-            Our site may contain links to third-party websites. We have no control over the content or practices of these sites and are not responsible for their privacy policies or terms of service.
-        </p>
+            <h2>User submissions</h2>
+            <p>
+                When you submit information through our contact form or agency-submission form, you agree that:
+            </p>
+            <ul>
+                <li>The information you provide is accurate to the best of your knowledge.</li>
+                <li>You have the right to submit it (e.g., you're authorized to submit the agency on the agency's behalf).</li>
+                <li>We may use, edit for clarity, or publish the information as part of the directory.</li>
+                <li>We may decline to publish or remove any submission at our discretion.</li>
+            </ul>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Intellectual Property</h2>
-        <p>
-            The content on our site, including text, graphics, logos, and software, is owned by Senior Home Care Finder and protected by copyright law. You may not reproduce, distribute, or create derivative works without our permission.
-        </p>
+            <h2>Advertising disclosure</h2>
+            <p>
+                We display advertising through Google AdSense. We do not have paid placement arrangements with any agency listed in the directory — agencies do not pay to appear, to rank higher, or to be marked "featured." The ads you see are selected by Google based on its own targeting, not by us.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Changes to Terms</h2>
-        <p>
-            We may update these Terms of Service at any time. Continued use of the site after changes constitutes acceptance of the new terms.
-        </p>
+            <h2>Limitation of liability</h2>
+            <p>
+                To the fullest extent permitted by law, {{ site_name }} is not liable for any damages — direct, indirect, incidental, consequential, or punitive — arising from your use of this site or reliance on information provided here. Your interactions with any agency listed are between you and that agency.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Contact Us</h2>
-        <p>
-            If you have questions about these Terms of Service, please <a href="/contact.html" class="text-primary-600 hover:text-primary-700">contact us</a>.
-        </p>
+            <h2>External links</h2>
+            <p>
+                This site includes links to third-party websites (agency websites, Medicare Care Compare, state licensing boards, news articles, etc.). We don't control their content or practices and aren't responsible for their policies.
+            </p>
+
+            <h2>Intellectual property</h2>
+            <p>
+                The content on this site — editorial copy, guides, visual design, structured data — is owned by {{ site_name }} and protected by copyright. Agency-submitted information remains usable by us under the terms of the submission. You may not reproduce, distribute, or create derivative works from our editorial content without permission.
+            </p>
+
+            <h2>Changes to these terms</h2>
+            <p>
+                We may update these terms from time to time. Continued use of the site after changes constitutes acceptance of the new terms.
+            </p>
+
+            <h2>Contact</h2>
+            <p>
+                Questions about these terms? <a href="/contact.html">Get in touch</a>.
+            </p>
+        </div>
     </div>
 </div>
 
