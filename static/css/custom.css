@@ -926,6 +926,7 @@ button { font: inherit; cursor: pointer; }
     font-weight: 500;
     background: var(--color-primary-tint);
     color: var(--color-primary);
+    border: 1px solid rgba(30, 77, 140, 0.15);  /* fallback — var(--color-primary) at 15% */
     border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
@@ -982,7 +983,12 @@ button { font: inherit; cursor: pointer; }
     flex-direction: column;
     justify-content: space-between;
     padding: var(--space-4);
+    /* Static var() fallbacks before the color-mix version — keeps the heatmap
+       visible on Safari < 16.2 / Firefox < 113 / Chrome < 111. Tiles lose the
+       intensity shading on those browsers but stay readable. */
+    background: var(--color-surface);
     background: color-mix(in srgb, var(--color-primary) calc(var(--intensity) * 14%), var(--color-surface));
+    border: 1px solid var(--color-border);
     border: 1px solid color-mix(in srgb, var(--color-primary) calc(var(--intensity) * 30%), var(--color-border));
     border-radius: var(--radius-md);
     min-height: 84px;
@@ -1264,7 +1270,7 @@ button { font: inherit; cursor: pointer; }
     transition: transform 0.2s ease;
     color: var(--color-text-muted);
 }
-.faq-item[aria-expanded="true"] .faq-item__icon { transform: rotate(180deg); }
+.faq-item__btn[aria-expanded="true"] .faq-item__icon { transform: rotate(180deg); }
 
 .faq-item__answer {
     padding: 0 var(--space-6) var(--space-5);
@@ -1922,6 +1928,8 @@ button { font: inherit; cursor: pointer; }
 
 .detail-card--care-compare {
     background: var(--color-secondary-tint);
+    /* Fallback keeps a visible border on pre-color-mix browsers. */
+    border-color: rgba(15, 118, 110, 0.2);
     border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
 }
 

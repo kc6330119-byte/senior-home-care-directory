@@ -118,9 +118,9 @@
                     Services
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div class="site-nav__dropdown-menu" role="menu">
+                <div class="site-nav__dropdown-menu">
                     {% for service in services %}
-                    <a href="/services/{{ service.slug }}.html" class="site-nav__dropdown-link" role="menuitem">
+                    <a href="/services/{{ service.slug }}.html" class="site-nav__dropdown-link">
                         <span class="site-nav__dropdown-icon" aria-hidden="true">{{ service.icon }}</span>
                         <span>{{ service.name }}</span>
                     </a>

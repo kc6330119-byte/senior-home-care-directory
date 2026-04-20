@@ -520,7 +520,14 @@ def create_jinja_env():
         return "★" * full_stars + "½" * half_star + "☆" * empty_stars
 
     env.filters["slugify"] = slugify
-    env.filters["tojson"] = lambda v: json.dumps(v, ensure_ascii=False)
+    # Override tojson with the html-safe variant — raw json.dumps leaves
+    # `<`, `>`, `&`, `'` untouched, which means an Airtable-sourced field
+    # containing `</script>` can break out of a `<script type="application/ld+json">`
+    # block and execute injected JS. htmlsafe_json_dumps unicode-escapes those
+    # four characters and returns a Markup object, so call sites can drop the
+    # redundant `| safe` but existing `| safe` usages still work.
+    from jinja2.utils import htmlsafe_json_dumps
+    env.filters["tojson"] = lambda v: htmlsafe_json_dumps(v)
     env.filters["markdown"] = lambda text: Markup(md_lib.markdown(text or "", extensions=["extra", "nl2br"]))
     env.filters["format_date"] = format_date
     env.filters["star_rating"] = star_rating

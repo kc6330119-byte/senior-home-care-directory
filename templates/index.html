@@ -156,7 +156,7 @@
         <div class="section__head">
             <span class="section__eyebrow">Browse by state</span>
             <h2 class="section__title">Coverage across the United States.</h2>
-            <p class="section__lede">Each state page lists agencies grouped by city, with a map and filter by service. The deeper color means more listings.</p>
+            <p class="section__lede">Each state page lists every agency on file, with a map and a city-by-city sidebar. The deeper the color, the more listings.</p>
         </div>
 
         <div class="state-grid">
@@ -258,7 +258,7 @@
         </div>
 
         <div class="faq" id="faq-list">
-            <div class="faq-item" aria-expanded="false">
+            <div class="faq-item">
                 <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>What is in-home care?</span>
                     <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -268,7 +268,7 @@
                 </div>
             </div>
 
-            <div class="faq-item" aria-expanded="false">
+            <div class="faq-item">
                 <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>How much does home care cost?</span>
                     <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -278,7 +278,7 @@
                 </div>
             </div>
 
-            <div class="faq-item" aria-expanded="false">
+            <div class="faq-item">
                 <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>Does Medicare pay for home care?</span>
                     <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -288,7 +288,7 @@
                 </div>
             </div>
 
-            <div class="faq-item" aria-expanded="false">
+            <div class="faq-item">
                 <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>What's the difference between home care and home health care?</span>
                     <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -298,7 +298,7 @@
                 </div>
             </div>
 
-            <div class="faq-item" aria-expanded="false">
+            <div class="faq-item">
                 <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>How do I choose a home care agency?</span>
                     <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -322,21 +322,19 @@ document.getElementById('state-select').addEventListener('change', function () {
     if (this.value) { window.location.href = '/state/' + this.value + '.html'; }
 });
 
-// FAQ accordion
+// FAQ accordion — aria-expanded lives on the <button> (the only element
+// whose role allows it per ARIA in HTML). CSS hooks to .faq-item__btn[aria-expanded="true"].
 document.querySelectorAll('.faq-item__btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
-        var item = this.closest('.faq-item');
         var answer = this.nextElementSibling;
         var open = this.getAttribute('aria-expanded') === 'true';
 
-        document.querySelectorAll('.faq-item').forEach(function (i) {
-            i.setAttribute('aria-expanded', 'false');
-            i.querySelector('.faq-item__btn').setAttribute('aria-expanded', 'false');
-            i.querySelector('.faq-item__answer').setAttribute('hidden', '');
+        document.querySelectorAll('.faq-item__btn').forEach(function (b) {
+            b.setAttribute('aria-expanded', 'false');
+            b.nextElementSibling.setAttribute('hidden', '');
         });
 
         if (!open) {
-            item.setAttribute('aria-expanded', 'true');
             this.setAttribute('aria-expanded', 'true');
             answer.removeAttribute('hidden');
         }

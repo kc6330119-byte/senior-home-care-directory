@@ -158,8 +158,10 @@
     });
 
     // CartoDB Positron — warm-neutral tones consistent with the site palette.
+    // Attribution follows CARTO's published template and OSMF's ODbL §4.3 guidance
+    // (spelled-out "OpenStreetMap" + "contributors").
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 18,
         subdomains: 'abcd'
     }).addTo(map);
@@ -178,7 +180,7 @@
     });
 
     agencies.forEach(function (a) {
-        var star = a.rating ? ' &#9733; ' + a.rating : '';
+        var star = a.rating ? ' \u2605 ' + escapeHtml(String(a.rating)) : '';
         var popup = '<a href="/agency/' + encodeURIComponent(a.slug) + '.html" style="font-weight:600;color:#1E4D8C;text-decoration:none">' +
                     escapeHtml(a.name) + '</a><br><span style="color:#4A5568;font-size:12px">' + escapeHtml(a.city) + star + '</span>';
         var marker = L.marker([a.lat, a.lng], { icon: primaryIcon }).bindPopup(popup);
