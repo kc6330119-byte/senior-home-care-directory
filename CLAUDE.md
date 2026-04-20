@@ -62,11 +62,19 @@ cd dist && python3 -m http.server 8000
 
 ## Design Requirements
 
-- **Colors:** Primary `#2563EB` (blue), Secondary `#0D9488` (teal), Accent `#F59E0B` (amber)
-- Tailwind CSS via CDN
-- Mobile-first, warm and trustworthy aesthetic
-- JSON-LD `HomeHealthCareService` schema on agency pages
-- Breadcrumbs on state/city/agency pages
+- **Palette** (tokenized in `static/css/custom.css`):
+  - `--color-primary: #1E4D8C` (deep trustworthy blue)
+  - `--color-secondary: #0F766E` (institutional teal)
+  - `--color-accent: #D97706` (gold-leaf amber)
+  - `--color-bg: #FAF9F6` (warm off-white)
+  - `--color-text: #1A2332` (deep navy-black)
+- **Fonts:** self-hosted variable WOFF2 — Public Sans (body) + Fraunces (display serif). See `static/fonts/`.
+- **No Tailwind.** Semantic tokenized CSS only. Base font size is 18px for accessibility (audience skews older — adult children 50–65 researching care for a parent 75+).
+- **Mobile-first, editorial healthcare aesthetic.** Not finance-dense, not SaaS-gradient. See `REDESIGN_PLAN.md` for the audience framing.
+- **Body copy targets grade-8 reading level** (CDC Clear Communication Index standard for healthcare content).
+- **Schema:** `@graph` with `WebSite` + `Organization` sitewide (in `base.html`); `HomeHealthCareService` on agency detail; `Article` on blog posts; `BreadcrumbList` via the `_breadcrumb_schema.html` macro on state / city / agency / blog / post pages.
+- **Three ad slots** on most high-traffic templates, named via `data-slot` attributes (e.g. `home-a`, `state-a`, `agency-a`). CLS-safe `min-height` already in CSS.
+- **Redesign history:** see `REDESIGN_CHANGELOG.md` (narrative) and `REDESIGN_NOTES.md` (one-line decision log).
 
 ## Environment Variables
 

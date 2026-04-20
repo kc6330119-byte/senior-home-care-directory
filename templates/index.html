@@ -318,9 +318,6 @@ function handleHeroSubmit(e) {
     if (slug) window.location.href = '/state/' + slug + '.html';
     return false;
 }
-document.getElementById('state-select').addEventListener('change', function () {
-    if (this.value) { window.location.href = '/state/' + this.value + '.html'; }
-});
 
 // FAQ accordion — aria-expanded lives on the <button> (the only element
 // whose role allows it per ARIA in HTML). CSS hooks to .faq-item__btn[aria-expanded="true"].

@@ -15,6 +15,14 @@
         <h3 class="agency-card__name">{{ agency.name }}</h3>
         <p class="agency-card__loc">{{ agency.city }}, {{ agency.state }}</p>
 
+        {% if agency.rating %}
+        <div class="agency-card__rating">
+            <span class="agency-card__rating-stars" aria-hidden="true">{{ agency.rating | star_rating }}</span>
+            <span class="agency-card__rating-value">{{ agency.rating }}</span>
+            {% if agency.review_count %}<span class="agency-card__rating-count">({{ agency.review_count }})</span>{% endif %}
+        </div>
+        {% endif %}
+
         {% if agency.services %}
         <div class="agency-card__chips">
             {% for svc in agency.services[:3] %}

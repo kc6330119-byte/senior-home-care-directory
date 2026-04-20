@@ -527,7 +527,11 @@ def create_jinja_env():
     # four characters and returns a Markup object, so call sites can drop the
     # redundant `| safe` but existing `| safe` usages still work.
     from jinja2.utils import htmlsafe_json_dumps
-    env.filters["tojson"] = lambda v: htmlsafe_json_dumps(v)
+    # ensure_ascii=False preserves UTF-8 output (agency names like "Café",
+    # cities like "Østervang"). Without it, htmlsafe_json_dumps falls through
+    # to json.dumps's default of ensure_ascii=True and every non-ASCII byte
+    # becomes a \u00xx escape across every JSON-LD block.
+    env.filters["tojson"] = lambda v: htmlsafe_json_dumps(v, ensure_ascii=False)
     env.filters["markdown"] = lambda text: Markup(md_lib.markdown(text or "", extensions=["extra", "nl2br"]))
     env.filters["format_date"] = format_date
     env.filters["star_rating"] = star_rating

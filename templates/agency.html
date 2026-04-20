@@ -226,7 +226,7 @@
                 </div>
             </div>
 
-            {% if is_medicare_certified %}
+            {% if is_medicare_certified and agency.zip %}
             <div class="detail-card detail-card--care-compare">
                 <h2 class="detail-card__title">Medicare Care Compare</h2>
                 <p class="care-compare-note">Medicare publishes quality ratings, patient-experience data, and complaint history for Medicare-certified agencies. Look up {{ agency.name }} on Care Compare to see the official record.</p>

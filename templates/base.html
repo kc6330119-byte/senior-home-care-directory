@@ -277,6 +277,15 @@
 
     menuBtn.addEventListener('click', function () { toggleMobileMenu(); });
 
+    // Escape closes the mobile menu when it's open and returns focus to the
+    // hamburger. Matches the dismissal pattern used by the desktop search box.
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !mobileMenu.hasAttribute('hidden')) {
+            toggleMobileMenu(false);
+            menuBtn.focus();
+        }
+    });
+
     // Close menu on viewport expand past breakpoint.
     // MediaQueryList.addEventListener only exists on Safari/iOS 14+;
     // fall back to the deprecated .addListener on older WebKit so the
