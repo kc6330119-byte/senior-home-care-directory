@@ -2,6 +2,14 @@
 
 One line per non-obvious design decision. Newest at the top.
 
+- 2026-04-20 · M1 ships with three ad slots (`data-slot="home-a|home-b|home-c"`) and no AdSense `<ins>` tags yet — `data-slot` attributes name the positions so we can populate them in a separate scoped commit after Kevin picks slot IDs.
+- 2026-04-20 · Newsletter keeps the Netlify Forms fallback path — `base.html` currently reads `MAILCHIMP_FORM_URL` and falls back to Netlify if unset. Don't delete the fallback during redesign; it's the portable-to-sibling pattern.
+- 2026-04-20 · Inline SVG brand mark = simplified "house with roof peaks" on `#1E4D8C` ground. Replaces the `&#128106;` (family emoji) that rendered inconsistently across platforms. Zero image fetch on critical path.
+- 2026-04-20 · Mailchimp hidden input `SITE=senior-home-care` — matches sibling's per-site tag pattern so the shared audience can segment. No-op until Kevin adds the SITE merge field to the Mailchimp audience.
+- 2026-04-20 · CSS file bumped from 171 → ~1400 lines in a single commit. Sibling M1 did similar; keeping CSS in one `custom.css` (not split per component) matches the existing project convention.
+- 2026-04-20 · Nav breakpoint moved from md (768px) to 900px — room for "Services / Guides / About / Contact / search / List an agency" before wrapping to hamburger. Tested mentally at iPad-mini portrait; real check needed.
+- 2026-04-20 · Editorial anti-position list on homepage — four "what we don't do" items. Matches sibling's M1 editorial block in intent (trust signal for YMYL category); tone is plain-statement, not combative.
+- 2026-04-20 · Hero headline uses Fraunces `opsz 96 / SOFT 40` — dialed-back softness reads "editorial" not "designer portfolio." SOFT 40 is the sibling's homepage hero setting; kept verbatim since it worked there.
 - 2026-04-20 · **Locked by Kevin:** M1 = homepage + base.html together (Tailwind removal + tokenization must happen simultaneously).
 - 2026-04-20 · **Locked by Kevin:** Target reading grade 8 for body copy (CDC Clear Communication Index standard; NIA/AARP target grade 6–8 for elder-care material). Editorial guides may reach grade 9 when topic demands.
 - 2026-04-20 · **Locked by Kevin:** Swap Weather link → Medicare Care Compare on agency detail (healthcare equivalent of sibling's weather→BrokerCheck swap).
