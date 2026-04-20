@@ -8,6 +8,42 @@ For the terse one-line-per-decision log, see [`REDESIGN_NOTES.md`](REDESIGN_NOTE
 
 ---
 
+## Milestone 5 — Static pages: contact / submit / about / privacy / terms / success (2026-04-20)
+
+**Branch:** `redesign/homepage-healthcare-native` (continuation)
+**Commits:** `94146f4` (form-component CSS + contact + submit), `03e8588` (about + privacy + terms + success)
+**Templates rewritten:** `contact.html`, `submit.html`, `about.html`, `privacy.html`, `terms.html`, `success.html`
+**CSS additions (~320 lines):** `.form-*` field components, `.static-page` shell, `.info-card` sidebar block, `.legal-prose`, `.anti-list`, `.founder-block`, `.success-page` + `.success-page__mark/title/body/actions`
+
+### What changed
+
+- **Six remaining static pages** all migrated off the old Tailwind markup and onto the new tokenized system. Fast-tracked out of the planned M5/M6 split after Kevin flagged the pages were rendering raw (unstyled forms, plain browser buttons, no editorial hierarchy) in the live preview. Once the branch merges, those pages become user-visible — had to be in the same release.
+- **Form component suite** (`.form-field`, `.form-label`, `.form-input`, `.form-select`, `.form-textarea`, `.form-section-title`, `.form-note`, `.form-submit`) — first-class tokenized inputs with focus rings on the tokenized `--shadow-focus` (static rgba fallback for Safari < 16.2). Reusable by any future form (the newsletter internals could port to these in a later polish pass).
+- **`contact.html`** — editorial page-head, two-column layout with the Netlify contact form on the left and a sidebar of four `info-card`s (response time / before-you-write / agency-route / verification pointer). Subject dropdown rewritten to match the operations that actually exist. Honeypot + `form-name` hidden input preserved. JS success handler updated to navigate to the directory-style `/success/` URL.
+- **`submit.html`** — editorial page-head, single-column form broken into labeled sections (`Agency information` / `Contact person`) via `.form-section-title`. `form-note` call-out explains the review process up front. Sidebar reinforces the three load-bearing trust posture lines: what happens next, that listing is free (no paid placements), how families actually find listings (organic search, direct calls, no lead routing). Added a "State license number" optional field that lets agencies volunteer it at submit time, closing a loop with the per-agency "How to verify" checklist.
+- **`about.html`** — rewritten copy aligned with the homepage anti-position block: "A directory, built the way we'd want one for a parent." Sections: Why this exists / What you'll find here / What we don't do (anti-list with red-× markers) / Founder story (WWII-veteran photo preserved, wrapped in the new `.founder-block` component) / How listings get added / How the site makes money. All copy at grade-8 readability.
+- **`privacy.html`** — rewritten to describe the current stack accurately (Netlify, Airtable, Mailchimp, GA, AdSense, Medicare Care Compare, state licensing boards). Added a "How we source agency listings" section, explicit "We don't sell your personal information" language, data-retention window (14 months for GA per default), and a plain-English `your rights` section.
+- **`terms.html`** — rewritten with the load-bearing YMYL clauses explicit: "This site is not a healthcare provider, referral service, or medical-advice site." "Listings are not endorsements." "No paid placement — agencies don't pay to appear or rank higher." Advertising disclosure clarifies ad selection is Google's, not ours.
+- **`success.html`** — centered `.success-page` layout with an SVG checkmark (not the raw `&#10003;` entity, which inherited the surrounding font-size and rendered at an unintended ornamental scale) in a secondary-tint circle. Fraunces headline, two CTAs (back home + browse guides). Already noindexed via the M2 STATIC_PAGES fix; rewrite is purely visual/copy.
+- **Breadcrumbs + BreadcrumbList JSON-LD** on every static page via the shared macro — no more missing-schema gap on static content.
+
+### Why it helps
+
+- **Entire template tree is now on the new design system.** Every user-facing URL — homepage, every listing template, every static page — renders from the tokenized CSS layer. No more "will look broken until M5/M6" caveat in the plan. Branch is merge-ready.
+- **Forms that actually match the site's posture.** Contact and submit forms previously looked like generic Netlify-Forms boilerplate. The tokenized `.form-*` components read as part of the site — consistent focus rings, typography, and spacing with the rest of the surface.
+- **YMYL trust posture reinforced in the legal layer.** Privacy and terms now state plainly what the site does and doesn't do: no lead sales, no paid placements, no medical advice, no endorsement of listings. Legal pages matter more on a healthcare directory than on a generic site, both for user trust and for AdSense content review.
+- **Founder story preserved.** The WWII-veteran photo and the story behind the site — load-bearing E-E-A-T content — kept verbatim, wrapped in the new `.founder-block` component.
+- **Operational submit form.** New "State license number" field, rewritten contact subject dropdown, and "How families find you" sidebar give agency submitters a clearer model of how the directory actually works.
+
+### Known gaps
+
+- **`.pullquote` and `.data-callout`** editorial components not yet added to `custom.css` — sibling ships them as optional authoring tools. Low priority; no current blog post uses them.
+- **Newsletter signup in `base.html`** still uses its own inline input styling rather than the new `.form-*` components. Visually fine because it sits on the dark newsletter band, but could port for consistency in a later polish pass.
+- **`/success/` vs `/success/index.html`** — contact + submit JS now redirects to `/success/` (the directory form). Netlify's redirect handling picks that up correctly; the Netlify form post-processing uses `/success/index.html` internally. Tested locally with the sample-data build.
+- **No per-page CAPTCHA** on forms — relying on Netlify's built-in spam filter + honeypot input. Acceptable for current volume. Revisit if submission spam becomes a problem.
+
+---
+
 ## Milestone 4 — Blog templates (index + post) (2026-04-20)
 
 **Branch:** `redesign/homepage-healthcare-native` (continuation)

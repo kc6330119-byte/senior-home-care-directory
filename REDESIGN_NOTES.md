@@ -2,6 +2,12 @@
 
 One line per non-obvious design decision. Newest at the top.
 
+- 2026-04-20 · **M5** · Static pages (contact / submit / about / privacy / terms / success) fast-tracked after Kevin flagged they were rendering raw in production — the sibling cadence had them as a later milestone, but once the branch hits main they'd be user-visible broken.
+- 2026-04-20 · **M5** · `.legal-prose` is a separate component from `.prose` — narrower measure, smaller h2 (Fraunces opsz 36), tuned for legal/static long-form rather than blog articles.
+- 2026-04-20 · **M5** · Submit form gained a "State license number" optional field — previously absent, but every agency detail page's "How to verify" checklist asks users to look it up, so capturing it at submission time cuts review loops.
+- 2026-04-20 · **M5** · Contact form subject dropdown rewritten to match current operations (listing correction / remove a listing / suggest an agency / feedback / other). Old options ("Update a Listing", "Report an Issue", "Partnership") didn't map to anything the site actually does anymore.
+- 2026-04-20 · **M5** · Anti-list on about page uses red-× markers in a warn-tinted circle — visible departure from the green-✓ anti-position list on the homepage, because "what we don't do" is a negative assertion and should read that way.
+- 2026-04-20 · **M5** · Success-page checkmark is now an SVG polyline (not an HTML entity). Entity `&#10003;` inherited the surrounding font-size and rendered at a large ornamental size; SVG gives us crisp geometry in the secondary-tint circle.
 - 2026-04-20 · **M4** · Blog index is a magazine-style row list (not a photo-card grid). Photos render as a small right-aligned thumbnail only when the post has one — scales past image availability instead of pretending every post has a hero shot.
 - 2026-04-20 · **M4** · Reading-time computed entirely in Jinja: `(content | striptags | wordcount) // 225 + 1` with a minimum of 1. 225 wpm is the audience-tuned rate (slightly slower than the 250 editorial default because target skews older).
 - 2026-04-20 · **M4** · Breadcrumb on post pages is 3-level (Home / Guides / post title). "Guides" label matches the nav + footer — "Resources" was the old wording and has been retired to keep a single noun across the site.
