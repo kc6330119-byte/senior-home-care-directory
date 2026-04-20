@@ -138,47 +138,7 @@
 
         <div class="agency-grid">
             {% for agency in featured_agencies[:6] %}
-            <a class="agency-card" href="/agency/{{ agency.slug }}.html">
-                <div class="agency-card__photo">
-                    {% if agency.photo_url %}
-                    <img src="{{ agency.photo_url }}" alt="{{ agency.name }}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="agency-card__photo-fallback" style="display:none" aria-hidden="true">&#127968;</div>
-                    {% else %}
-                    <div class="agency-card__photo-fallback" aria-hidden="true">&#127968;</div>
-                    {% endif %}
-                    {% if agency.status == 'Featured' %}
-                    <span class="agency-card__badge">Featured</span>
-                    {% endif %}
-                </div>
-                <div class="agency-card__body">
-                    <h3 class="agency-card__name">{{ agency.name }}</h3>
-                    <p class="agency-card__loc">{{ agency.city }}, {{ agency.state }}</p>
-
-                    {% if agency.services %}
-                    <div class="agency-card__chips">
-                        {% for svc in agency.services[:3] %}
-                        <span class="chip">{{ svc }}</span>
-                        {% endfor %}
-                        {% if agency.services | length > 3 %}
-                        <span class="chip chip--neutral">+{{ agency.services | length - 3 }}</span>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-
-                    {% if agency.description %}
-                    <p class="agency-card__desc">{{ agency.description }}</p>
-                    {% endif %}
-
-                    <div class="agency-card__meta">
-                        {% if agency.phone %}
-                        <span>{{ agency.phone }}</span>
-                        {% else %}
-                        <span>&nbsp;</span>
-                        {% endif %}
-                        <span class="agency-card__cta">View details &rsaquo;</span>
-                    </div>
-                </div>
-            </a>
+            {% include '_agency_card.html' %}
             {% endfor %}
         </div>
     </div>

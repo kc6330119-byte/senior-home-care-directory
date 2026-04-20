@@ -1474,6 +1474,538 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Breadcrumb                                                                 */
+/* -------------------------------------------------------------------------- */
+
+.breadcrumb {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) 0;
+    font-size: var(--font-size-sm);
+}
+
+.breadcrumb__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+}
+
+.breadcrumb__item {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text-muted);
+}
+
+.breadcrumb__link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    padding: 2px 0;
+}
+.breadcrumb__link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.breadcrumb__sep {
+    margin: 0 var(--space-2);
+    color: var(--color-border-strong);
+}
+
+.breadcrumb__current {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Page head — editorial headline row used on state / city / agency / etc.  */
+/* -------------------------------------------------------------------------- */
+
+.page-head {
+    padding: var(--space-10) 0 var(--space-8);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.page-head--on-alt {
+    background: var(--color-bg);
+}
+
+.page-head__eyebrow {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    display: block;
+    margin-bottom: var(--space-3);
+}
+
+.page-head__title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 4vw + 0.5rem, 3rem);
+    font-weight: 500;
+    font-variation-settings: 'opsz' 96, 'SOFT' 40;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 var(--space-4);
+    max-width: 24ch;
+}
+
+.page-head__lede {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-body);
+    max-width: 60ch;
+    margin: 0 0 var(--space-5);
+}
+
+.page-head__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-5);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.page-head__meta strong {
+    font-family: var(--font-serif);
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+    font-variation-settings: 'opsz' 36, 'SOFT' 30;
+    color: var(--color-primary);
+    line-height: 1;
+    margin-right: var(--space-1);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Directory shell — two-column state / city / service layout                */
+/* -------------------------------------------------------------------------- */
+
+.directory-shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    padding: var(--space-10) 0;
+}
+
+@media (min-width: 900px) {
+    .directory-shell {
+        grid-template-columns: 300px 1fr;
+        gap: var(--space-10);
+    }
+    .directory-shell--right-aside {
+        grid-template-columns: 1fr 300px;
+    }
+}
+
+.directory-aside > * + * { margin-top: var(--space-4); }
+
+.detail-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+}
+
+.detail-card__title {
+    font-family: var(--font-serif);
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    font-variation-settings: 'opsz' 24, 'SOFT' 30;
+    margin: 0 0 var(--space-3);
+}
+
+.detail-card__title--sm {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-3);
+}
+
+@media (min-width: 900px) {
+    .detail-card--sticky {
+        position: sticky;
+        top: calc(var(--nav-height) + var(--space-4));
+    }
+}
+
+.directory-main > * + * { margin-top: var(--space-6); }
+
+.directory-results {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  State-page map                                                             */
+/* -------------------------------------------------------------------------- */
+
+.state-map {
+    height: 260px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+}
+
+.state-map--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    background: var(--color-surface-alt);
+}
+
+.leaflet-popup-content {
+    font-family: var(--font-sans) !important;
+    font-size: var(--font-size-sm) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  City filter list (state page sidebar)                                      */
+/* -------------------------------------------------------------------------- */
+
+.city-list {
+    max-height: 520px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.city-list__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) var(--space-3);
+    margin: 0 calc(var(--space-3) * -1);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    text-decoration: none;
+}
+.city-list__link:hover {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.city-list__count {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.city-list__item + .city-list__item { margin-top: 2px; }
+
+/* -------------------------------------------------------------------------- */
+/*  Agency detail layout                                                       */
+/* -------------------------------------------------------------------------- */
+
+.detail-shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    padding: var(--space-10) 0;
+}
+
+@media (min-width: 900px) {
+    .detail-shell {
+        grid-template-columns: 1fr 320px;
+        gap: var(--space-10);
+    }
+}
+
+.detail-main > * + * { margin-top: var(--space-6); }
+
+.detail-aside > * + * { margin-top: var(--space-4); }
+
+.agency-hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+@media (min-width: 700px) {
+    .agency-hero { grid-template-columns: 280px 1fr; }
+}
+
+.agency-hero__photo {
+    aspect-ratio: 4 / 3;
+    background: var(--color-surface-alt);
+    overflow: hidden;
+    position: relative;
+}
+.agency-hero__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.agency-hero__photo-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary-tint), var(--color-secondary-tint));
+    font-size: 4rem;
+    color: rgba(30, 77, 140, 0.4);
+}
+
+.agency-hero__body {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.agency-hero__badge {
+    display: inline-block;
+    background: var(--color-accent);
+    color: var(--color-primary-ink);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--space-3);
+    align-self: flex-start;
+}
+
+.agency-hero__name {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3vw + 0.5rem, 2.5rem);
+    font-weight: 500;
+    font-variation-settings: 'opsz' 72, 'SOFT' 30;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 var(--space-2);
+}
+
+.agency-hero__loc {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
+    margin: 0 0 var(--space-3);
+}
+
+.agency-hero__rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+.agency-hero__rating-stars {
+    color: var(--color-accent);
+    letter-spacing: 2px;
+    font-size: var(--font-size-base);
+}
+.agency-hero__rating-value {
+    font-weight: 700;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.agency-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Spec lists & chip groups                                                   */
+/* -------------------------------------------------------------------------- */
+
+.spec-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin: 0;
+}
+
+@media (min-width: 500px) {
+    .spec-list { grid-template-columns: 1fr 1fr; }
+}
+
+.spec-list__label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    margin-bottom: 2px;
+}
+
+.spec-list__value {
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.spec-list__full { grid-column: 1 / -1; }
+
+.chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.chip--accredited {
+    background: var(--color-secondary-tint);
+    color: var(--color-secondary);
+    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+}
+
+.chip--payment {
+    background: var(--color-accent-tint);
+    color: var(--color-accent-hover);
+    border-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Contact + Medicare Care Compare cards (agency aside)                       */
+/* -------------------------------------------------------------------------- */
+
+.contact-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: var(--space-4);
+}
+.contact-row__label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--color-text-muted);
+}
+.contact-row__value {
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+}
+.contact-row__value a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+.contact-row__value a:hover { text-decoration: underline; }
+
+.contact-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+}
+
+.detail-card--care-compare {
+    background: var(--color-secondary-tint);
+    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+}
+
+.detail-card--care-compare .detail-card__title {
+    color: var(--color-secondary);
+}
+
+.care-compare-note {
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    margin: 0 0 var(--space-3);
+    line-height: var(--line-height-body);
+}
+
+.share-list {
+    display: flex;
+    gap: var(--space-3);
+}
+.share-list a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-alt);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.share-list a:hover {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Related agencies row                                                       */
+/* -------------------------------------------------------------------------- */
+
+.related-agencies {
+    padding: var(--space-12) 0;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-alt);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Empty / no-results state                                                   */
+/* -------------------------------------------------------------------------- */
+
+.empty-state {
+    padding: var(--space-16) var(--space-6);
+    text-align: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.empty-state__icon {
+    font-size: 3rem;
+    opacity: 0.3;
+    margin-bottom: var(--space-4);
+}
+
+.empty-state__title {
+    font-family: var(--font-serif);
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+    margin: 0 0 var(--space-2);
+}
+
+.empty-state__body {
+    color: var(--color-text-muted);
+    margin: 0 auto var(--space-5);
+    max-width: 44ch;
+}
+
+.empty-state__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Print                                                                      */
 /* -------------------------------------------------------------------------- */
 
