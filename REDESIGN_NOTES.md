@@ -2,6 +2,9 @@
 
 One line per non-obvious design decision. Newest at the top.
 
+- 2026-04-20 · **M3** · Service-page breadcrumb is two-level (Home / Service) — no `/services.html` hub page exists, so routing breadcrumbs through one would be a dead link. The homepage `#browse-services` anchor serves as the hub.
+- 2026-04-20 · **M3** · `.city-list` component re-used verbatim for the service-page state filter — same visual pattern (label + count on a nav-style link row), no reason to author a second component.
+- 2026-04-20 · **M3** · `.service-chip` / `.service-chip-row` are a new tokenized chip component for the "other services" row — distinct from `.chip` (which is a smaller metadata pill) because chips-as-nav-buttons need more padding and hover affordance.
 - 2026-04-20 · **M2** · Medicare Care Compare card is conditional on `agency.accreditation` containing "Medicare Certified" OR `agency.payment_options` containing "Medicare". Non-certified agencies can't be looked up on Care Compare (it's home-health-specific); showing the link for everyone would be misleading.
 - 2026-04-20 · **M2** · Every agency gets a universal "How to verify this agency" sidebar card. Replaces the decorative weather link with a real trust signal (license lookup + client references + background-check confirmation). Step 1 personalizes with the license number when available.
 - 2026-04-20 · **M2** · Leaflet state maps swapped OSM → CartoDB Positron tiles. Warm-neutral basemap matches the `#FAF9F6` page background; OSM's blue-bright tiles clashed. Attribution updated per CARTO's ToS.

@@ -8,6 +8,36 @@ For the terse one-line-per-decision log, see [`REDESIGN_NOTES.md`](REDESIGN_NOTE
 
 ---
 
+## Milestone 3 — Service page (2026-04-20)
+
+**Branch:** `redesign/homepage-healthcare-native` (continuation)
+**Commits:** `b8f2940` (service.html rewrite + .service-chip component)
+**Templates rewritten:** `service.html`
+**CSS additions:** `.service-chip-row`, `.service-chip`
+
+### What changed
+
+- **service.html** rewritten to match the M2 directory-page pattern. Editorial page-head with service icon next to Fraunces service name, description as lede, meta row showing agency + state counts with tabular figures.
+- **Breadcrumb nav + BreadcrumbList JSON-LD** via the shared `_breadcrumb_schema.html` macro — two-level (Home / Service). No intermediate `/services.html` hub exists, so routing through one would be a dead link. The homepage `#browse-services` anchor serves as the conceptual hub.
+- **Directory shell** reuses the state-page layout: left aside with state-filter list rendered via the existing `.city-list` component (same label + count nav-row pattern as state-page cities), main column with two reserved ad slots (`service-a`, `service-b`) and the agency grid using the shared `_agency_card.html` partial.
+- **`service.intro` editorial paragraph** (100+ word per-service copy from `config.py`) preserved in its own section below the grid. This text predates the redesign and is load-bearing SEO — do not regress.
+- **New `.service-chip` / `.service-chip-row`** tokenized component for the "Explore other services" row at the bottom of the page. Distinct from `.chip` (smaller metadata pill); chips-as-nav-buttons need more padding and a hover affordance that shifts border + text to primary.
+- **Proper empty-state** with routes to homepage + submit form. `service.intro` still renders in the empty state so the page stays substantive even with zero agency matches.
+
+### Why it helps
+
+- **Full listing surface now on the new design system.** Homepage → state → city → service → agency all use the same editorial register, token system, and card component. No remaining listing page on the old Tailwind layer.
+- **Service-page SEO strengthened.** BreadcrumbList JSON-LD makes service pages eligible for SERP breadcrumb display. The per-service 100+ word editorial copy now reads in the editorial typographic register instead of a generic Tailwind prose block.
+- **State-filter discoverability.** The sticky `.city-list` sidebar with state counts is the same pattern users have already learned from state pages — no new interaction to figure out.
+
+### Known gaps
+
+- `blog.html`, `post.html` — M4. Will port the `.prose` block that landed (tokenized) in M1's CSS so blog posts stop rendering with hardcoded hex colors.
+- `about.html`, `contact.html`, `privacy.html`, `terms.html`, `submit.html`, `success.html` — M5/M6. Copy on several of these also needs an editorial pass (the "Add an Agency" submit flow, the "About" founder story, the healthcare-specific disclosure language).
+- No `Service` or `MedicalBusiness` schema per-service — BreadcrumbList is the only JSON-LD. Considered but deferred; the 10 service types we have are broad categories, not individual offerings, so `Service` schema would be thin. Revisit if a per-service FAQ or editorial depth warrants it.
+
+---
+
 ## Milestone 2 — Directory pages: state / city / agency (2026-04-20)
 
 **Branch:** `redesign/homepage-healthcare-native` (continuation)
