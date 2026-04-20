@@ -11,7 +11,7 @@
             "name": "What is in-home care?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "In-home care (also called home care) provides non-medical assistance to seniors and adults in their own homes. Services typically include help with daily activities like bathing, dressing, meal preparation, medication reminders, light housekeeping, and companionship. Unlike home health care, in-home care does not require medical licensing and focuses on helping people maintain independence."
+                "text": "In-home care, also called home care, is non-medical help for seniors and adults in their own home. Caregivers help with bathing, dressing, meals, light housekeeping, medication reminders, and companionship. Home care is different from home health care, which is medical and needs a doctor's order."
             }
         },
         {
@@ -19,7 +19,7 @@
             "name": "How much does home care cost?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Home care costs vary by location, level of care needed, and hours required. The national average is $25-35 per hour. Live-in care typically costs $200-400 per day. Costs are higher in metropolitan areas and for specialized care like dementia support. Many agencies offer free consultations to provide personalized cost estimates."
+                "text": "Home care costs vary by where you live and how many hours you need. The national average is $25 to $35 per hour. Live-in care usually runs $200 to $400 per day. Costs are higher in big cities and for memory care. Most agencies offer a free consultation to give you a real price estimate."
             }
         },
         {
@@ -27,15 +27,15 @@
             "name": "Does Medicare pay for home care?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Medicare generally does not cover non-medical home care services like bathing, dressing, or companionship. However, Medicare does cover home health care (skilled nursing, physical therapy) if ordered by a doctor. Medicaid may cover some home care services depending on your state. Long-term care insurance and VA benefits are other payment options."
+                "text": "Medicare generally does not cover non-medical home care like bathing, meals, or companionship. Medicare does cover home health care (skilled nursing, physical therapy) if a doctor orders it. Medicaid may cover home care in some states. Other options are long-term care insurance and VA benefits."
             }
         },
         {
             "@type": "Question",
-            "name": "What's the difference between home care and home health care?",
+            "name": "What is the difference between home care and home health care?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Home care provides non-medical assistance with daily living activities like bathing, meals, and companionship. Home health care provides medical services like skilled nursing, wound care, and physical therapy prescribed by a doctor. Home care helps maintain independence; home health care addresses specific medical conditions."
+                "text": "Home care is non-medical help with daily living: bathing, meals, housekeeping, company. Home health care is medical: skilled nursing, wound care, physical therapy, ordered by a doctor. Home care helps someone stay independent. Home health care treats a medical problem."
             }
         },
         {
@@ -43,7 +43,7 @@
             "name": "How do I choose a home care agency?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Look for agencies that are licensed in your state, conduct background checks on caregivers, provide training and supervision, and have good reviews. Ask about their caregiver matching process, backup coverage if your regular caregiver is unavailable, and how they handle concerns. Request references and meet potential caregivers before starting."
+                "text": "Start with agencies that are licensed in your state and run background checks on caregivers. Ask about training, how they match caregivers to clients, what happens if your regular caregiver is out, and how they handle concerns. Ask for references. Meet at least one caregiver before care starts. Accreditation from the Joint Commission or CHAP is a good sign."
             }
         }
     ]
@@ -51,279 +51,334 @@
 </script>
 {% endblock %}
 
+{% set max_state_count = (state_counts.values() | list | max) if state_counts else 1 %}
+
 {% block content %}
 
-<!-- Hero Section -->
-<section class="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-16 md:py-24">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-            Find Trusted Home Care for Your Loved Ones
-        </h1>
-        <p class="text-xl md:text-2xl text-primary-100 mb-10 max-w-2xl mx-auto">
-            Compare in-home care agencies, read reviews, and find compassionate caregivers in your area.
-        </p>
+<!-- Hero -->
+<section class="hero">
+    <div class="site-container">
+        <span class="hero__eyebrow">In-home care directory</span>
+        <h1 class="hero__title">Finding home care for a parent starts with knowing what to ask.</h1>
+        <p class="hero__lede">Search {{ "{:,}".format(total_count) }} in-home care agencies across all 50 states. Browse by city, compare services, and get real contact details — no sales calls, no lead forms.</p>
 
-        <!-- State Search -->
-        <div class="bg-white rounded-xl p-2 shadow-2xl max-w-lg mx-auto flex gap-2">
-            <select id="state-select" class="flex-grow px-4 py-3 text-gray-700 bg-transparent focus:outline-none text-sm rounded-lg">
-                <option value="">Select a state...</option>
-                {% for state in us_states %}
-                <option value="{{ state.slug }}">{{ state.name }}</option>
-                {% endfor %}
-            </select>
-            <button onclick="goToState()" class="px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors text-sm whitespace-nowrap">
-                Find Care
-            </button>
-        </div>
-
-        <!-- Quick service links -->
-        <div class="mt-6 flex flex-wrap justify-center gap-2">
-            <span class="text-primary-200 text-sm self-center">Popular services:</span>
-            {% for service in services[:4] %}
-            <a href="/services/{{ service.slug }}.html"
-               class="bg-white/20 hover:bg-white/30 text-white text-sm px-3 py-1 rounded-full transition-colors border border-white/20">
-                {{ service.icon }} {{ service.name }}
-            </a>
-            {% endfor %}
-        </div>
-
-        <p class="mt-8 text-primary-200 text-sm">{{ total_count }}+ home care agencies listed across all 50 states</p>
-    </div>
-</section>
-
-<!-- Trust Signals -->
-<section class="bg-white border-b border-gray-100 py-6">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-500">
-            <span class="flex items-center gap-2"><span class="text-secondary-500">&#10003;</span> Verified agencies</span>
-            <span class="flex items-center gap-2"><span class="text-secondary-500">&#10003;</span> Real reviews</span>
-            <span class="flex items-center gap-2"><span class="text-secondary-500">&#10003;</span> Free to search</span>
-            <span class="flex items-center gap-2"><span class="text-secondary-500">&#10003;</span> No commitment</span>
-        </div>
-    </div>
-</section>
-
-<!-- Featured Agencies -->
-{% if featured_agencies %}
-<section class="py-12" id="featured">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between mb-8">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900">Featured Agencies</h2>
-                <p class="text-gray-500 text-sm mt-1">Top-rated home care providers</p>
+        <form class="hero__locator" action="/" method="get" onsubmit="return handleHeroSubmit(event)" aria-label="Find care by state">
+            <div class="hero__select-wrap">
+                <label for="state-select">Your state</label>
+                <select id="state-select" name="state" class="hero__select" required>
+                    <option value="">Choose a state…</option>
+                    {% for state in us_states %}
+                    <option value="{{ state.slug }}">{{ state.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
-            <a href="#browse-states" class="text-sm text-primary-600 hover:text-primary-700 font-medium hidden sm:block">Browse by state &#8594;</a>
-        </div>
+            <button type="submit" class="btn btn--primary btn--lg hero__submit">Find care</button>
+        </form>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for agency in featured_agencies %}
-            {% include '_agency_card.html' %}
-            {% endfor %}
+        <div class="hero__stats">
+            <div>
+                <div class="hero__stat-figure">{{ "{:,}".format(total_count) }}</div>
+                <div class="hero__stat-label">Agencies listed</div>
+            </div>
+            <div>
+                <div class="hero__stat-figure">{{ state_counts.keys() | list | length if state_counts else 0 }}</div>
+                <div class="hero__stat-label">States with coverage</div>
+            </div>
+            <div>
+                <div class="hero__stat-figure">{{ total_posts }}</div>
+                <div class="hero__stat-label">Guides &amp; articles</div>
+            </div>
         </div>
     </div>
 </section>
-{% endif %}
 
-<!-- Browse by State -->
-<section class="py-12 bg-gray-50" id="browse-states">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Browse by State</h2>
-            <p class="text-gray-500">Find home care agencies near you</p>
+<!-- Ad slot A -->
+<div class="ad-slot ad-slot--leaderboard" data-slot="home-a" aria-hidden="true">
+    <div class="ad-slot__inner">Advertisement</div>
+</div>
+
+<!-- How this directory works -->
+<section class="section section--tight">
+    <div class="site-container">
+        <div class="section__head">
+            <span class="section__eyebrow">How this works</span>
+            <h2 class="section__title">A straightforward way to look.</h2>
+            <p class="section__lede">Three common paths for families who are new to home care. Pick whichever fits what you already know.</p>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {% for state in us_states %}
-            {% set count = state_counts.get(state.slug, 0) %}
-            <a href="/state/{{ state.slug }}.html"
-               class="flex items-center justify-between bg-white border border-gray-200 hover:border-primary-400 hover:shadow-sm rounded-lg px-3 py-2.5 transition-all group">
-                <span class="font-medium text-sm text-gray-800 group-hover:text-primary-700">{{ state.name }}</span>
-                {% if count > 0 %}
-                <span class="text-xs bg-primary-100 text-primary-700 font-semibold px-2 py-0.5 rounded-full">{{ count }}</span>
-                {% else %}
-                <span class="text-xs text-gray-300 font-medium">{{ state.abbr }}</span>
-                {% endif %}
+        <div class="how-it-works">
+            <a class="how-step" href="#browse-states" style="text-decoration: none;">
+                <div class="how-step__number">01</div>
+                <h3 class="how-step__title">Browse by state and city</h3>
+                <p class="how-step__body">If you know where care is needed, start with the state grid below. We have coverage in all 50 states, with deeper listings in most major metros.</p>
             </a>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Browse by Service -->
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Browse by Service</h2>
-            <p class="text-gray-500">Find agencies that specialize in what you need</p>
-        </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {% for service in services %}
-            <a href="/services/{{ service.slug }}.html"
-               class="bg-primary-50 hover:bg-primary-100 border border-primary-100 hover:border-primary-300 rounded-xl p-5 text-center transition-all group">
-                <div class="text-3xl mb-2">{{ service.icon }}</div>
-                <h3 class="font-semibold text-sm text-gray-900 group-hover:text-primary-700 mb-1">{{ service.name }}</h3>
-                <p class="text-xs text-gray-500 leading-tight line-clamp-2">{{ service.description }}</p>
+            <a class="how-step" href="#browse-services" style="text-decoration: none;">
+                <div class="how-step__number">02</div>
+                <h3 class="how-step__title">Browse by service</h3>
+                <p class="how-step__body">Not every agency does every kind of care. Pick a service — companion care, memory care, hospice support — and narrow to agencies that specialize.</p>
             </a>
-            {% endfor %}
+            <a class="how-step" href="/blog.html" style="text-decoration: none;">
+                <div class="how-step__number">03</div>
+                <h3 class="how-step__title">Read the guides first</h3>
+                <p class="how-step__body">If you're starting from scratch, our guides cover how to pay for care, questions to ask an agency, and how to tell a good caregiver from a bad one.</p>
+            </a>
         </div>
     </div>
 </section>
 
-<!-- Resources & Guides -->
-{% if blog_categories %}
-<section class="py-12 bg-gray-50 border-t border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Resources &amp; Guides</h2>
-            <p class="text-gray-500">{{ total_posts }} articles to help you make informed care decisions</p>
+<!-- Featured agencies -->
+{% if featured_agencies %}
+<section class="section section--alt">
+    <div class="site-container">
+        <div class="section__head">
+            <span class="section__eyebrow">Featured agencies</span>
+            <h2 class="section__title">Recently active, well-reviewed providers.</h2>
+            <p class="section__lede">A rotating sample of agencies with complete profiles and recent reviews. Featured placement is editorial — agencies don't pay to appear here.</p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {% for cat in blog_categories %}
-            <a href="/blog.html#{{ cat.slug }}"
-               class="bg-white rounded-xl border border-gray-100 hover:border-primary-300 hover:shadow-md p-6 transition-all group">
-                <div class="flex items-start gap-4">
-                    <span class="text-3xl flex-shrink-0">{{ cat.icon }}</span>
-                    <div>
-                        <h3 class="font-bold text-gray-900 group-hover:text-primary-600 transition-colors mb-1">{{ cat.name }}</h3>
-                        <p class="text-sm text-gray-500 leading-relaxed mb-2">{{ cat.description }}</p>
-                        <span class="text-xs font-semibold text-primary-600">{{ cat.count }} article{{ 's' if cat.count != 1 else '' }} &rsaquo;</span>
+        <div class="agency-grid">
+            {% for agency in featured_agencies[:6] %}
+            <a class="agency-card" href="/agency/{{ agency.slug }}.html">
+                <div class="agency-card__photo">
+                    {% if agency.photo_url %}
+                    <img src="{{ agency.photo_url }}" alt="{{ agency.name }}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="agency-card__photo-fallback" style="display:none" aria-hidden="true">&#127968;</div>
+                    {% else %}
+                    <div class="agency-card__photo-fallback" aria-hidden="true">&#127968;</div>
+                    {% endif %}
+                    {% if agency.status == 'Featured' %}
+                    <span class="agency-card__badge">Featured</span>
+                    {% endif %}
+                </div>
+                <div class="agency-card__body">
+                    <h3 class="agency-card__name">{{ agency.name }}</h3>
+                    <p class="agency-card__loc">{{ agency.city }}, {{ agency.state }}</p>
+
+                    {% if agency.services %}
+                    <div class="agency-card__chips">
+                        {% for svc in agency.services[:3] %}
+                        <span class="chip">{{ svc }}</span>
+                        {% endfor %}
+                        {% if agency.services | length > 3 %}
+                        <span class="chip chip--neutral">+{{ agency.services | length - 3 }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if agency.description %}
+                    <p class="agency-card__desc">{{ agency.description }}</p>
+                    {% endif %}
+
+                    <div class="agency-card__meta">
+                        {% if agency.phone %}
+                        <span>{{ agency.phone }}</span>
+                        {% else %}
+                        <span>&nbsp;</span>
+                        {% endif %}
+                        <span class="agency-card__cta">View details &rsaquo;</span>
                     </div>
                 </div>
             </a>
             {% endfor %}
         </div>
+    </div>
+</section>
+{% endif %}
 
-        <div class="text-center mt-8">
-            <a href="/blog.html" class="inline-block px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors text-sm">
-                View All Resources
+<!-- Ad slot B -->
+<div class="ad-slot ad-slot--in-content" data-slot="home-b" aria-hidden="true">
+    <div class="ad-slot__inner">Advertisement</div>
+</div>
+
+<!-- Browse by state -->
+<section class="section" id="browse-states">
+    <div class="site-container">
+        <div class="section__head">
+            <span class="section__eyebrow">Browse by state</span>
+            <h2 class="section__title">Coverage across all 50 states.</h2>
+            <p class="section__lede">Each state page lists agencies grouped by city, with a map and filter by service. The deeper color means more listings.</p>
+        </div>
+
+        <div class="state-grid">
+            {% for state in us_states %}
+            {% set count = state_counts.get(state.slug, 0) %}
+            {% set intensity = (count / max_state_count) if count > 0 else 0 %}
+            <a href="/state/{{ state.slug }}.html"
+               class="state-tile{% if count == 0 %} state-tile--empty{% endif %}"
+               style="--intensity: {{ '%.2f' | format(intensity) }};">
+                <span class="state-tile__name">{{ state.name }}</span>
+                <span class="state-tile__count">{% if count > 0 %}{{ "{:,}".format(count) }}{% else %}{{ state.abbr }}{% endif %}</span>
             </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Browse by service -->
+<section class="section section--alt" id="browse-services">
+    <div class="site-container">
+        <div class="section__head">
+            <span class="section__eyebrow">Browse by service</span>
+            <h2 class="section__title">The kind of care that's needed matters more than the name on the door.</h2>
+            <p class="section__lede">Home care covers a range of services. Pick one that fits — companion care for loneliness, memory care for dementia, hospice support for end-of-life.</p>
+        </div>
+
+        <div class="service-grid">
+            {% for service in services %}
+            <a href="/services/{{ service.slug }}.html" class="service-card">
+                <span class="service-card__icon" aria-hidden="true">{{ service.icon }}</span>
+                <h3 class="service-card__name">{{ service.name }}</h3>
+                <p class="service-card__desc">{{ service.description }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Guides & resources -->
+{% if blog_categories %}
+<section class="section">
+    <div class="site-container">
+        <div class="section__head">
+            <span class="section__eyebrow">Guides &amp; resources</span>
+            <h2 class="section__title">Start with the guides, not the sales calls.</h2>
+            <p class="section__lede">{{ total_posts }} articles on the questions families actually ask — how to pay for care, how to spot red flags, what Medicare does and doesn't cover.</p>
+        </div>
+
+        <div class="guide-grid">
+            {% for cat in blog_categories %}
+            <a href="/blog.html#{{ cat.slug }}" class="guide-card">
+                <span class="guide-card__icon" aria-hidden="true">{{ cat.icon }}</span>
+                <div>
+                    <h3 class="guide-card__title">{{ cat.name }}</h3>
+                    <p class="guide-card__desc">{{ cat.description }}</p>
+                    <span class="guide-card__cta">{{ cat.count }} article{{ 's' if cat.count != 1 else '' }} &rsaquo;</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-10);">
+            <a href="/blog.html" class="btn btn--outline btn--lg">Browse all guides</a>
         </div>
     </div>
 </section>
 {% endif %}
 
-<!-- SEO Text Block -->
-<section class="py-12 bg-secondary-50 border-t border-secondary-100">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Finding the Right Home Care Doesn't Have to Be Hard</h2>
-        <p class="text-gray-600 leading-relaxed mb-4">
-            Senior Home Care Finder helps families across America find trusted, compassionate in-home care
-            for their aging loved ones. We make it easy to compare agencies, read reviews, and understand
-            your options &mdash; whether you need companion care, personal care, or specialized memory care.
-        </p>
-        <p class="text-gray-600 leading-relaxed">
-            Our directory includes detailed information about services offered, payment options accepted,
-            and what makes each agency unique. Start your search today and take the first step toward
-            peace of mind for your family.
-        </p>
+<!-- Ad slot C -->
+<div class="ad-slot ad-slot--in-content" data-slot="home-c" aria-hidden="true">
+    <div class="ad-slot__inner">Advertisement</div>
+</div>
+
+<!-- Editorial anti-position -->
+<section class="section section--alt">
+    <div class="site-container">
+        <div class="editorial">
+            <h2 class="editorial__title">What this directory is — and isn't.</h2>
+            <p class="editorial__body">
+                We're a simple, independent listing of in-home care agencies. Families find us through search, use the directory to compare options, and call the agencies directly. That's the whole product.
+            </p>
+            <ul class="editorial__list">
+                <li>Agencies don't pay to appear here. There's no "featured" tier you can buy.</li>
+                <li>We don't sell your information or route calls through a middleman.</li>
+                <li>We're not a medical-advice site. For care recommendations, talk to a doctor.</li>
+                <li>We're not a substitute for checking an agency's license and references yourself.</li>
+            </ul>
+        </div>
     </div>
 </section>
 
-<!-- FAQ Section -->
-<section class="py-12 bg-white border-t border-gray-100">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h2>
-            <p class="text-gray-500">Common questions about home care</p>
+<!-- FAQ -->
+<section class="section">
+    <div class="site-container">
+        <div class="section__head section__head--center">
+            <span class="section__eyebrow">Common questions</span>
+            <h2 class="section__title">Before you start calling agencies.</h2>
+            <p class="section__lede">Plain answers to the questions families ask us most.</p>
         </div>
 
-        <div class="space-y-4" id="faq-list">
-
-            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
-                        aria-expanded="false">
+        <div class="faq" id="faq-list">
+            <div class="faq-item" aria-expanded="false">
+                <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>What is in-home care?</span>
-                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
+                    <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
-                    In-home care (also called home care) provides non-medical assistance to seniors and adults in their own homes. Services typically include help with daily activities like bathing, dressing, meal preparation, medication reminders, light housekeeping, and companionship. Unlike home health care, in-home care does not require medical licensing and focuses on helping people maintain independence and quality of life.
+                <div class="faq-item__answer" hidden>
+                    In-home care, also called home care, is non-medical help for seniors and adults in their own home. Caregivers help with bathing, dressing, meals, light housekeeping, medication reminders, and companionship. Home care is different from home health care, which is medical and needs a doctor's order.
                 </div>
             </div>
 
-            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
-                        aria-expanded="false">
+            <div class="faq-item" aria-expanded="false">
+                <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>How much does home care cost?</span>
-                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
+                    <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
-                    Home care costs vary significantly by location, level of care needed, and hours required. The national average is approximately $25-35 per hour. Live-in care typically costs $200-400 per day. Costs tend to be higher in metropolitan areas and for specialized care like dementia support. Many agencies offer free consultations to provide personalized cost estimates based on your specific needs.
+                <div class="faq-item__answer" hidden>
+                    Home care costs vary by where you live and how many hours you need. The national average is $25 to $35 per hour. Live-in care usually runs $200 to $400 per day. Costs are higher in big cities and for memory care. Most agencies offer a free consultation to give you a real price estimate.
                 </div>
             </div>
 
-            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
-                        aria-expanded="false">
+            <div class="faq-item" aria-expanded="false">
+                <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>Does Medicare pay for home care?</span>
-                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
+                    <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
-                    Medicare generally does not cover non-medical home care services like bathing assistance, meal preparation, or companionship. However, Medicare does cover home health care (skilled nursing, physical therapy) when prescribed by a doctor for homebound patients. Medicaid may cover some home care services depending on your state's programs. Other payment options include long-term care insurance and <a href="/services/veterans-care.html" class="text-primary-600 hover:underline">VA benefits for veterans</a>.
+                <div class="faq-item__answer" hidden>
+                    Medicare generally does not cover non-medical home care like bathing, meals, or companionship. Medicare does cover home health care (skilled nursing, physical therapy) if a doctor orders it. Medicaid may cover home care in some states. Other options are long-term care insurance and <a href="/services/veterans-care.html">VA benefits for veterans</a>.
                 </div>
             </div>
 
-            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
-                        aria-expanded="false">
+            <div class="faq-item" aria-expanded="false">
+                <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>What's the difference between home care and home health care?</span>
-                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
+                    <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
-                    <strong>Home care</strong> (non-medical) provides assistance with daily living activities like bathing, dressing, meal preparation, medication reminders, light housekeeping, and companionship. <strong>Home health care</strong> (medical) provides skilled nursing services, wound care, physical therapy, and other medical treatments prescribed by a doctor. Home care helps maintain independence and quality of life; home health care addresses specific medical conditions and recovery needs.
+                <div class="faq-item__answer" hidden>
+                    <strong>Home care</strong> is non-medical help with daily living: bathing, meals, housekeeping, company. <strong>Home health care</strong> is medical: skilled nursing, wound care, physical therapy, ordered by a doctor. Home care helps someone stay independent. Home health care treats a medical problem.
                 </div>
             </div>
 
-            <div class="faq-item bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
-                        aria-expanded="false">
+            <div class="faq-item" aria-expanded="false">
+                <button type="button" class="faq-item__btn" aria-expanded="false">
                     <span>How do I choose a home care agency?</span>
-                    <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
+                    <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div class="faq-answer hidden px-6 pb-5 text-gray-600 leading-relaxed text-sm">
-                    Look for agencies that are licensed in your state, conduct thorough background checks on caregivers, provide ongoing training and supervision, and have positive reviews from families. Ask about their caregiver matching process, backup coverage policies, and how they handle concerns or complaints. Request references from current clients and arrange to meet potential caregivers before services begin. Accreditations from organizations like the Joint Commission or CHAP indicate quality standards.
+                <div class="faq-item__answer" hidden>
+                    Start with agencies that are licensed in your state and run background checks on caregivers. Ask about training, how they match caregivers to clients, what happens if your regular caregiver is out, and how they handle concerns. Ask for references. Meet at least one caregiver before care starts. Accreditation from the <a href="https://www.jointcommission.org/" target="_blank" rel="noopener">Joint Commission</a> or <a href="https://chapinc.org/" target="_blank" rel="noopener">CHAP</a> is a good sign.
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
 <script>
-function goToState() {
-    const slug = document.getElementById('state-select').value;
+function handleHeroSubmit(e) {
+    e.preventDefault();
+    var slug = document.getElementById('state-select').value;
     if (slug) window.location.href = '/state/' + slug + '.html';
+    return false;
 }
-document.getElementById('state-select').addEventListener('change', function() {
-    if (this.value) goToState();
+document.getElementById('state-select').addEventListener('change', function () {
+    if (this.value) { window.location.href = '/state/' + this.value + '.html'; }
 });
 
 // FAQ accordion
-document.querySelectorAll('.faq-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        const answer = this.nextElementSibling;
-        const icon = this.querySelector('.faq-icon');
-        const isOpen = !answer.classList.contains('hidden');
+document.querySelectorAll('.faq-item__btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var item = this.closest('.faq-item');
+        var answer = this.nextElementSibling;
+        var open = this.getAttribute('aria-expanded') === 'true';
 
-        document.querySelectorAll('.faq-answer').forEach(function(a) { a.classList.add('hidden'); });
-        document.querySelectorAll('.faq-icon').forEach(function(i) { i.style.transform = ''; });
-        document.querySelectorAll('.faq-btn').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
+        document.querySelectorAll('.faq-item').forEach(function (i) {
+            i.setAttribute('aria-expanded', 'false');
+            i.querySelector('.faq-item__btn').setAttribute('aria-expanded', 'false');
+            i.querySelector('.faq-item__answer').setAttribute('hidden', '');
+        });
 
-        if (!isOpen) {
-            answer.classList.remove('hidden');
-            icon.style.transform = 'rotate(180deg)';
+        if (!open) {
+            item.setAttribute('aria-expanded', 'true');
             this.setAttribute('aria-expanded', 'true');
+            answer.removeAttribute('hidden');
         }
     });
 });
