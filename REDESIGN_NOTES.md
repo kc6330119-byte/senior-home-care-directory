@@ -1,0 +1,23 @@
+# Redesign Notes — Senior Home Care Finder
+
+One line per non-obvious design decision. Newest at the top.
+
+- 2026-04-20 · **Locked by Kevin:** M1 = homepage + base.html together (Tailwind removal + tokenization must happen simultaneously).
+- 2026-04-20 · **Locked by Kevin:** Target reading grade 8 for body copy (CDC Clear Communication Index standard; NIA/AARP target grade 6–8 for elder-care material). Editorial guides may reach grade 9 when topic demands.
+- 2026-04-20 · **Locked by Kevin:** Swap Weather link → Medicare Care Compare on agency detail (healthcare equivalent of sibling's weather→BrokerCheck swap).
+- 2026-04-20 · **Locked by Kevin:** Keep agency photos prominent in listings and detail — trust signal is load-bearing here unlike the finance site.
+- 2026-04-20 · **Locked by Kevin:** Color retune — deeper/warmer within the existing blue/teal/amber family (popular style for elder-care audience), not a full palette replacement.
+- 2026-04-20 · **Locked by Kevin:** Font stack — Public Sans (USWDS, OFL, self-hosted variable WOFF2) + Fraunces (OFL, variable). Popular-but-proven for this audience: Public Sans is the accessibility standard in US government/health digital work; Fraunces carries editorial warmth without reading as tech-startup.
+- 2026-04-20 · Skip M3 (compare feature) and M5/M7/M8 (tools + calculators) from sibling — not applicable or premature for this site's scope.
+- 2026-04-20 · Swap Weather link on agency detail → Medicare Care Compare link (healthcare equivalent of sibling's weather→BrokerCheck swap).
+- 2026-04-20 · Keep agency photos prominent — home care agencies often have real photos, unlike advisor firms; trust signal is load-bearing here.
+- 2026-04-20 · No dark mode. Target audience (adult children researching care, and senior end-users) skews older; light-on-dark-text is the accessibility default.
+- 2026-04-20 · Reject semantic green/red/amber. We don't have gain/loss/warn like finance. `--color-success` = secondary, `--color-warn` = accent for disclaimers.
+- 2026-04-20 · `--color-text-muted` brightened from gray-500 to `#4A5568` — gray-500 fails WCAG AA at small sizes for 60+ eyes.
+- 2026-04-20 · Body base font raised to 18px (`--font-size-base: 1.125rem`) — single largest a11y win for the audience.
+- 2026-04-20 · Chose Public Sans (USWDS, OFL) + Fraunces (OFL) as the font stack — institutional trust without corporate coldness; both self-hostable as variable WOFF2.
+- 2026-04-20 · Retune the existing blue/teal/amber palette (deeper, warmer) rather than replace it — CLAUDE.md specifies the current palette and preserving it signals continuity to crawlers and users.
+- 2026-04-20 · Three homepage ad slots reserved (home-a, home-b, home-c) — none active today, so positions are proposable with no displacement risk. Positions become load-bearing once populated.
+- 2026-04-20 · Milestone 1 = homepage + base.html together — Tailwind removal and homepage tokenization have to happen simultaneously or the homepage temporarily breaks.
+- 2026-04-20 · Do not regress `config.py` US_STATES editorial (51 × 100+ words) or SERVICES intros (10 × 100+ words) — these predate sibling's equivalents and were the source pattern.
+- 2026-04-20 · Initial AdSense-slot inventory: **zero active slots**. Only the loader script in `base.html:64`. The `.ad-container { min-height: 90px }` CSS is defined but unused in templates.
