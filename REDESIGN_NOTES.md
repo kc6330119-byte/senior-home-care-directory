@@ -2,6 +2,12 @@
 
 One line per non-obvious design decision. Newest at the top.
 
+- 2026-04-20 · **M4** · Blog index is a magazine-style row list (not a photo-card grid). Photos render as a small right-aligned thumbnail only when the post has one — scales past image availability instead of pretending every post has a hero shot.
+- 2026-04-20 · **M4** · Reading-time computed entirely in Jinja: `(content | striptags | wordcount) // 225 + 1` with a minimum of 1. 225 wpm is the audience-tuned rate (slightly slower than the 250 editorial default because target skews older).
+- 2026-04-20 · **M4** · Breadcrumb on post pages is 3-level (Home / Guides / post title). "Guides" label matches the nav + footer — "Resources" was the old wording and has been retired to keep a single noun across the site.
+- 2026-04-20 · **M4** · Article JSON-LD emits `publisher.logo` as a Cloudinary-hosted ImageObject (same URL base.html uses for OG images). Google News / Discover candidacy requires `publisher.logo` on the schema.
+- 2026-04-20 · **M4** · Disclaimer-box uses warn-tinted left border (`--color-warn`, amber) not the old gray-neutral card. Amber reads as "heads-up" without alarming; load-bearing YMYL trust signal.
+- 2026-04-20 · **M4** · Related-posts block uses `rejectattr('slug', 'equalto', post.slug) | list | slice(3)` rather than `{% break %}` — Jinja doesn't support `break`, and the filter approach is cleaner than a counter variable.
 - 2026-04-20 · **M3** · Service-page breadcrumb is two-level (Home / Service) — no `/services.html` hub page exists, so routing breadcrumbs through one would be a dead link. The homepage `#browse-services` anchor serves as the hub.
 - 2026-04-20 · **M3** · `.city-list` component re-used verbatim for the service-page state filter — same visual pattern (label + count on a nav-style link row), no reason to author a second component.
 - 2026-04-20 · **M3** · `.service-chip` / `.service-chip-row` are a new tokenized chip component for the "other services" row — distinct from `.chip` (which is a smaller metadata pill) because chips-as-nav-buttons need more padding and hover affordance.

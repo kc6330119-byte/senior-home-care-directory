@@ -8,6 +8,41 @@ For the terse one-line-per-decision log, see [`REDESIGN_NOTES.md`](REDESIGN_NOTE
 
 ---
 
+## Milestone 4 — Blog templates (index + post) (2026-04-20)
+
+**Branch:** `redesign/homepage-healthcare-native` (continuation)
+**Commits:** `ea486d1` (blog.html + post.html rewrite + ~230 lines of new CSS)
+**Templates rewritten:** `blog.html`, `post.html`
+**CSS additions:** `.filter-pills` / `.filter-pill`, `.post-index` / `.post-row`, `.article` + children, `.disclaimer-box`, `.related-posts` / `.related-post`
+
+### What changed
+
+- **`blog.html`** rewritten as a magazine-style post list. Each row is a tokenized `.post-row` with mono-caps meta (category · date · reading time · author), Fraunces title, and Public Sans excerpt. Featured image renders as a 160×120 right-aligned thumbnail — **only** when present, so posts without images don't get a fallback-icon placeholder that pretends they do. Filter pills (`.filter-pills`) restyled in the token system; URL-hash deep-linking preserved so homepage category chips (`/blog.html#guides`) still land on the right pill.
+- **`post.html`** rewritten as an editorial reading experience. Large Fraunces headline (`opsz 96 / SOFT 40`), Public Sans deck pulled from `post.excerpt`, mono-caps meta row. Body runs through the `.prose` block tokenized in M1 — finally closes the hardcoded-hex dark-mode bug that was visible on every blog post. Disclaimer uses the new warn-tinted `.disclaimer-box`. Footer has the tokenized share list (with `|urlencode` on all interpolated fields, picking up the M2-polish URL-encoding fix). Related posts render in a 3-column tokenized card row using `rejectattr + list + slice` (Jinja doesn't support `{% break %}`).
+- **Article JSON-LD** now emitted on every post: `headline`, `datePublished`, `author` (Person), `publisher` (Organization with `logo` ImageObject), `mainEntityOfPage`, optional `image` and `description`. Closes the M7b-port gap for editorial content; makes posts eligible for Google News / Discover and for AI-Overview pull candidacy.
+- **BreadcrumbList JSON-LD** on both index (Home / Guides) and post (Home / Guides / post title) via the shared `_breadcrumb_schema.html` macro. "Guides" is now the canonical noun across nav, footer, breadcrumb, and page-head — "Resources" wording retired.
+- **Reading time** computed in Jinja: `(content | striptags | wordcount) // 225 + 1`, minimum 1. 225 wpm is audience-tuned (slightly slower than the 250 editorial default because this site's readers skew older). Shown on the blog index rows AND on the article itself AND on related-post cards.
+- **Four reserved ad slots** across the two templates (`blog-a`, `blog-b`, post-page doesn't carry any yet — intentional, editorial reading experience runs ad-free through the body, with house ads on index and agency/state pages carrying the inventory).
+- **CSS additions (~230 lines):** filter pills with active state, magazine-list row, article header + meta + deck + image + body + footer, disclaimer box with amber warn-tint, related-posts band + card.
+
+### Why it helps
+
+- **Reading experience on par with the content.** 25+ original articles at 1,500–2,500 words each is the load-bearing substance of this site's YMYL case to Google. An editorial typographic register — Fraunces headline, Public Sans deck, 66ch prose measure, 1.75 line-height — reads like a trustworthy reference, not a Tailwind-utility block. The finance sibling's M4 found the same: the reading surface is the quality signal.
+- **Dark-mode bug finally closed.** The old `.prose` block had hardcoded `#1f2937` / `#2563eb` / `#e5e7eb` / `#4b5563` / `#f9fafb` hex values. With tokenization from M1 already in place, `post.html` now picks up all the design-token colors automatically — zero additional CSS change needed. (We're light-only on this site per the M0 decision, but the token chain is correct for future flexibility.)
+- **Article schema = SERP rich features.** `datePublished`, `author`, `publisher.logo` unlock the byline treatment in search results ("By Author · Date"), Google News eligibility, and AI-Overview pull candidacy. The audience specifically Googles for things like "how to choose a home care agency" — AI Overview is already showing up on most of those queries.
+- **Scanability of the magazine index.** Mono-caps meta in 12px tabular-figure type, distinct `.post-row__category` in teal, titles in Fraunces at 20–26px depending on viewport. Easy to scan 25 articles without photos, easy to deep-link from the homepage category chips via the hash filter.
+- **YMYL disclaimer visually distinct.** Amber warn-tinted left border + mono-caps "Disclaimer" label — reads as "heads-up, not endorsement" without being alarming. Copy rewritten for grade-8 readability (CDC Clear Communication Index target).
+- **Reusable article components.** `.article__title` / `.article__deck` / `.article__meta` / `.disclaimer-box` / `.related-posts` port directly to per-service editorial pages if we add them, and to the other four Kevin directory sites.
+
+### Known gaps
+
+- **Blog content doesn't use the optional `.pullquote` or `.data-callout` components** the sibling ships — those are opt-in authoring elements (raw HTML in markdown). If Kevin wants them available here, it's ~30 lines of CSS to port. Deferred.
+- **No table of contents / reading-progress bar** on long-form posts. Deferred.
+- **Prose image styles are tokenized** in `.prose img` (inherits from the cascade) but no lazy-loading or intrinsic-width defaults are applied to embedded markdown images — whatever the author writes is what renders.
+- **Article schema `author.url`** not set — we don't have author bio pages yet. When/if we add a founder bio or team page, circle back to link authors there via schema.
+
+---
+
 ## Milestone 3 — Service page (2026-04-20)
 
 **Branch:** `redesign/homepage-healthcare-native` (continuation)
