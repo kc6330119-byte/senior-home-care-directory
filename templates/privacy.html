@@ -1,65 +1,97 @@
 {% extends "base.html" %}
+{% import '_breadcrumb_schema.html' as bc %}
+
+{% block extra_head %}
+{{ bc.schema([
+    ('Home', '/'),
+    ('Privacy policy', '/privacy.html'),
+]) }}
+{% endblock %}
 
 {% block content %}
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Privacy Policy</h1>
-    <p class="text-gray-500 text-sm mb-8">Last updated: {{ current_year }}</p>
+{{ bc.nav([
+    ('Home', '/'),
+    ('Privacy policy', None),
+]) }}
 
-    <div class="prose prose-lg max-w-none text-gray-600 space-y-6">
-        <p>
-            Senior Home Care Finder ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.
-        </p>
+<section class="page-head">
+    <div class="site-container">
+        <span class="page-head__eyebrow">Legal</span>
+        <h1 class="page-head__title">Privacy policy.</h1>
+    </div>
+</section>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Information We Collect</h2>
-        <p>We may collect information about you in various ways:</p>
-        <ul class="list-disc pl-6 space-y-2">
-            <li><strong>Personal Data:</strong> When you fill out forms on our site, we collect information such as your name, email address, and any other information you provide.</li>
-            <li><strong>Usage Data:</strong> We automatically collect certain information when you visit our site, including your IP address, browser type, pages visited, and time spent on pages.</li>
-            <li><strong>Cookies:</strong> We use cookies and similar tracking technologies to enhance your experience and analyze site traffic.</li>
-        </ul>
+<div class="site-container static-page">
+    <div class="static-page__body">
+        <div class="legal-prose">
+            <p class="legal-prose__timestamp">Last updated: {{ current_year }}</p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">How We Use Your Information</h2>
-        <p>We use the information we collect to:</p>
-        <ul class="list-disc pl-6 space-y-2">
-            <li>Provide and maintain our service</li>
-            <li>Respond to your inquiries and support requests</li>
-            <li>Analyze usage to improve our website</li>
-            <li>Send you updates if you've opted in</li>
-            <li>Comply with legal obligations</li>
-        </ul>
+            <p>
+                {{ site_name }} ("we," "our," or "us") is committed to protecting your privacy. This policy explains what we collect, how we use it, and who else touches your information when you visit this site.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Third-Party Services</h2>
-        <p>
-            We use third-party services that may collect information about you:
-        </p>
-        <ul class="list-disc pl-6 space-y-2">
-            <li><strong>Google Analytics:</strong> We use Google Analytics to understand how visitors interact with our site.</li>
-            <li><strong>Google AdSense:</strong> We display advertisements through Google AdSense, which uses cookies to show relevant ads.</li>
-        </ul>
-        <p>
-            These services have their own privacy policies governing their use of your information.
-        </p>
+            <h2>Information we collect</h2>
+            <ul>
+                <li><strong>Form submissions.</strong> If you fill out our contact form or agency-submission form, we receive whatever you entered — typically a name, email, and a message or agency details. These submissions are delivered through Netlify Forms.</li>
+                <li><strong>Newsletter subscriptions.</strong> Email addresses submitted through the newsletter form are stored in Mailchimp. You can unsubscribe at any time using the link in every email.</li>
+                <li><strong>Analytics data.</strong> Google Analytics logs anonymized information about pages visited, time on page, approximate location (country/region), and referring source. It does not collect personally identifiable information from you directly.</li>
+                <li><strong>Cookies.</strong> Google Analytics and Google AdSense set cookies to measure traffic and serve advertising. You can opt out of personalized ads via <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Google's ad settings</a>.</li>
+            </ul>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Data Security</h2>
-        <p>
-            We implement reasonable security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security.
-        </p>
+            <h2>How we source agency listings</h2>
+            <p>
+                Most agency listings are compiled from public sources — Google Business Profile, state licensing registries, Medicare Care Compare, and direct submissions from agencies. We don't collect personal data from families in the course of building the directory. If your agency is listed and you want it removed, <a href="/contact.html">contact us</a>.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Your Rights</h2>
-        <p>
-            Depending on your location, you may have certain rights regarding your personal data, including the right to access, correct, or delete your information. To exercise these rights, please contact us.
-        </p>
+            <h2>What we use the information for</h2>
+            <ul>
+                <li>To respond to your inquiries and follow up on form submissions.</li>
+                <li>To send the newsletter to subscribers who opted in.</li>
+                <li>To understand aggregate traffic patterns (e.g., which guides are read most) so we can prioritize writing.</li>
+                <li>To comply with legal obligations.</li>
+            </ul>
+            <p>
+                We do not sell your personal information. We do not share it with third parties for marketing purposes. Agency submissions are reviewed internally before listings are published.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Changes to This Policy</h2>
-        <p>
-            We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last updated" date.
-        </p>
+            <h2>Third-party services</h2>
+            <ul>
+                <li><strong>Netlify</strong> hosts the site and processes form submissions.</li>
+                <li><strong>Airtable</strong> stores our agency and blog-post data.</li>
+                <li><strong>Mailchimp</strong> handles newsletter subscribers.</li>
+                <li><strong>Google Analytics</strong> provides anonymized traffic data.</li>
+                <li><strong>Google AdSense</strong> serves display advertising.</li>
+            </ul>
+            <p>
+                Each of these has its own privacy policy. We don't control what they do with data once it reaches them.
+            </p>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Contact Us</h2>
-        <p>
-            If you have questions about this Privacy Policy, please <a href="/contact.html" class="text-primary-600 hover:text-primary-700">contact us</a>.
-        </p>
+            <h2>Data retention</h2>
+            <p>
+                Form submissions are kept as long as they're useful for corresponding with you or maintaining directory accuracy. Analytics data is retained according to Google's default settings (currently 14 months). Newsletter subscribers remain on the list until they unsubscribe.
+            </p>
+
+            <h2>Your rights</h2>
+            <p>
+                Wherever you live, you can ask us to delete your submission or correct it. Email us through the <a href="/contact.html">contact form</a> with "Privacy request" in the subject line.
+            </p>
+
+            <h2>Data security</h2>
+            <p>
+                We use reasonable security measures to protect your personal information, but no method of transmission over the Internet is 100% secure. We cannot guarantee absolute security.
+            </p>
+
+            <h2>Changes to this policy</h2>
+            <p>
+                We may update this policy from time to time. Changes will be reflected in the "Last updated" date above.
+            </p>
+
+            <h2>Contact</h2>
+            <p>
+                Questions about this policy? <a href="/contact.html">Get in touch</a>.
+            </p>
+        </div>
     </div>
 </div>
 

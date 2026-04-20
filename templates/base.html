@@ -26,24 +26,53 @@
     <!-- SEO -->
     <meta name="robots" content="{% if noindex %}noindex, follow{% else %}index, follow{% endif %}">
     <meta name="author" content="{{ site_name }}">
+
+    <!-- Site verification -->
     <meta name="msvalidate.01" content="50902EDCBFD78D0B3059F505F0C6E108" />
 
-    <!-- Structured Data -->
+    <!-- Theme color (browser UI tinting) -->
+    <meta name="theme-color" content="#1E4D8C">
+
+    <!-- Font preloads — self-hosted variable WOFF2 -->
+    <link rel="preload" href="/static/fonts/public-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/static/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+
+    <!-- Structured Data — @graph WebSite + Organization -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": {{ site_name | tojson | safe }},
-        "url": {{ site_url | tojson | safe }},
-        "description": {{ site_description | tojson | safe }},
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": {
-                "@type": "EntryPoint",
-                "urlTemplate": {{ (site_url ~ "/state/{slug}.html") | tojson | safe }}
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "@id": {{ (site_url ~ "/#website") | tojson | safe }},
+                "url": {{ site_url | tojson | safe }},
+                "name": {{ site_name | tojson | safe }},
+                "description": {{ site_description | tojson | safe }},
+                "publisher": { "@id": {{ (site_url ~ "/#organization") | tojson | safe }} },
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": {
+                        "@type": "EntryPoint",
+                        "urlTemplate": {{ (site_url ~ "/state/{slug}.html") | tojson | safe }}
+                    },
+                    "query-input": "required name=slug"
+                }
             },
-            "query-input": "required name=slug"
-        }
+            {
+                "@type": "Organization",
+                "@id": {{ (site_url ~ "/#organization") | tojson | safe }},
+                "name": {{ site_name | tojson | safe }},
+                "url": {{ site_url | tojson | safe }},
+                "description": {{ site_description | tojson | safe }},
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://res.cloudinary.com/dnmrgvjdm/image/upload/v1773944336/SeniorGuide_ybruqy.png"
+                }
+            }
+        ]
     }
     </script>
 
@@ -64,353 +93,355 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9265762311868507"
      crossorigin="anonymous"></script>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        },
-                        secondary: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            200: '#99f6e4',
-                            300: '#5eead4',
-                            400: '#2dd4bf',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                            700: '#0f766e',
-                            800: '#115e59',
-                            900: '#134e4a',
-                        },
-                        accent: {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            200: '#fde68a',
-                            300: '#fcd34d',
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                            700: '#b45309',
-                            800: '#92400e',
-                            900: '#78350f',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Custom styles -->
-    <link rel="stylesheet" href="/static/css/custom.css">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128106;</text></svg>">
-
-    <style>
-        .ad-container { min-height: 90px; }
-    </style>
+    <!-- Favicon — inline SVG, zero fetch on critical path -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E4D8C'/%3E%3Cpath d='M9 22V14l7-5 7 5v8h-4v-6h-6v6H9z' fill='white'/%3E%3C/svg%3E">
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body>
 
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/" class="flex items-center space-x-2">
-                        <span class="text-2xl">&#128106;</span>
-                        <span class="font-bold text-xl text-gray-900">{{ site_name }}</span>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- Navigation -->
+<nav class="site-nav" aria-label="Primary">
+    <div class="site-container site-nav__inner">
+
+        <a href="/" class="site-nav__brand">
+            <svg class="site-nav__brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                <rect width="32" height="32" rx="6" fill="#1E4D8C"/>
+                <path d="M9 22V14l7-5 7 5v8h-4v-6h-6v6H9z" fill="white"/>
+            </svg>
+            <span>{{ site_name }}</span>
+        </a>
+
+        <div class="site-nav__links">
+            <div class="site-nav__dropdown">
+                <button type="button" class="site-nav__dropdown-btn" aria-haspopup="true" aria-expanded="false">
+                    Services
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div class="site-nav__dropdown-menu">
+                    {% for service in services %}
+                    <a href="/services/{{ service.slug }}.html" class="site-nav__dropdown-link">
+                        <span class="site-nav__dropdown-icon" aria-hidden="true">{{ service.icon }}</span>
+                        <span>{{ service.name }}</span>
                     </a>
-                </div>
-
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center space-x-1">
-                    <!-- Services dropdown -->
-                    <div class="relative group">
-                        <button class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium flex items-center gap-1 rounded-md hover:bg-gray-50">
-                            Services
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div class="absolute left-0 mt-1 w-64 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 border border-gray-100 py-2">
-                            {% for service in services %}
-                            <a href="/services/{{ service.slug }}.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700">
-                                <span class="text-base">{{ service.icon }}</span>
-                                <span>{{ service.name }}</span>
-                            </a>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <a href="/blog.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Resources</a>
-                    <a href="/about.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">About</a>
-                    <a href="/contact.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Contact</a>
-
-                    <!-- Desktop Search -->
-                    <div class="relative" id="search-container">
-                        <button id="search-toggle" class="text-gray-700 hover:text-primary-600 p-2 rounded-md hover:bg-gray-50" aria-label="Search agencies">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
-                            </svg>
-                        </button>
-                        <div id="search-box" class="hidden absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 z-50">
-                            <div class="p-3">
-                                <input type="text" id="search-input" placeholder="Search by name, city, or state..."
-                                       class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
-                            </div>
-                            <div id="search-results" class="hidden max-h-72 overflow-y-auto border-t border-gray-100 pb-2"></div>
-                        </div>
-                    </div>
-
-                    <a href="/submit.html" class="ml-2 px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-                        + Add Agency
-                    </a>
-                </div>
-
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center gap-1">
-                    <button id="mobile-search-btn" class="text-gray-700 hover:text-primary-600 p-2 rounded-md" aria-label="Search">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
-                        </svg>
-                    </button>
-                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary-600 p-2 rounded-md">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
+                    {% endfor %}
                 </div>
             </div>
+
+            <a href="/blog.html" class="site-nav__link">Guides</a>
+            <a href="/about.html" class="site-nav__link">About</a>
+            <a href="/contact.html" class="site-nav__link">Contact</a>
+
+            <div class="site-nav__search">
+                <button type="button" class="site-nav__search-toggle" id="search-toggle" aria-label="Search agencies" aria-expanded="false" aria-controls="search-box">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg>
+                </button>
+                <div class="site-nav__search-box" id="search-box" hidden>
+                    <label class="visually-hidden" for="search-input">Search agencies</label>
+                    <input type="search" id="search-input" class="site-nav__search-input" placeholder="Search by name, city, or state" autocomplete="off">
+                    <div class="search-results" id="search-results" hidden></div>
+                </div>
+            </div>
+
+            <a href="/submit.html" class="site-nav__cta">List an agency</a>
         </div>
 
-        <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white">
-            <!-- Mobile Search -->
-            <div class="px-3 pt-3 pb-2">
-                <input type="text" id="mobile-search-input" placeholder="Search agencies..."
-                       class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
-                <div id="mobile-search-results" class="hidden mt-2 rounded-lg border border-gray-100 bg-white max-h-60 overflow-y-auto shadow-sm"></div>
-            </div>
-            <div class="px-3 pt-2 pb-3 space-y-1">
-                <p class="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Services</p>
-                {% for service in services %}
-                <a href="/services/{{ service.slug }}.html" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-md">
-                    {{ service.icon }} {{ service.name }}
-                </a>
-                {% endfor %}
-                <hr class="my-2 border-gray-100">
-                <a href="/blog.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Resources</a>
-                <a href="/about.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">About</a>
-                <a href="/contact.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Contact</a>
-                <a href="/submit.html" class="block mx-3 my-2 px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg text-center hover:bg-primary-700">
-                    + Add Agency
-                </a>
-            </div>
+        <div class="site-nav__actions">
+            <button type="button" class="site-nav__menu-toggle" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
         </div>
-    </nav>
 
-    <!-- Main Content -->
-    <main class="flex-grow">
-        {% block content %}{% endblock %}
-    </main>
+    </div>
 
-    <!-- Newsletter Signup (Mailchimp) -->
-    <section class="bg-primary-600 text-white py-10">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-xl font-bold mb-2">Stay Informed About Senior Care</h2>
-            <p class="text-primary-100 text-sm mb-5">Get caregiving tips, guides, and resources delivered to your inbox.</p>
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobile-menu" hidden>
+        <div class="mobile-menu__section">
+            <label class="visually-hidden" for="mobile-search-input">Search agencies</label>
+            <input type="search" id="mobile-search-input" class="mobile-search__input" placeholder="Search by name, city, or state" autocomplete="off">
+            <div class="search-results" id="mobile-search-results" hidden style="margin-top: var(--space-3);"></div>
+        </div>
+
+        <div class="mobile-menu__section">
+            <p class="mobile-menu__label">Care services</p>
+            {% for service in services %}
+            <a href="/services/{{ service.slug }}.html" class="mobile-menu__link">
+                <span aria-hidden="true">{{ service.icon }}</span>
+                <span>{{ service.name }}</span>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="mobile-menu__section">
+            <a href="/blog.html" class="mobile-menu__link">Guides</a>
+            <a href="/about.html" class="mobile-menu__link">About</a>
+            <a href="/contact.html" class="mobile-menu__link">Contact</a>
+            <a href="/submit.html" class="mobile-menu__cta">List an agency</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main id="main">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Newsletter Signup -->
+<section class="newsletter">
+    <div class="site-container">
+        <div class="newsletter__inner">
+            <h2 class="newsletter__title">Helpful guidance, once a month</h2>
+            <p class="newsletter__lede">Practical articles on home care, caregiver support, paying for care, and what to ask an agency. No spam — unsubscribe anytime.</p>
             {% if mailchimp_form_url %}
-            <form action="{{ mailchimp_form_url }}" method="post" target="_blank" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <form action="{{ mailchimp_form_url }}" method="post" target="_blank" class="newsletter__form">
                 {% if mailchimp_honeypot_name %}
                 <div aria-hidden="true" style="position: absolute; left: -5000px;"><input type="text" name="{{ mailchimp_honeypot_name }}" tabindex="-1" value=""></div>
                 {% endif %}
-                <input type="email" name="EMAIL" required placeholder="Your email address"
-                       class="flex-1 px-4 py-2.5 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-accent-400 outline-none">
-                <button type="submit" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg text-sm transition-colors whitespace-nowrap">
-                    Subscribe
-                </button>
+                <input type="hidden" name="SITE" value="senior-home-care">
+                <label class="visually-hidden" for="newsletter-email">Email address</label>
+                <input type="email" id="newsletter-email" name="EMAIL" required placeholder="Your email address" class="newsletter__input" autocomplete="email">
+                <button type="submit" class="newsletter__btn">Subscribe</button>
             </form>
             {% else %}
-            <form name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" id="newsletter-form">
+            <form name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="newsletter__form" id="newsletter-form">
                 <input type="hidden" name="form-name" value="newsletter">
-                <p class="hidden"><label>Don't fill this out: <input name="bot-field"></label></p>
-                <input type="email" name="email" required placeholder="Your email address"
-                       class="flex-1 px-4 py-2.5 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-accent-400 outline-none">
-                <button type="submit" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg text-sm transition-colors whitespace-nowrap">
-                    Subscribe
-                </button>
+                <p style="position:absolute;left:-5000px" aria-hidden="true"><label>Don't fill this out: <input name="bot-field"></label></p>
+                <label class="visually-hidden" for="newsletter-email">Email address</label>
+                <input type="email" id="newsletter-email" name="email" required placeholder="Your email address" class="newsletter__input" autocomplete="email">
+                <button type="submit" class="newsletter__btn">Subscribe</button>
             </form>
-            <p id="newsletter-success" class="hidden text-accent-200 text-sm mt-3 font-medium">Thanks for subscribing!</p>
+            <p id="newsletter-success" class="newsletter__note" hidden>Thanks for subscribing.</p>
             {% endif %}
-            <p class="text-primary-200 text-xs mt-4">No spam, ever. Unsubscribe anytime.</p>
+            <p class="newsletter__note">We publish roughly once a month.</p>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Brand -->
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <span class="text-2xl">&#128106;</span>
-                        <span class="font-bold text-xl">{{ site_name }}</span>
-                    </div>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">{{ site_description }}</p>
-                    <p class="text-gray-500 text-xs">&copy; {{ current_year }} {{ site_name }}. All rights reserved.</p>
-                </div>
+<!-- Footer -->
+<footer class="site-footer" role="contentinfo">
+    <div class="site-container">
+        <div class="site-footer__grid">
+            <div>
+                <a href="/" class="site-footer__brand">
+                    <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                        <rect width="32" height="32" rx="6" fill="#1E4D8C"/>
+                        <path d="M9 22V14l7-5 7 5v8h-4v-6h-6v6H9z" fill="white"/>
+                    </svg>
+                    <span>{{ site_name }}</span>
+                </a>
+                <p class="site-footer__tagline">A directory of in-home care agencies across all 50 states. Independent, free to search, and not a lead-sales service.</p>
+                <p class="site-footer__copy">&copy; {{ current_year }} {{ site_name }}. All rights reserved.</p>
+            </div>
 
-                <!-- Services -->
-                <div>
-                    <h3 class="font-semibold mb-4 text-gray-100">Care Services</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        {% for service in services[:6] %}
-                        <li><a href="/services/{{ service.slug }}.html" class="hover:text-white transition-colors">{{ service.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            <div>
+                <h3 class="site-footer__heading">Care services</h3>
+                <ul class="site-footer__list">
+                    {% for service in services[:6] %}
+                    <li><a href="/services/{{ service.slug }}.html">{{ service.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-                <!-- Info -->
-                <div>
-                    <h3 class="font-semibold mb-4 text-gray-100">Info</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="/about.html" class="hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="/blog.html" class="hover:text-white transition-colors">Resources</a></li>
-                        <li><a href="/contact.html" class="hover:text-white transition-colors">Contact</a></li>
-                        <li><a href="/submit.html" class="hover:text-white transition-colors">Add an Agency</a></li>
-                        <li><a href="/privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
-                        <li><a href="/terms.html" class="hover:text-white transition-colors">Terms of Service</a></li>
-                    </ul>
-                </div>
+            <div>
+                <h3 class="site-footer__heading">Information</h3>
+                <ul class="site-footer__list">
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/blog.html">Guides</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
+                    <li><a href="/submit.html">List an agency</a></li>
+                    <li><a href="/privacy.html">Privacy policy</a></li>
+                    <li><a href="/terms.html">Terms of service</a></li>
+                </ul>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
-    <!-- Nav + Search Script -->
-    <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+<script>
+(function () {
+    var menuBtn = document.getElementById('mobile-menu-btn');
+    var mobileMenu = document.getElementById('mobile-menu');
+
+    function toggleMobileMenu(open) {
+        var isOpen = open !== undefined ? open : mobileMenu.hasAttribute('hidden');
+        if (isOpen) {
+            mobileMenu.removeAttribute('hidden');
+            menuBtn.setAttribute('aria-expanded', 'true');
+            document.body.classList.add('menu-open');
+        } else {
+            mobileMenu.setAttribute('hidden', '');
+            menuBtn.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('menu-open');
+        }
+    }
+
+    menuBtn.addEventListener('click', function () { toggleMobileMenu(); });
+
+    // Escape closes the mobile menu when it's open and returns focus to the
+    // hamburger. Matches the dismissal pattern used by the desktop search box.
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !mobileMenu.hasAttribute('hidden')) {
+            toggleMobileMenu(false);
+            menuBtn.focus();
+        }
+    });
+
+    // Close menu on viewport expand past breakpoint.
+    // MediaQueryList.addEventListener only exists on Safari/iOS 14+;
+    // fall back to the deprecated .addListener on older WebKit so the
+    // listener registration does not throw and abort the rest of this IIFE.
+    var mq = window.matchMedia('(min-width: 900px)');
+    var mqHandler = function (e) { if (e.matches) toggleMobileMenu(false); };
+    if (mq.addEventListener) {
+        mq.addEventListener('change', mqHandler);
+    } else if (mq.addListener) {
+        mq.addListener(mqHandler);
+    }
+
+    // Services dropdown — keep aria-expanded in sync with CSS :hover / :focus-within.
+    // The menu itself opens via CSS. The button claims aria-haspopup so screen
+    // readers need the expanded state to match the visible state; without this
+    // the button always announces "collapsed" even when the menu is open.
+    var dropdown = document.querySelector('.site-nav__dropdown');
+    var dropdownBtn = dropdown && dropdown.querySelector('.site-nav__dropdown-btn');
+    if (dropdown && dropdownBtn) {
+        var syncDropdown = function () {
+            var open = dropdown.matches(':hover') || dropdown.matches(':focus-within');
+            dropdownBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+        ['mouseenter', 'mouseleave', 'focusin', 'focusout'].forEach(function (ev) {
+            dropdown.addEventListener(ev, syncDropdown);
         });
+    }
 
-        // Mobile search icon
-        document.getElementById('mobile-search-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.remove('hidden');
-            document.getElementById('mobile-search-input').focus();
+    // ---- Search ----
+    var searchIndex = null;
+    function loadSearchIndex(cb) {
+        if (searchIndex) { cb(); return; }
+        fetch('/search-index.json')
+            .then(function (r) { return r.json(); })
+            .then(function (d) { searchIndex = d; cb(); })
+            .catch(function () {});
+    }
+
+    function filterAgencies(q) {
+        if (!searchIndex || q.length < 2) return [];
+        q = q.toLowerCase();
+        return searchIndex.filter(function (a) {
+            return a.name.toLowerCase().indexOf(q) !== -1 ||
+                   a.city.toLowerCase().indexOf(q) !== -1 ||
+                   a.state.toLowerCase().indexOf(q) !== -1;
+        }).slice(0, 8);
+    }
+
+    function renderResults(container, matches) {
+        // Build via DOM + textContent to avoid injecting Airtable-sourced
+        // strings through innerHTML. The submit form is public so these
+        // fields must be treated as untrusted.
+        container.textContent = '';
+        if (matches.length === 0) {
+            var empty = document.createElement('p');
+            empty.className = 'search-result__empty';
+            empty.textContent = 'No agencies match that search.';
+            container.appendChild(empty);
+            return;
+        }
+        matches.forEach(function (a) {
+            var link = document.createElement('a');
+            link.className = 'search-result';
+            link.href = '/agency/' + encodeURIComponent(a.slug) + '.html';
+
+            var wrap = document.createElement('div');
+            var name = document.createElement('div');
+            name.className = 'search-result__name';
+            name.textContent = a.name;
+            var loc = document.createElement('div');
+            loc.className = 'search-result__loc';
+            loc.textContent = a.city + ', ' + a.state;
+
+            wrap.appendChild(name);
+            wrap.appendChild(loc);
+            link.appendChild(wrap);
+            container.appendChild(link);
         });
+    }
 
-        // Search index
-        let searchIndex = null;
-        function loadSearchIndex(callback) {
-            if (searchIndex) { callback(); return; }
-            fetch('/search-index.json')
-                .then(r => r.json())
-                .then(data => { searchIndex = data; callback(); })
-                .catch(() => {});
-        }
+    // Desktop search
+    var searchToggle = document.getElementById('search-toggle');
+    var searchBox = document.getElementById('search-box');
+    var searchInput = document.getElementById('search-input');
+    var searchResults = document.getElementById('search-results');
 
-        function filterAgencies(query) {
-            if (!searchIndex || query.length < 2) return [];
-            const q = query.toLowerCase();
-            return searchIndex.filter(a =>
-                a.name.toLowerCase().includes(q) ||
-                a.city.toLowerCase().includes(q) ||
-                a.state.toLowerCase().includes(q)
-            ).slice(0, 8);
-        }
-
-        function renderResults(matches) {
-            if (matches.length === 0) {
-                return '<p class="px-4 py-3 text-sm text-gray-400">No agencies found</p>';
-            }
-            return matches.map(a => `
-                <a href="/agency/${a.slug}.html" class="flex items-center gap-3 px-4 py-2.5 hover:bg-primary-50 transition-colors">
-                    <span class="text-primary-400 text-sm">&#128106;</span>
-                    <div>
-                        <p class="text-sm font-medium text-gray-900">${a.name}</p>
-                        <p class="text-xs text-gray-400">${a.city}, ${a.state}</p>
-                    </div>
-                </a>
-            `).join('');
-        }
-
-        // Desktop search
-        const searchToggle = document.getElementById('search-toggle');
-        const searchBox = document.getElementById('search-box');
-        const searchInput = document.getElementById('search-input');
-        const searchResults = document.getElementById('search-results');
-
-        searchToggle.addEventListener('click', function(e) {
+    if (searchToggle) {
+        searchToggle.addEventListener('click', function (e) {
             e.stopPropagation();
-            searchBox.classList.toggle('hidden');
-            if (!searchBox.classList.contains('hidden')) {
+            var hidden = searchBox.hasAttribute('hidden');
+            if (hidden) {
+                searchBox.removeAttribute('hidden');
+                searchToggle.setAttribute('aria-expanded', 'true');
                 searchInput.focus();
-                loadSearchIndex(() => {});
+                loadSearchIndex(function () {});
+            } else {
+                searchBox.setAttribute('hidden', '');
+                searchToggle.setAttribute('aria-expanded', 'false');
             }
         });
-
-        searchInput.addEventListener('input', function() {
-            const query = this.value.trim();
-            if (query.length < 2) { searchResults.classList.add('hidden'); return; }
-            loadSearchIndex(() => {
-                searchResults.innerHTML = renderResults(filterAgencies(query));
-                searchResults.classList.remove('hidden');
+        searchInput.addEventListener('input', function () {
+            var q = this.value.trim();
+            if (q.length < 2) { searchResults.setAttribute('hidden', ''); return; }
+            loadSearchIndex(function () {
+                renderResults(searchResults, filterAgencies(q));
+                searchResults.removeAttribute('hidden');
             });
         });
-
-        // Mobile search
-        const mobileInput = document.getElementById('mobile-search-input');
-        const mobileResults = document.getElementById('mobile-search-results');
-
-        mobileInput.addEventListener('input', function() {
-            const query = this.value.trim();
-            if (query.length < 2) { mobileResults.classList.add('hidden'); return; }
-            loadSearchIndex(() => {
-                mobileResults.innerHTML = renderResults(filterAgencies(query));
-                mobileResults.classList.remove('hidden');
-            });
-        });
-
-        // Newsletter form
-        const nlForm = document.getElementById('newsletter-form');
-        if (nlForm) {
-            nlForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                fetch('/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(new FormData(nlForm)).toString()
-                }).then(() => {
-                    nlForm.classList.add('hidden');
-                    document.getElementById('newsletter-success').classList.remove('hidden');
-                }).catch(() => alert('Something went wrong. Please try again.'));
-            });
-        }
-
-        // Close desktop search on outside click or Escape
-        document.addEventListener('click', function(e) {
-            if (!document.getElementById('search-container').contains(e.target)) {
-                searchBox.classList.add('hidden');
+        document.addEventListener('click', function (e) {
+            if (!searchBox.contains(e.target) && e.target !== searchToggle) {
+                searchBox.setAttribute('hidden', '');
+                searchToggle.setAttribute('aria-expanded', 'false');
             }
         });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') searchBox.classList.add('hidden');
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                searchBox.setAttribute('hidden', '');
+                searchToggle.setAttribute('aria-expanded', 'false');
+            }
         });
-    </script>
+    }
+
+    // Mobile search
+    var mobileInput = document.getElementById('mobile-search-input');
+    var mobileResults = document.getElementById('mobile-search-results');
+    if (mobileInput) {
+        mobileInput.addEventListener('input', function () {
+            var q = this.value.trim();
+            if (q.length < 2) { mobileResults.setAttribute('hidden', ''); return; }
+            loadSearchIndex(function () {
+                renderResults(mobileResults, filterAgencies(q));
+                mobileResults.removeAttribute('hidden');
+            });
+        });
+    }
+
+    // Newsletter (Netlify fallback only — Mailchimp uses native form submit)
+    var nlForm = document.getElementById('newsletter-form');
+    var nlSuccess = document.getElementById('newsletter-success');
+    if (nlForm && nlSuccess) {
+        nlForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(nlForm)).toString()
+            }).then(function () {
+                nlForm.setAttribute('hidden', '');
+                nlSuccess.removeAttribute('hidden');
+            }).catch(function () {
+                alert('Something went wrong. Please try again.');
+            });
+        });
+    }
+})();
+</script>
+
 </body>
 </html>

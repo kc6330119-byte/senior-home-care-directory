@@ -1,0 +1,59 @@
+{#
+  BreadcrumbList JSON-LD macro.
+
+  Usage:
+    {% import '_breadcrumb_schema.html' as bc %}
+    {{ bc.schema([
+        ('Home', '/'),
+        ('Texas', '/state/texas.html'),
+        ('Houston', '/state/texas/houston.html'),
+    ]) }}
+
+  Pass a list of (name, path) tuples. Paths are joined to site_url.
+  Emits a <script type="application/ld+json"> BreadcrumbList element.
+#}
+{% macro schema(items) -%}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {%- for name, path in items %}
+        {
+            "@type": "ListItem",
+            "position": {{ loop.index }},
+            "name": {{ name | tojson | safe }},
+            "item": {{ (site_url ~ path) | tojson | safe }}
+        }{% if not loop.last %},{% endif %}
+        {%- endfor %}
+    ]
+}
+</script>
+{%- endmacro %}
+
+{#
+  Visual breadcrumb markup. Matches the .breadcrumb CSS component.
+
+  Usage:
+    {{ bc.nav([('Home', '/'), ('Texas', '/state/texas.html'), ('Houston', None)]) }}
+
+  Last item with path=None renders as the current-page text (no link).
+#}
+{% macro nav(items) -%}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="site-container">
+        <ol class="breadcrumb__list">
+            {%- for name, path in items %}
+            <li class="breadcrumb__item">
+                {%- if path and not loop.last %}
+                <a href="{{ path }}" class="breadcrumb__link">{{ name }}</a>
+                <span class="breadcrumb__sep" aria-hidden="true">/</span>
+                {%- else %}
+                <span class="breadcrumb__current" aria-current="page">{{ name }}</span>
+                {%- endif %}
+            </li>
+            {%- endfor %}
+        </ol>
+    </div>
+</nav>
+{%- endmacro %}

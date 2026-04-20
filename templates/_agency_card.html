@@ -1,56 +1,50 @@
-<a href="/agency/{{ agency.slug }}.html"
-   class="listing-card bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow flex flex-col group">
-    <!-- Photo -->
-    <div class="h-40 bg-primary-50 overflow-hidden flex-shrink-0 relative">
+<a href="/agency/{{ agency.slug }}.html" class="agency-card">
+    <div class="agency-card__photo">
         {% if agency.photo_url %}
-        <img src="{{ agency.photo_url }}" alt="{{ agency.name }}"
-             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-             loading="lazy" referrerpolicy="no-referrer"
+        <img src="{{ agency.photo_url }}" alt="{{ agency.name }}" loading="lazy" referrerpolicy="no-referrer"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <div style="display:none" class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100">
-            <span class="text-4xl opacity-30">&#128106;</span>
-        </div>
+        <div class="agency-card__photo-fallback" style="display:none" aria-hidden="true">&#127968;</div>
         {% else %}
-        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100">
-            <span class="text-4xl opacity-30">&#128106;</span>
-        </div>
+        <div class="agency-card__photo-fallback" aria-hidden="true">&#127968;</div>
         {% endif %}
-
         {% if agency.status == 'Featured' %}
-        <span class="absolute top-2 left-2 bg-accent-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm">
-            Featured
-        </span>
+        <span class="agency-card__badge">Featured</span>
         {% endif %}
     </div>
+    <div class="agency-card__body">
+        <h3 class="agency-card__name">{{ agency.name }}</h3>
+        <p class="agency-card__loc">{{ agency.city }}, {{ agency.state }}</p>
 
-    <!-- Content -->
-    <div class="p-4 flex flex-col flex-grow">
-        <h3 class="font-bold text-gray-900 group-hover:text-primary-600 leading-snug mb-1 transition-colors">
-            {{ agency.name }}
-        </h3>
-        <p class="text-sm text-gray-500 mb-2">{{ agency.city }}, {{ agency.state }}</p>
-
-        <!-- Rating -->
         {% if agency.rating %}
-        <div class="flex items-center gap-1 mb-2">
-            <span class="text-accent-500 text-sm">{{ agency.rating | star_rating }}</span>
-            <span class="text-sm font-medium text-gray-700">{{ agency.rating }}</span>
-            {% if agency.review_count %}
-            <span class="text-xs text-gray-400">({{ agency.review_count }} reviews)</span>
+        <div class="agency-card__rating">
+            <span class="agency-card__rating-stars" aria-hidden="true">{{ agency.rating | star_rating }}</span>
+            <span class="agency-card__rating-value">{{ agency.rating }}</span>
+            {% if agency.review_count %}<span class="agency-card__rating-count">({{ agency.review_count }})</span>{% endif %}
+        </div>
+        {% endif %}
+
+        {% if agency.services %}
+        <div class="agency-card__chips">
+            {% for svc in agency.services[:3] %}
+            <span class="chip">{{ svc }}</span>
+            {% endfor %}
+            {% if agency.services | length > 3 %}
+            <span class="chip chip--neutral">+{{ agency.services | length - 3 }}</span>
             {% endif %}
         </div>
         {% endif %}
 
-        <!-- Services -->
-        {% if agency.services %}
-        <div class="flex flex-wrap gap-1 mt-auto">
-            {% for service in agency.services[:3] %}
-            <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ service }}</span>
-            {% endfor %}
-            {% if agency.services|length > 3 %}
-            <span class="text-xs text-gray-400">+{{ agency.services|length - 3 }} more</span>
-            {% endif %}
-        </div>
+        {% if agency.description %}
+        <p class="agency-card__desc">{{ agency.description }}</p>
         {% endif %}
+
+        <div class="agency-card__meta">
+            {% if agency.phone %}
+            <span>{{ agency.phone }}</span>
+            {% else %}
+            <span>&nbsp;</span>
+            {% endif %}
+            <span class="agency-card__cta">View details &rsaquo;</span>
+        </div>
     </div>
 </a>

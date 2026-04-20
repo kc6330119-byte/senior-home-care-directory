@@ -1,0 +1,55 @@
+# Redesign Notes — Senior Home Care Finder
+
+One line per non-obvious design decision. Newest at the top.
+
+- 2026-04-20 · **M5** · Static pages (contact / submit / about / privacy / terms / success) fast-tracked after Kevin flagged they were rendering raw in production — the sibling cadence had them as a later milestone, but once the branch hits main they'd be user-visible broken.
+- 2026-04-20 · **M5** · `.legal-prose` is a separate component from `.prose` — narrower measure, smaller h2 (Fraunces opsz 36), tuned for legal/static long-form rather than blog articles.
+- 2026-04-20 · **M5** · Submit form gained a "State license number" optional field — previously absent, but every agency detail page's "How to verify" checklist asks users to look it up, so capturing it at submission time cuts review loops.
+- 2026-04-20 · **M5** · Contact form subject dropdown rewritten to match current operations (listing correction / remove a listing / suggest an agency / feedback / other). Old options ("Update a Listing", "Report an Issue", "Partnership") didn't map to anything the site actually does anymore.
+- 2026-04-20 · **M5** · Anti-list on about page uses red-× markers in a warn-tinted circle — visible departure from the green-✓ anti-position list on the homepage, because "what we don't do" is a negative assertion and should read that way.
+- 2026-04-20 · **M5** · Success-page checkmark is now an SVG polyline (not an HTML entity). Entity `&#10003;` inherited the surrounding font-size and rendered at a large ornamental size; SVG gives us crisp geometry in the secondary-tint circle.
+- 2026-04-20 · **M4** · Blog index is a magazine-style row list (not a photo-card grid). Photos render as a small right-aligned thumbnail only when the post has one — scales past image availability instead of pretending every post has a hero shot.
+- 2026-04-20 · **M4** · Reading-time computed entirely in Jinja: `(content | striptags | wordcount) // 225 + 1` with a minimum of 1. 225 wpm is the audience-tuned rate (slightly slower than the 250 editorial default because target skews older).
+- 2026-04-20 · **M4** · Breadcrumb on post pages is 3-level (Home / Guides / post title). "Guides" label matches the nav + footer — "Resources" was the old wording and has been retired to keep a single noun across the site.
+- 2026-04-20 · **M4** · Article JSON-LD emits `publisher.logo` as a Cloudinary-hosted ImageObject (same URL base.html uses for OG images). Google News / Discover candidacy requires `publisher.logo` on the schema.
+- 2026-04-20 · **M4** · Disclaimer-box uses warn-tinted left border (`--color-warn`, amber) not the old gray-neutral card. Amber reads as "heads-up" without alarming; load-bearing YMYL trust signal.
+- 2026-04-20 · **M4** · Related-posts block uses `rejectattr('slug', 'equalto', post.slug) | list | slice(3)` rather than `{% break %}` — Jinja doesn't support `break`, and the filter approach is cleaner than a counter variable.
+- 2026-04-20 · **M3** · Service-page breadcrumb is two-level (Home / Service) — no `/services.html` hub page exists, so routing breadcrumbs through one would be a dead link. The homepage `#browse-services` anchor serves as the hub.
+- 2026-04-20 · **M3** · `.city-list` component re-used verbatim for the service-page state filter — same visual pattern (label + count on a nav-style link row), no reason to author a second component.
+- 2026-04-20 · **M3** · `.service-chip` / `.service-chip-row` are a new tokenized chip component for the "other services" row — distinct from `.chip` (which is a smaller metadata pill) because chips-as-nav-buttons need more padding and hover affordance.
+- 2026-04-20 · **M2** · Medicare Care Compare card is conditional on `agency.accreditation` containing "Medicare Certified" OR `agency.payment_options` containing "Medicare". Non-certified agencies can't be looked up on Care Compare (it's home-health-specific); showing the link for everyone would be misleading.
+- 2026-04-20 · **M2** · Every agency gets a universal "How to verify this agency" sidebar card. Replaces the decorative weather link with a real trust signal (license lookup + client references + background-check confirmation). Step 1 personalizes with the license number when available.
+- 2026-04-20 · **M2** · Leaflet state maps swapped OSM → CartoDB Positron tiles. Warm-neutral basemap matches the `#FAF9F6` page background; OSM's blue-bright tiles clashed. Attribution updated per CARTO's ToS.
+- 2026-04-20 · **M2** · Leaflet popups now HTML-escape agency name/city via a local `escapeHtml` helper — previously the popup string concatenated Airtable-sourced fields directly (same class of issue as the search XSS from M1 polish; fixed preemptively here).
+- 2026-04-20 · **M2** · State/city/agency ad slots named `state-a/b`, `city-a/b`, `agency-a/b` with `data-slot` attributes — same reserved-but-empty pattern as homepage. No `<ins>` tags until Kevin picks slot IDs in AdSense.
+- 2026-04-20 · **M2** · Breadcrumb macro (`_breadcrumb_schema.html`) exposes both `schema()` (JSON-LD) and `nav()` (visible) — single import, single source of truth for breadcrumb paths. Call sites can use either or both.
+- 2026-04-20 · **M2** · `_agency_card.html` partial restored as the single listing component — used on index (featured), state, city, and agency (related). Same "one partial drives listing UX" pattern sibling established.
+- 2026-04-20 · **M2** · Sitemap truthy-check bug fixed via `is not None` — same M7b fix as sibling. Previously an explicitly-empty `indexed_states`/`indexed_cities` list would fall through to "list every state/city," leaking noindexed URLs.
+- 2026-04-20 · **M2** · `success.html` marked noindex via `STATIC_PAGES` entry; `build_static_pages` now threads the flag through. Already absent from sitemap list — this is belt-and-suspenders.
+- 2026-04-20 · M1 ships with three ad slots (`data-slot="home-a|home-b|home-c"`) and no AdSense `<ins>` tags yet — `data-slot` attributes name the positions so we can populate them in a separate scoped commit after Kevin picks slot IDs.
+- 2026-04-20 · Newsletter keeps the Netlify Forms fallback path — `base.html` currently reads `MAILCHIMP_FORM_URL` and falls back to Netlify if unset. Don't delete the fallback during redesign; it's the portable-to-sibling pattern.
+- 2026-04-20 · Inline SVG brand mark = simplified "house with roof peaks" on `#1E4D8C` ground. Replaces the `&#128106;` (family emoji) that rendered inconsistently across platforms. Zero image fetch on critical path.
+- 2026-04-20 · Mailchimp hidden input `SITE=senior-home-care` — matches sibling's per-site tag pattern so the shared audience can segment. No-op until Kevin adds the SITE merge field to the Mailchimp audience.
+- 2026-04-20 · CSS file bumped from 171 → ~1400 lines in a single commit. Sibling M1 did similar; keeping CSS in one `custom.css` (not split per component) matches the existing project convention.
+- 2026-04-20 · Nav breakpoint moved from md (768px) to 900px — room for "Services / Guides / About / Contact / search / List an agency" before wrapping to hamburger. Tested mentally at iPad-mini portrait; real check needed.
+- 2026-04-20 · Editorial anti-position list on homepage — four "what we don't do" items. Matches sibling's M1 editorial block in intent (trust signal for YMYL category); tone is plain-statement, not combative.
+- 2026-04-20 · Hero headline uses Fraunces `opsz 96 / SOFT 40` — dialed-back softness reads "editorial" not "designer portfolio." SOFT 40 is the sibling's homepage hero setting; kept verbatim since it worked there.
+- 2026-04-20 · **Locked by Kevin:** M1 = homepage + base.html together (Tailwind removal + tokenization must happen simultaneously).
+- 2026-04-20 · **Locked by Kevin:** Target reading grade 8 for body copy (CDC Clear Communication Index standard; NIA/AARP target grade 6–8 for elder-care material). Editorial guides may reach grade 9 when topic demands.
+- 2026-04-20 · **Locked by Kevin:** Swap Weather link → Medicare Care Compare on agency detail (healthcare equivalent of sibling's weather→BrokerCheck swap).
+- 2026-04-20 · **Locked by Kevin:** Keep agency photos prominent in listings and detail — trust signal is load-bearing here unlike the finance site.
+- 2026-04-20 · **Locked by Kevin:** Color retune — deeper/warmer within the existing blue/teal/amber family (popular style for elder-care audience), not a full palette replacement.
+- 2026-04-20 · **Locked by Kevin:** Font stack — Public Sans (USWDS, OFL, self-hosted variable WOFF2) + Fraunces (OFL, variable). Popular-but-proven for this audience: Public Sans is the accessibility standard in US government/health digital work; Fraunces carries editorial warmth without reading as tech-startup.
+- 2026-04-20 · Skip M3 (compare feature) and M5/M7/M8 (tools + calculators) from sibling — not applicable or premature for this site's scope.
+- 2026-04-20 · Swap Weather link on agency detail → Medicare Care Compare link (healthcare equivalent of sibling's weather→BrokerCheck swap).
+- 2026-04-20 · Keep agency photos prominent — home care agencies often have real photos, unlike advisor firms; trust signal is load-bearing here.
+- 2026-04-20 · No dark mode. Target audience (adult children researching care, and senior end-users) skews older; light-on-dark-text is the accessibility default.
+- 2026-04-20 · Reject semantic green/red/amber. We don't have gain/loss/warn like finance. `--color-success` = secondary, `--color-warn` = accent for disclaimers.
+- 2026-04-20 · `--color-text-muted` brightened from gray-500 to `#4A5568` — gray-500 fails WCAG AA at small sizes for 60+ eyes.
+- 2026-04-20 · Body base font raised to 18px (`--font-size-base: 1.125rem`) — single largest a11y win for the audience.
+- 2026-04-20 · Chose Public Sans (USWDS, OFL) + Fraunces (OFL) as the font stack — institutional trust without corporate coldness; both self-hostable as variable WOFF2.
+- 2026-04-20 · Retune the existing blue/teal/amber palette (deeper, warmer) rather than replace it — CLAUDE.md specifies the current palette and preserving it signals continuity to crawlers and users.
+- 2026-04-20 · Three homepage ad slots reserved (home-a, home-b, home-c) — none active today, so positions are proposable with no displacement risk. Positions become load-bearing once populated.
+- 2026-04-20 · Milestone 1 = homepage + base.html together — Tailwind removal and homepage tokenization have to happen simultaneously or the homepage temporarily breaks.
+- 2026-04-20 · Do not regress `config.py` US_STATES editorial (51 × 100+ words) or SERVICES intros (10 × 100+ words) — these predate sibling's equivalents and were the source pattern.
+- 2026-04-20 · Initial AdSense-slot inventory: **zero active slots**. Only the loader script in `base.html:64`. The `.ad-container { min-height: 90px }` CSS is defined but unused in templates.
