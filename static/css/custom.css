@@ -126,7 +126,7 @@
     --shadow-sm:   0 1px 2px rgba(26, 35, 50, 0.05);
     --shadow-md:   0 2px 6px rgba(26, 35, 50, 0.06), 0 1px 2px rgba(26, 35, 50, 0.04);
     --shadow-lg:   0 8px 24px rgba(26, 35, 50, 0.08);
-    --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
+    --shadow-focus: 0 0 0 3px rgba(30, 77, 140, 0.25);  /* --color-primary at 25% — static rgba for Safari < 16.2 */
 
     /* Layout */
     --container-max:  1200px;
@@ -1301,6 +1301,7 @@ button { font: inherit; cursor: pointer; }
 
 .newsletter__lede {
     font-size: var(--font-size-base);
+    color: #DDE4EE;  /* fallback — 85% white on #1E4D8C */
     color: color-mix(in srgb, var(--color-primary-ink) 85%, var(--color-primary));
     margin-bottom: var(--space-6);
 }
@@ -1330,6 +1331,7 @@ button { font: inherit; cursor: pointer; }
 .newsletter__input:focus {
     outline: 0;
     border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.35);  /* fallback — --color-accent at 35% */
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent);
 }
 
@@ -1347,6 +1349,7 @@ button { font: inherit; cursor: pointer; }
 
 .newsletter__note {
     font-size: var(--font-size-xs);
+    color: #C7D3E2;  /* fallback — 75% white on #1E4D8C */
     color: color-mix(in srgb, var(--color-primary-ink) 75%, var(--color-primary));
     margin-top: var(--space-4);
     margin-bottom: 0;
@@ -1358,6 +1361,7 @@ button { font: inherit; cursor: pointer; }
 
 .site-footer {
     background: var(--color-text);
+    color: #C6C8CC;  /* fallback — 75% white on #1A2332, required for Safari < 16.2 / FF < 113 / Chrome < 111 */
     color: color-mix(in srgb, white 75%, var(--color-text));
     padding: var(--space-12) 0 var(--space-8);
 }
@@ -1389,11 +1393,13 @@ button { font: inherit; cursor: pointer; }
     line-height: var(--line-height-body);
     max-width: 44ch;
     margin-bottom: var(--space-4);
+    color: #C6C8CC;  /* fallback — 75% white on #1A2332 */
     color: color-mix(in srgb, white 75%, var(--color-text));
 }
 
 .site-footer__copy {
     font-size: var(--font-size-xs);
+    color: #989CA3;  /* fallback — 55% white on #1A2332 */
     color: color-mix(in srgb, white 55%, var(--color-text));
     margin: 0;
 }
@@ -1416,6 +1422,7 @@ button { font: inherit; cursor: pointer; }
 }
 
 .site-footer__list a {
+    color: #C6C8CC;  /* fallback — 75% white on #1A2332 */
     color: color-mix(in srgb, white 75%, var(--color-text));
     text-decoration: none;
     font-size: var(--font-size-sm);

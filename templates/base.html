@@ -277,9 +277,33 @@
 
     menuBtn.addEventListener('click', function () { toggleMobileMenu(); });
 
-    // Close menu on viewport expand past breakpoint
+    // Close menu on viewport expand past breakpoint.
+    // MediaQueryList.addEventListener only exists on Safari/iOS 14+;
+    // fall back to the deprecated .addListener on older WebKit so the
+    // listener registration does not throw and abort the rest of this IIFE.
     var mq = window.matchMedia('(min-width: 900px)');
-    mq.addEventListener('change', function (e) { if (e.matches) toggleMobileMenu(false); });
+    var mqHandler = function (e) { if (e.matches) toggleMobileMenu(false); };
+    if (mq.addEventListener) {
+        mq.addEventListener('change', mqHandler);
+    } else if (mq.addListener) {
+        mq.addListener(mqHandler);
+    }
+
+    // Services dropdown — keep aria-expanded in sync with CSS :hover / :focus-within.
+    // The menu itself opens via CSS. The button claims aria-haspopup so screen
+    // readers need the expanded state to match the visible state; without this
+    // the button always announces "collapsed" even when the menu is open.
+    var dropdown = document.querySelector('.site-nav__dropdown');
+    var dropdownBtn = dropdown && dropdown.querySelector('.site-nav__dropdown-btn');
+    if (dropdown && dropdownBtn) {
+        var syncDropdown = function () {
+            var open = dropdown.matches(':hover') || dropdown.matches(':focus-within');
+            dropdownBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+        ['mouseenter', 'mouseleave', 'focusin', 'focusout'].forEach(function (ev) {
+            dropdown.addEventListener(ev, syncDropdown);
+        });
+    }
 
     // ---- Search ----
     var searchIndex = null;
@@ -302,19 +326,35 @@
     }
 
     function renderResults(container, matches) {
+        // Build via DOM + textContent to avoid injecting Airtable-sourced
+        // strings through innerHTML. The submit form is public so these
+        // fields must be treated as untrusted.
+        container.textContent = '';
         if (matches.length === 0) {
-            container.innerHTML = '<p class="search-result__empty">No agencies match that search.</p>';
+            var empty = document.createElement('p');
+            empty.className = 'search-result__empty';
+            empty.textContent = 'No agencies match that search.';
+            container.appendChild(empty);
             return;
         }
-        var html = matches.map(function (a) {
-            return '<a href="/agency/' + a.slug + '.html" class="search-result">' +
-                   '<div>' +
-                     '<div class="search-result__name">' + a.name + '</div>' +
-                     '<div class="search-result__loc">' + a.city + ', ' + a.state + '</div>' +
-                   '</div>' +
-                   '</a>';
-        }).join('');
-        container.innerHTML = html;
+        matches.forEach(function (a) {
+            var link = document.createElement('a');
+            link.className = 'search-result';
+            link.href = '/agency/' + encodeURIComponent(a.slug) + '.html';
+
+            var wrap = document.createElement('div');
+            var name = document.createElement('div');
+            name.className = 'search-result__name';
+            name.textContent = a.name;
+            var loc = document.createElement('div');
+            loc.className = 'search-result__loc';
+            loc.textContent = a.city + ', ' + a.state;
+
+            wrap.appendChild(name);
+            wrap.appendChild(loc);
+            link.appendChild(wrap);
+            container.appendChild(link);
+        });
     }
 
     // Desktop search
