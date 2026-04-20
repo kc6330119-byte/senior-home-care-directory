@@ -1,121 +1,147 @@
 {% extends "base.html" %}
+{% import '_breadcrumb_schema.html' as bc %}
+
+{% block extra_head %}
+{{ bc.schema([
+    ('Home', '/'),
+    ('List an agency', '/submit.html'),
+]) }}
+{% endblock %}
 
 {% block content %}
 
-<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <h1 class="text-3xl font-bold text-gray-900 mb-4">Submit an Agency</h1>
-    <p class="text-gray-600 mb-8">
-        Are you a home care agency? Submit your listing to be included in our directory. It's free!
-    </p>
+{{ bc.nav([
+    ('Home', '/'),
+    ('List an agency', None),
+]) }}
 
-    <form name="submit-agency" method="POST" data-netlify="true" class="space-y-6" id="submit-form">
-        <input type="hidden" name="form-name" value="submit-agency">
+<section class="page-head">
+    <div class="site-container">
+        <span class="page-head__eyebrow">For agencies</span>
+        <h1 class="page-head__title">List your home care agency.</h1>
+        <p class="page-head__lede">
+            Free to list. We review every submission before it goes live — usually within a week. We don't charge for placement and we don't sell leads. Families find your listing through organic search and call you directly.
+        </p>
+    </div>
+</section>
 
-        <div class="bg-primary-50 border border-primary-100 rounded-lg p-4 mb-6">
-            <p class="text-sm text-primary-700">
-                All submissions are reviewed before being added to the directory. We may contact you for additional information.
-            </p>
+<div class="site-container static-page">
+    <div class="static-page__grid static-page__grid--with-aside">
+        <div class="static-page__body">
+            <form name="submit-agency" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="form-stack" id="submit-form">
+                <input type="hidden" name="form-name" value="submit-agency">
+                <p style="position:absolute;left:-5000px" aria-hidden="true"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+                <div class="form-note">
+                    <p>All submissions are reviewed before being added to the directory. We may follow up by email for clarification on licensing, service area, or accreditation.</p>
+                </div>
+
+                <h2 class="form-section-title">Agency information</h2>
+
+                <div class="form-field">
+                    <label class="form-label" for="agency_name">Agency name <span class="form-label__required" aria-hidden="true">*</span></label>
+                    <input type="text" name="agency_name" id="agency_name" class="form-input" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label" for="city">City <span class="form-label__required" aria-hidden="true">*</span></label>
+                        <input type="text" name="city" id="city" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label" for="state">State <span class="form-label__required" aria-hidden="true">*</span></label>
+                        <select name="state" id="state" class="form-select" required>
+                            <option value="">Choose a state…</option>
+                            {% for state in us_states %}
+                            <option value="{{ state.name }}">{{ state.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="address">Street address</label>
+                    <input type="text" name="address" id="address" class="form-input" autocomplete="street-address">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label" for="phone">Phone number <span class="form-label__required" aria-hidden="true">*</span></label>
+                        <input type="tel" name="phone" id="phone" class="form-input" required autocomplete="tel">
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label" for="website">Website</label>
+                        <input type="url" name="website" id="website" class="form-input" placeholder="https://" autocomplete="url">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="description">About the agency</label>
+                    <textarea name="description" id="description" class="form-textarea" rows="5" placeholder="What makes your agency a good fit for families? Year established, specialties, languages spoken, service area — the detail that helps a family decide whether to call."></textarea>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="services">Services offered</label>
+                    <textarea name="services" id="services" class="form-textarea" rows="3" placeholder="Companion care, personal care, memory / dementia care, respite care, hospice support, 24-hour / live-in, post-surgery, veterans care, transportation…"></textarea>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="licensing">State license number</label>
+                    <input type="text" name="licensing" id="licensing" class="form-input" placeholder="Optional, but speeds up our review.">
+                </div>
+
+                <h2 class="form-section-title">Contact person</h2>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label" for="contact_name">Your name <span class="form-label__required" aria-hidden="true">*</span></label>
+                        <input type="text" name="contact_name" id="contact_name" class="form-input" required autocomplete="name">
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label" for="contact_email">Your email <span class="form-label__required" aria-hidden="true">*</span></label>
+                        <input type="email" name="contact_email" id="contact_email" class="form-input" required autocomplete="email">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--lg form-submit">Submit agency</button>
+            </form>
         </div>
 
-        <h2 class="text-lg font-bold text-gray-900 pt-4">Agency Information</h2>
-
-        <div>
-            <label for="agency_name" class="block text-sm font-medium text-gray-700 mb-1">Agency Name *</label>
-            <input type="text" name="agency_name" id="agency_name" required
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City *</label>
-                <input type="text" name="city" id="city" required
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors">
+        <aside class="static-page__aside">
+            <div class="info-card">
+                <h2 class="info-card__title">What happens next</h2>
+                <p class="info-card__body">We review the submission within about a week. If we need more information (licensing, service area, hours) we'll email the contact person. Once approved, your listing appears on your city page and on any service pages that match.</p>
             </div>
-            <div>
-                <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State *</label>
-                <select name="state" id="state" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors">
-                    <option value="">Select a state...</option>
-                    {% for state in us_states %}
-                    <option value="{{ state.name }}">{{ state.name }}</option>
-                    {% endfor %}
-                </select>
+
+            <div class="info-card">
+                <h2 class="info-card__title">What this costs</h2>
+                <p class="info-card__body">Nothing. There's no paid tier, no "featured" placement that agencies can buy, and no lead-sales tier. The site runs on display ads; agencies don't pay to be here.</p>
             </div>
-        </div>
 
-        <div>
-            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-            <input type="text" name="address" id="address"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                <input type="tel" name="phone" id="phone" required
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors">
+            <div class="info-card">
+                <h2 class="info-card__title">How families find you</h2>
+                <p class="info-card__body">People Google "home care in [city]" or a specific service, land on the relevant state or city page, and call agencies directly. We don't route calls, collect lead data, or pass your contact info through an intermediary.</p>
             </div>
-            <div>
-                <label for="website" class="block text-sm font-medium text-gray-700 mb-1">Website</label>
-                <input type="url" name="website" id="website" placeholder="https://"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors">
-            </div>
-        </div>
-
-        <div>
-            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea name="description" id="description" rows="4" placeholder="Tell us about your agency and the services you provide..."
-                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors resize-none"></textarea>
-        </div>
-
-        <div>
-            <label for="services" class="block text-sm font-medium text-gray-700 mb-1">Services Offered</label>
-            <textarea name="services" id="services" rows="3" placeholder="e.g., Companion Care, Personal Care, Dementia Care..."
-                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors resize-none"></textarea>
-        </div>
-
-        <h2 class="text-lg font-bold text-gray-900 pt-4">Contact Person</h2>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label for="contact_name" class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
-                <input type="text" name="contact_name" id="contact_name" required
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors">
-            </div>
-            <div>
-                <label for="contact_email" class="block text-sm font-medium text-gray-700 mb-1">Your Email *</label>
-                <input type="email" name="contact_email" id="contact_email" required
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors">
-            </div>
-        </div>
-
-        <button type="submit"
-                class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-            Submit Agency
-        </button>
-    </form>
+        </aside>
+    </div>
 </div>
 
 <script>
-document.getElementById('submit-form').addEventListener('submit', function(e) {
+document.getElementById('submit-form').addEventListener('submit', function (e) {
     e.preventDefault();
-
-    const form = e.target;
-    const formData = new FormData(form);
-
+    var form = e.target;
+    var formData = new FormData(form);
     fetch('/submit.html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(formData).toString()
-    })
-    .then(response => {
+    }).then(function (response) {
         if (response.ok) {
-            window.location.href = '/success/index.html';
+            window.location.href = '/success/';
         } else {
             alert('There was an error submitting your agency. Please try again.');
         }
-    })
-    .catch(error => {
+    }).catch(function () {
         alert('There was an error submitting your agency. Please try again.');
     });
 });
