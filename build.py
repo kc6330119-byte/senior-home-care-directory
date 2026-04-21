@@ -773,11 +773,18 @@ def build_service_pages(env, agencies):
                 state_counts[s] = state_counts.get(s, 0) + 1
         state_list = sorted(state_counts.items(), key=lambda x: (-x[1], x[0]))
 
+        # Skip the " Services" append when the name already ends with "Services"
+        # (e.g. "Companion Services") to avoid "Companion Services Services".
+        # config.py's service names are a mix of Care / Support / Services / bare
+        # nouns; this keeps the title grammatical across all of them.
+        svc_name = service["name"]
+        title_name = svc_name if svc_name.endswith("Services") else f"{svc_name} Services"
+
         html = template.render(
             service=service,
             agencies=service_agencies,
             state_list=state_list,
-            page_title=f"{service['name']} Services - {config.SITE_NAME}",
+            page_title=f"{title_name} - {config.SITE_NAME}",
             meta_description=service["description"],
             request_path=f"/services/{service['slug']}.html",
         )
