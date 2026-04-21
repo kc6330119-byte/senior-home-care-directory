@@ -2,32 +2,37 @@
   command = "pip install -r requirements.txt && python build.py"
   publish = "dist"
 
-# Pretty URLs - remove .html extension
+# Canonical URL enforcement: slashless requests 301-redirect to the .html form.
+# The .html form is canonical (matches sitemap.xml, <link rel="canonical">,
+# and all template-emitted internal links). 301 prevents duplicate-content
+# indexing where both /state/texas and /state/texas.html would serve identical
+# HTML under status=200. Netlify matches static files before redirect rules,
+# so direct .html requests serve the file and skip this rule.
 
 [[redirects]]
   from = "/state/:state"
   to = "/state/:state.html"
-  status = 200
+  status = 301
 
 [[redirects]]
   from = "/state/:state/:city"
   to = "/state/:state/:city.html"
-  status = 200
+  status = 301
 
 [[redirects]]
   from = "/agency/:slug"
   to = "/agency/:slug.html"
-  status = 200
+  status = 301
 
 [[redirects]]
   from = "/services/:service"
   to = "/services/:service.html"
-  status = 200
+  status = 301
 
 [[redirects]]
   from = "/blog/:slug"
   to = "/blog/:slug.html"
-  status = 200
+  status = 301
 
 # Security headers
 [[headers]]
