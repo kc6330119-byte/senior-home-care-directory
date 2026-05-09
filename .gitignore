@@ -39,6 +39,15 @@ validation_flagged.csv
 validation_csv_results.csv
 validation_csv_flagged.csv
 
+# F3 pipeline data files (large JSONs of source/regen records)
+f3_combined_preview.json
+f3_outscraper_restored.json
+f3_haiku_responses.json
+f3_threshold_results.csv
+f3_threshold_failures.csv
+f3_regen_targets.csv
+f3_haiku_targets.csv
+
 # AdSense plans (reference only)
 ADSENSE_RESUBMISSION_PLAN.md
 ADSENSE_PRESUBMISSION_PLAN.md
