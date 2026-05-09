@@ -14,14 +14,14 @@
     <meta property="og:url" content="{{ site_url }}{{ request_path | default('/') }}">
     <meta property="og:title" content="{{ page_title }}">
     <meta property="og:description" content="{{ meta_description }}">
-    <meta property="og:image" content="{{ page_image or 'https://res.cloudinary.com/dnmrgvjdm/image/upload/v1773944336/SeniorGuide_ybruqy.png' }}">
+    <meta property="og:image" content="{{ page_image or site_url ~ '/static/images/og-image.png' }}">
     <meta property="og:site_name" content="{{ site_name }}">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ page_title }}">
     <meta name="twitter:description" content="{{ meta_description }}">
-    <meta name="twitter:image" content="{{ page_image or 'https://res.cloudinary.com/dnmrgvjdm/image/upload/v1773944336/SeniorGuide_ybruqy.png' }}">
+    <meta name="twitter:image" content="{{ page_image or site_url ~ '/static/images/og-image.png' }}">
 
     <!-- SEO -->
     <meta name="robots" content="{% if noindex %}noindex, follow{% else %}index, follow{% endif %}">
@@ -94,8 +94,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9265762311868507"
      crossorigin="anonymous"></script>
 
-    <!-- Favicon — inline SVG, zero fetch on critical path -->
+    <!-- Favicon — inline SVG (modern browsers) + ICO fallback (legacy /favicon.ico) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E4D8C'/%3E%3Cpath d='M9 22V14l7-5 7 5v8h-4v-6h-6v6H9z' fill='white'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
 
@@ -186,37 +187,6 @@
 <main id="main">
     {% block content %}{% endblock %}
 </main>
-
-<!-- Newsletter Signup -->
-<section class="newsletter">
-    <div class="site-container">
-        <div class="newsletter__inner">
-            <h2 class="newsletter__title">Helpful guidance, once a month</h2>
-            <p class="newsletter__lede">Practical articles on home care, caregiver support, paying for care, and what to ask an agency. No spam — unsubscribe anytime.</p>
-            {% if mailchimp_form_url %}
-            <form action="{{ mailchimp_form_url }}" method="post" target="_blank" class="newsletter__form">
-                {% if mailchimp_honeypot_name %}
-                <div aria-hidden="true" style="position: absolute; left: -5000px;"><input type="text" name="{{ mailchimp_honeypot_name }}" tabindex="-1" value=""></div>
-                {% endif %}
-                <input type="hidden" name="SITE" value="senior-home-care">
-                <label class="visually-hidden" for="newsletter-email">Email address</label>
-                <input type="email" id="newsletter-email" name="EMAIL" required placeholder="Your email address" class="newsletter__input" autocomplete="email">
-                <button type="submit" class="newsletter__btn">Subscribe</button>
-            </form>
-            {% else %}
-            <form name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="newsletter__form" id="newsletter-form">
-                <input type="hidden" name="form-name" value="newsletter">
-                <p style="position:absolute;left:-5000px" aria-hidden="true"><label>Don't fill this out: <input name="bot-field"></label></p>
-                <label class="visually-hidden" for="newsletter-email">Email address</label>
-                <input type="email" id="newsletter-email" name="email" required placeholder="Your email address" class="newsletter__input" autocomplete="email">
-                <button type="submit" class="newsletter__btn">Subscribe</button>
-            </form>
-            <p id="newsletter-success" class="newsletter__note" hidden>Thanks for subscribing.</p>
-            {% endif %}
-            <p class="newsletter__note">We publish roughly once a month.</p>
-        </div>
-    </div>
-</section>
 
 <!-- Footer -->
 <footer class="site-footer" role="contentinfo">
@@ -423,24 +393,6 @@
         });
     }
 
-    // Newsletter (Netlify fallback only — Mailchimp uses native form submit)
-    var nlForm = document.getElementById('newsletter-form');
-    var nlSuccess = document.getElementById('newsletter-success');
-    if (nlForm && nlSuccess) {
-        nlForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            fetch('/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(new FormData(nlForm)).toString()
-            }).then(function () {
-                nlForm.setAttribute('hidden', '');
-                nlSuccess.removeAttribute('hidden');
-            }).catch(function () {
-                alert('Something went wrong. Please try again.');
-            });
-        });
-    }
 })();
 </script>
 

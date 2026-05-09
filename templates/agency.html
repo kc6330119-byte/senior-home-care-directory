@@ -28,13 +28,6 @@
     {% if agency.website_url %}
     "url": {{ agency.website_url | tojson | safe }},
     {% endif %}
-    {% if agency.rating and agency.review_count %}
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": {{ agency.rating }},
-        "reviewCount": {{ agency.review_count }}
-    },
-    {% endif %}
     {% if agency.photo_url %}
     "image": {{ agency.photo_url | tojson | safe }},
     {% endif %}
@@ -79,16 +72,6 @@
                     {% endif %}
                     <h1 class="agency-hero__name">{{ agency.name }}</h1>
                     <p class="agency-hero__loc">{{ agency.city }}, {{ agency.state }}{% if agency.zip %} · {{ agency.zip }}{% endif %}</p>
-
-                    {% if agency.rating %}
-                    <div class="agency-hero__rating">
-                        <span class="agency-hero__rating-stars" aria-hidden="true">{{ agency.rating | star_rating }}</span>
-                        <span class="agency-hero__rating-value">{{ agency.rating }}</span>
-                        {% if agency.review_count %}
-                        <span>({{ agency.review_count }} review{{ 's' if agency.review_count != 1 else '' }})</span>
-                        {% endif %}
-                    </div>
-                    {% endif %}
 
                     <div class="agency-hero__actions">
                         {% if agency.phone %}

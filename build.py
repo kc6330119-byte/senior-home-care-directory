@@ -543,8 +543,6 @@ def create_jinja_env():
     env.globals["us_states"] = config.US_STATES
     env.globals["current_year"] = datetime.now().year
     env.globals["ga_measurement_id"] = config.GA_MEASUREMENT_ID
-    env.globals["mailchimp_form_url"] = config.MAILCHIMP_FORM_URL
-    env.globals["mailchimp_honeypot_name"] = config.MAILCHIMP_HONEYPOT_NAME
 
     return env
 
@@ -928,6 +926,14 @@ def copy_ads_txt():
         print("Built: ads.txt")
 
 
+def copy_favicon():
+    """Copy static/favicon.ico to dist/favicon.ico so /favicon.ico serves at site root."""
+    src = config.STATIC_DIR / "favicon.ico"
+    if src.exists():
+        shutil.copy(src, config.OUTPUT_DIR / "favicon.ico")
+        print("Built: favicon.ico")
+
+
 # Static pages
 STATIC_PAGES = [
     {
@@ -1022,6 +1028,7 @@ def main():
     build_sitemap(agencies, posts, indexed_states, indexed_cities)
     build_robots()
     copy_ads_txt()
+    copy_favicon()
     build_search_index(agencies)
 
     print(f"\n{'='*50}")
