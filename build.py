@@ -21,6 +21,11 @@ from slugify import slugify
 
 import config
 
+try:
+    from city_editorials import CITY_EDITORIALS
+except ImportError:
+    CITY_EDITORIALS = {}
+
 
 def get_sample_data():
     """Return sample agencies for testing without Airtable."""
@@ -716,12 +721,17 @@ def build_city_pages(env, agencies):
         else:
             indexed_cities.append(f"{state_slug}/{city_slug}")
 
+        # Top-25 indexable cities have hand-written editorial blocks; others get
+        # no editorial. The CITY_EDITORIALS dict is keyed by city slug.
+        city_editorial = CITY_EDITORIALS.get(city_slug) if not noindex else None
+
         html = template.render(
             city=city_name,
             city_slug=city_slug,
             state=state_info,
             agencies=city_agencies,
             noindex=noindex,
+            city_editorial=city_editorial,
             page_title=f"Home Care Agencies in {city_name}, {state_info['abbr'] or state_name} - {config.SITE_NAME}",
             meta_description=f"Find {len(city_agencies)} home care agencies in {city_name}, {state_name}. Compare in-home care services, read reviews, and get help for your loved ones.",
             request_path=f"/state/{state_slug}/{city_slug}.html",
@@ -885,10 +895,13 @@ def build_sitemap(agencies, posts, indexed_states=None, indexed_cities=None):
         f"{config.SITE_URL}/",
         f"{config.SITE_URL}/blog.html",
         f"{config.SITE_URL}/about.html",
+        f"{config.SITE_URL}/about/editorial-standards.html",
         f"{config.SITE_URL}/contact.html",
         f"{config.SITE_URL}/submit.html",
         f"{config.SITE_URL}/privacy.html",
         f"{config.SITE_URL}/terms.html",
+        f"{config.SITE_URL}/guides/how-to-verify-a-home-care-agency.html",
+        f"{config.SITE_URL}/guides/how-to-use-medicare-care-compare.html",
     ]
 
     # State pages — only indexed ones.
@@ -1009,6 +1022,24 @@ STATIC_PAGES = [
         "output": "submit.html",
         "title": "Submit an Agency",
         "description": "Submit a home care agency to be added to our directory.",
+    },
+    {
+        "template": "guide_how_to_verify.html",
+        "output": "guides/how-to-verify-a-home-care-agency.html",
+        "title": "How to Verify a Home Care Agency Before Hiring",
+        "description": "Step-by-step framework for verifying a home-care agency: state licensure lookup, client references, caregiver background checks, and Medicare Care Compare. With state-by-state regulator links.",
+    },
+    {
+        "template": "guide_care_compare.html",
+        "output": "guides/how-to-use-medicare-care-compare.html",
+        "title": "How to Use Medicare Care Compare for Home Health Agencies",
+        "description": "Walkthrough of the federal Care Compare tool: what it shows, how to read star ratings, what its limits are, and how to combine it with state licensing verification.",
+    },
+    {
+        "template": "editorial_standards.html",
+        "output": "about/editorial-standards.html",
+        "title": "Editorial Standards",
+        "description": "How Senior Home Care Finder builds the directory: data sources, listing inclusion criteria, update cadence, AI-assisted content disclosure, anti-positioning, and corrections policy.",
     },
 ]
 

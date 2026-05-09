@@ -56,17 +56,16 @@
         </div>
     </div>
 
-    <section class="section section--tight" style="border-top: 1px solid var(--color-border);">
+    {% if city_editorial %}
+    <section class="section section--tight city-editorial" style="border-top: 1px solid var(--color-border);">
         <div style="max-width: var(--measure-prose);">
-            <h2 class="section__title" style="font-size: var(--font-size-xl); margin-bottom: var(--space-4);">Finding home care in {{ city }}.</h2>
-            <p style="font-size: var(--font-size-base); line-height: var(--line-height-prose); color: var(--color-text); margin: 0 0 var(--space-4);">
-                Home care in {{ city }} covers a range of services — companion care, personal care, memory care, hospice support, and more. Each agency below lists the services they offer and the payment options they accept, so you can narrow your search quickly.
-            </p>
-            <p style="font-size: var(--font-size-base); line-height: var(--line-height-prose); color: var(--color-text); margin: 0;">
-                Before calling, write down a short list of what you need help with (bathing, meals, driving to appointments, overnight coverage) and the hours per week you're estimating. Most agencies offer a free in-home assessment before care starts.
-            </p>
+            <h2 class="section__title" style="font-size: var(--font-size-xl); margin-bottom: var(--space-4);">About home care in {{ city }}.</h2>
+            <div class="legal-prose">
+                {{ city_editorial | markdown }}
+            </div>
         </div>
     </section>
+    {% endif %}
 
     {% else %}
 

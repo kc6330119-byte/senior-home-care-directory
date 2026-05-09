@@ -212,23 +212,9 @@
             {% if is_medicare_certified and agency.zip %}
             <div class="detail-card detail-card--care-compare">
                 <h2 class="detail-card__title">Medicare Care Compare</h2>
-                <p class="care-compare-note">Medicare publishes quality ratings, patient-experience data, and complaint history for Medicare-certified agencies. Look up {{ agency.name }} on Care Compare to see the official record.</p>
                 <a href="{{ care_compare_url }}" target="_blank" rel="noopener" class="btn btn--primary" style="width: 100%;">Check Care Compare &rarr;</a>
             </div>
             {% endif %}
-
-            <div class="detail-card">
-                <h2 class="detail-card__title--sm">How to verify this agency</h2>
-                <ol style="font-size: var(--font-size-sm); color: var(--color-text); line-height: var(--line-height-body); margin: 0; padding-left: var(--space-5);">
-                    {% if agency.licensing %}
-                    <li style="margin-bottom: var(--space-2);">Verify the state license number {{ agency.licensing }} with your state's home-care licensing board.</li>
-                    {% else %}
-                    <li style="margin-bottom: var(--space-2);">Ask the agency for their state license number and verify it with your state's home-care licensing board.</li>
-                    {% endif %}
-                    <li style="margin-bottom: var(--space-2);">Ask for references from two or three current clients — not from the agency's own marketing list.</li>
-                    <li>Confirm background-check and training procedures for caregivers before the first visit.</li>
-                </ol>
-            </div>
 
             <div class="detail-card">
                 <h2 class="detail-card__title--sm">Share this listing</h2>

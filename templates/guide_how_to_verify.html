@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% import '_breadcrumb_schema.html' as bc %}
+
+{% block extra_head %}
+{{ bc.schema([
+    ('Home', '/'),
+    ('Guides', '/blog.html'),
+    ('How to verify a home care agency', '/guides/how-to-verify-a-home-care-agency.html'),
+]) }}
+{% endblock %}
+
+{% block content %}
+
+{{ bc.nav([
+    ('Home', '/'),
+    ('Guides', '/blog.html'),
+    ('How to verify a home care agency', None),
+]) }}
+
+<section class="page-head">
+    <div class="site-container">
+        <span class="page-head__eyebrow">Guide</span>
+        <h1 class="page-head__title">How to verify a home care agency before hiring.</h1>
+        <p class="page-head__lede">A step-by-step framework: state licensure lookup, real client references, caregiver background checks, and Medicare Care Compare. With state-by-state regulator links.</p>
+    </div>
+</section>
+
+<div class="site-container static-page">
+    <div class="static-page__body">
+        <div class="legal-prose">
+
+            <h2>Why verification matters</h2>
+            <p>Hiring a home-care agency is unlike hiring almost any other kind of professional service. The caregiver enters your loved one's home — often when no one else is there. They handle medication. They help with bathing. They manage falls and small medical events without supervision. They have access to checkbooks, jewelry boxes, and the daily rhythm of a vulnerable adult's life.</p>
+            <p>State licensing exists for a reason. So does Medicare certification, accreditation by The Joint Commission or CHAP, and the criminal-background-check requirements that vary state by state. None of these systems is foolproof. None of them eliminates the need for the family to do its own diligence — to ask questions, to call references that the family chooses (not the ones the agency hands over), and to confirm in writing what the agency promises in its sales pitch.</p>
+            <p>This guide is a framework, not a guarantee. Use it before you sign anything. Use it again the first time something feels off.</p>
+
+            <h2>Step 1 — Verify state licensure</h2>
+            <p>In most states, a home-care or home-health agency is licensed by a state regulator. The honest qualification: not every form of in-home care is licensed in every state. Medicare-certified home health agencies are federally regulated. Personal-care and companion-care agencies — the kind that send a caregiver to help with bathing, dressing, meal prep, and companionship — fall under a patchwork of state rules that range from rigorous (annual surveys, criminal-background-check mandates, RN supervision requirements) to minimal (registration only) to functionally none.</p>
+            <p>Ask the agency for their state license number in writing. Then verify it on the regulator's website. The list below is the authoritative regulator for each state and DC. Some states publish a searchable license-lookup tool; some require a phone call to the licensing office. If a state's URL has moved (state government sites reorganize), the parent department's home page in the table will lead you to the right place.</p>
+
+            <table class="state-licensing-table">
+                <thead>
+                    <tr><th>State</th><th>Licensing authority</th><th>Lookup</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Alabama</td><td>Alabama Department of Public Health</td><td><a href="https://www.alabamapublichealth.gov/" target="_blank" rel="noopener">alabamapublichealth.gov</a></td></tr>
+                    <tr><td>Alaska</td><td>Department of Health, Health Care Services</td><td><a href="https://health.alaska.gov/" target="_blank" rel="noopener">health.alaska.gov</a></td></tr>
+                    <tr><td>Arizona</td><td>Department of Health Services, Bureau of Medical Facilities Licensing</td><td><a href="https://www.azdhs.gov/" target="_blank" rel="noopener">azdhs.gov</a></td></tr>
+                    <tr><td>Arkansas</td><td>Department of Human Services, Division of Provider Services and Quality Assurance</td><td><a href="https://humanservices.arkansas.gov/" target="_blank" rel="noopener">humanservices.arkansas.gov</a></td></tr>
+                    <tr><td>California</td><td>Department of Social Services, Home Care Services Bureau</td><td><a href="https://www.cdss.ca.gov/" target="_blank" rel="noopener">cdss.ca.gov</a></td></tr>
+                    <tr><td>Colorado</td><td>Department of Public Health and Environment, Health Facilities and EMS</td><td><a href="https://cdphe.colorado.gov/" target="_blank" rel="noopener">cdphe.colorado.gov</a></td></tr>
+                    <tr><td>Connecticut</td><td>Department of Public Health, Facility Licensing and Investigations</td><td><a href="https://portal.ct.gov/dph" target="_blank" rel="noopener">portal.ct.gov/dph</a></td></tr>
+                    <tr><td>Delaware</td><td>Division of Health Care Quality</td><td><a href="https://dhss.delaware.gov/" target="_blank" rel="noopener">dhss.delaware.gov</a></td></tr>
+                    <tr><td>District of Columbia</td><td>Department of Health, Health Regulation and Licensing Administration</td><td><a href="https://dchealth.dc.gov/" target="_blank" rel="noopener">dchealth.dc.gov</a></td></tr>
+                    <tr><td>Florida</td><td>Agency for Health Care Administration</td><td><a href="https://ahca.myflorida.com/" target="_blank" rel="noopener">ahca.myflorida.com</a></td></tr>
+                    <tr><td>Georgia</td><td>Department of Community Health, Healthcare Facility Regulation</td><td><a href="https://dch.georgia.gov/" target="_blank" rel="noopener">dch.georgia.gov</a></td></tr>
+                    <tr><td>Hawaii</td><td>Department of Health, Office of Health Care Assurance</td><td><a href="https://health.hawaii.gov/" target="_blank" rel="noopener">health.hawaii.gov</a></td></tr>
+                    <tr><td>Idaho</td><td>Department of Health and Welfare, Bureau of Facility Standards</td><td><a href="https://healthandwelfare.idaho.gov/" target="_blank" rel="noopener">healthandwelfare.idaho.gov</a></td></tr>
+                    <tr><td>Illinois</td><td>Department of Public Health, Health Care Regulation</td><td><a href="https://dph.illinois.gov/" target="_blank" rel="noopener">dph.illinois.gov</a></td></tr>
+                    <tr><td>Indiana</td><td>Department of Health, Home Health Agency Licensing</td><td><a href="https://www.in.gov/health/" target="_blank" rel="noopener">in.gov/health</a></td></tr>
+                    <tr><td>Iowa</td><td>Department of Inspections, Appeals and Licensing</td><td><a href="https://dia.iowa.gov/" target="_blank" rel="noopener">dia.iowa.gov</a></td></tr>
+                    <tr><td>Kansas</td><td>Department for Aging and Disability Services</td><td><a href="https://www.kdads.ks.gov/" target="_blank" rel="noopener">kdads.ks.gov</a></td></tr>
+                    <tr><td>Kentucky</td><td>Cabinet for Health and Family Services, Office of Inspector General</td><td><a href="https://chfs.ky.gov/" target="_blank" rel="noopener">chfs.ky.gov</a></td></tr>
+                    <tr><td>Louisiana</td><td>Department of Health, Health Standards Section</td><td><a href="https://ldh.la.gov/" target="_blank" rel="noopener">ldh.la.gov</a></td></tr>
+                    <tr><td>Maine</td><td>Department of Health and Human Services, Division of Licensing and Certification</td><td><a href="https://www.maine.gov/dhhs/" target="_blank" rel="noopener">maine.gov/dhhs</a></td></tr>
+                    <tr><td>Maryland</td><td>Office of Health Care Quality</td><td><a href="https://health.maryland.gov/" target="_blank" rel="noopener">health.maryland.gov</a></td></tr>
+                    <tr><td>Massachusetts</td><td>Department of Public Health, Bureau of Health Care Safety and Quality</td><td><a href="https://www.mass.gov/" target="_blank" rel="noopener">mass.gov</a></td></tr>
+                    <tr><td>Michigan</td><td>Department of Licensing and Regulatory Affairs</td><td><a href="https://www.michigan.gov/lara" target="_blank" rel="noopener">michigan.gov/lara</a></td></tr>
+                    <tr><td>Minnesota</td><td>Department of Health, Home Care Provider Regulation</td><td><a href="https://www.health.state.mn.us/" target="_blank" rel="noopener">health.state.mn.us</a></td></tr>
+                    <tr><td>Mississippi</td><td>Department of Health, Health Facilities Licensure and Certification</td><td><a href="https://msdh.ms.gov/" target="_blank" rel="noopener">msdh.ms.gov</a></td></tr>
+                    <tr><td>Missouri</td><td>Department of Health and Senior Services, Long Term Care Regulation</td><td><a href="https://health.mo.gov/" target="_blank" rel="noopener">health.mo.gov</a></td></tr>
+                    <tr><td>Montana</td><td>Department of Public Health and Human Services, Quality Assurance Division</td><td><a href="https://dphhs.mt.gov/" target="_blank" rel="noopener">dphhs.mt.gov</a></td></tr>
+                    <tr><td>Nebraska</td><td>Department of Health and Human Services, Health Facility Licensure</td><td><a href="https://dhhs.ne.gov/" target="_blank" rel="noopener">dhhs.ne.gov</a></td></tr>
+                    <tr><td>Nevada</td><td>Division of Public and Behavioral Health, Health Care Quality and Compliance</td><td><a href="https://dpbh.nv.gov/" target="_blank" rel="noopener">dpbh.nv.gov</a></td></tr>
+                    <tr><td>New Hampshire</td><td>Department of Health and Human Services, Health Facilities Administration</td><td><a href="https://www.dhhs.nh.gov/" target="_blank" rel="noopener">dhhs.nh.gov</a></td></tr>
+                    <tr><td>New Jersey</td><td>Department of Health, Health Facility Survey and Field Operations</td><td><a href="https://www.nj.gov/health/" target="_blank" rel="noopener">nj.gov/health</a></td></tr>
+                    <tr><td>New Mexico</td><td>Department of Health, Division of Health Improvement</td><td><a href="https://www.nmhealth.org/" target="_blank" rel="noopener">nmhealth.org</a></td></tr>
+                    <tr><td>New York</td><td>Department of Health, Bureau of Home Care and Hospice</td><td><a href="https://www.health.ny.gov/" target="_blank" rel="noopener">health.ny.gov</a></td></tr>
+                    <tr><td>North Carolina</td><td>Department of Health and Human Services, Division of Health Service Regulation</td><td><a href="https://info.ncdhhs.gov/" target="_blank" rel="noopener">info.ncdhhs.gov</a></td></tr>
+                    <tr><td>North Dakota</td><td>Department of Health and Human Services</td><td><a href="https://www.hhs.nd.gov/" target="_blank" rel="noopener">hhs.nd.gov</a></td></tr>
+                    <tr><td>Ohio</td><td>Department of Health, Bureau of Survey and Certification</td><td><a href="https://odh.ohio.gov/" target="_blank" rel="noopener">odh.ohio.gov</a></td></tr>
+                    <tr><td>Oklahoma</td><td>State Department of Health, Medical Facilities Service</td><td><a href="https://oklahoma.gov/health.html" target="_blank" rel="noopener">oklahoma.gov/health</a></td></tr>
+                    <tr><td>Oregon</td><td>Health Authority, Health Care Regulation and Quality Improvement</td><td><a href="https://www.oregon.gov/oha/" target="_blank" rel="noopener">oregon.gov/oha</a></td></tr>
+                    <tr><td>Pennsylvania</td><td>Department of Health, Home Care Agency Licensing</td><td><a href="https://www.health.pa.gov/" target="_blank" rel="noopener">health.pa.gov</a></td></tr>
+                    <tr><td>Rhode Island</td><td>Department of Health, Center for Health Facilities Regulation</td><td><a href="https://health.ri.gov/" target="_blank" rel="noopener">health.ri.gov</a></td></tr>
+                    <tr><td>South Carolina</td><td>Department of Public Health (formerly DHEC, split 2024)</td><td><a href="https://dph.sc.gov/" target="_blank" rel="noopener">dph.sc.gov</a></td></tr>
+                    <tr><td>South Dakota</td><td>Department of Health, Office of Health Facilities Licensure</td><td><a href="https://doh.sd.gov/" target="_blank" rel="noopener">doh.sd.gov</a></td></tr>
+                    <tr><td>Tennessee</td><td>Department of Health, Health Care Facilities</td><td><a href="https://www.tn.gov/health/" target="_blank" rel="noopener">tn.gov/health</a></td></tr>
+                    <tr><td>Texas</td><td>Health and Human Services, Long-Term Care Regulation</td><td><a href="https://www.hhs.texas.gov/" target="_blank" rel="noopener">hhs.texas.gov</a></td></tr>
+                    <tr><td>Utah</td><td>Department of Health and Human Services, Bureau of Health Facility Licensing</td><td><a href="https://dhhs.utah.gov/" target="_blank" rel="noopener">dhhs.utah.gov</a></td></tr>
+                    <tr><td>Vermont</td><td>Department of Disabilities, Aging and Independent Living</td><td><a href="https://dail.vermont.gov/" target="_blank" rel="noopener">dail.vermont.gov</a></td></tr>
+                    <tr><td>Virginia</td><td>Department of Health, Office of Licensure and Certification</td><td><a href="https://www.vdh.virginia.gov/" target="_blank" rel="noopener">vdh.virginia.gov</a></td></tr>
+                    <tr><td>Washington</td><td>Department of Health, Health Systems Quality Assurance</td><td><a href="https://doh.wa.gov/" target="_blank" rel="noopener">doh.wa.gov</a></td></tr>
+                    <tr><td>West Virginia</td><td>Department of Health, Office of Health Facility Licensure and Certification</td><td><a href="https://ohflac.wvdhhr.org/" target="_blank" rel="noopener">ohflac.wvdhhr.org</a></td></tr>
+                    <tr><td>Wisconsin</td><td>Department of Health Services, Division of Quality Assurance</td><td><a href="https://www.dhs.wisconsin.gov/" target="_blank" rel="noopener">dhs.wisconsin.gov</a></td></tr>
+                    <tr><td>Wyoming</td><td>Department of Health, Healthcare Licensing and Surveys</td><td><a href="https://health.wyo.gov/" target="_blank" rel="noopener">health.wyo.gov</a></td></tr>
+                </tbody>
+            </table>
+
+            <p>When the agency gives you a license number that doesn't appear in the regulator's lookup, that's a stop sign. Pause and ask. There are honest reasons (newly licensed, name change in progress) and there are dishonest reasons (the license was suspended, or the agency is unlicensed and counting on you not to check). Either way, you want the conversation now, not after the first home visit.</p>
+
+            <h2>Step 2 — Ask for client references — the right ones</h2>
+            <p>Every agency has a marketing page full of testimonials. Skip those. Ask for the contact information of two or three current clients — families the agency is actively serving — who have agreed to speak with prospective clients about their experience. Reputable agencies maintain a small reference roster for exactly this purpose. Agencies that are uncomfortable with the request, or that "can't share" because of privacy concerns (HIPAA does not apply to client-volunteered references), are telling you something.</p>
+            <p>When you call, ask:</p>
+            <ul>
+                <li>How long has the same caregiver been with you? Have replacements been frequent?</li>
+                <li>When you needed to reach the office on a weekend or evening, what happened?</li>
+                <li>How clear is the billing? Have there been surprise charges?</li>
+                <li>If something didn't go right, how was it handled?</li>
+                <li>Knowing what you know now, would you choose this agency again?</li>
+            </ul>
+            <p>If a reference is reluctant to answer specifics, that's a data point. Most clients who agreed to be a reference are happy to talk freely — they're proud of the agency they recommend.</p>
+
+            <h2>Step 3 — Confirm caregiver background-check and training procedures</h2>
+            <p>The variation in caregiver-vetting practices among home-care agencies is enormous. State minimums set a floor; what good agencies do above the floor is what separates them from the rest. Ask, in writing:</p>
+            <ul>
+                <li><strong>Criminal background check.</strong> Federal? State? Multi-state database? How recent is the check before a caregiver is assigned to a home?</li>
+                <li><strong>Employment and reference verification.</strong> Prior employer contacts, education claims confirmed.</li>
+                <li><strong>Drug screening.</strong> At hire? Periodic? Post-incident?</li>
+                <li><strong>Training.</strong> CPR and first aid, dementia care, fall prevention, infection control, HIPAA, transferring/lifting, medication reminders. Ask whether training is in-house, third-party (e.g., Red Cross), or "online certificate."</li>
+                <li><strong>Supervision.</strong> How often does a registered nurse or care manager visit the home to oversee the care plan? In good Medicare-certified home health agencies, this is regular and documented; in some non-medical companion-care arrangements, it's never.</li>
+                <li><strong>Insurance and bonding.</strong> Caregivers should be employees (not independent contractors) and the agency should carry liability insurance and worker's compensation. Get the certificate of insurance.</li>
+            </ul>
+            <p>Background-check standards vary by state and by agency. There is no single national requirement. The strength of the answer is what tells you about the agency.</p>
+
+            <h2>Step 4 — Check Medicare Care Compare (Medicare-certified agencies only)</h2>
+            <p>If the agency is Medicare-certified — typically a home health agency that bills Medicare for skilled nursing or therapy — the federal government publishes survey results and quality data on Medicare's <a href="https://www.medicare.gov/care-compare/" target="_blank" rel="noopener">Care Compare</a> tool. Quality of patient care, patient survey ratings, and complaint history are all visible.</p>
+            <p>Care Compare does not cover private-pay companion care or personal-care agencies that don't bill Medicare. For those agencies, state licensing and your own reference calls are the available oversight. Our companion guide on <a href="/guides/how-to-use-medicare-care-compare.html">how to use Medicare Care Compare</a> walks through the lookup tool in detail.</p>
+
+            <h2>What to do if something feels wrong</h2>
+            <p>Trust the small signals. Pressure to sign a contract on the first visit. A refusal to share the license number in writing. No written care plan. A different caregiver on every shift. Billing that doesn't match the service quote. A care manager who is hard to reach when you call.</p>
+            <p>None of these is a crime. Each one is a signal worth pausing on. Many problems with home care are recoverable — a poor caregiver match can be fixed with a polite request for a different caregiver. Some problems are not — billing fraud, missed medication, theft, abuse — and those almost always announce themselves first as small signals you almost ignored.</p>
+            <p>If a complaint becomes serious, your state licensing authority has a complaints process. Adult Protective Services, in every state, has authority to investigate suspected abuse or neglect of an older adult. The federal Long-Term Care Ombudsman program (administered through state agencies on aging) also handles home-care complaints in many states. Use them.</p>
+
+            <h2>A note on what this guide is and isn't</h2>
+            <p>This is informational content. We are not licensed home-care providers, medical professionals, or regulators. We do not verify agencies on an ongoing basis ourselves; we publish the directory and the verification framework. The verification work — license lookup, reference calls, contract review — is the family's responsibility, and the framework above is the strongest version of that work we know how to share.</p>
+            <p>For our editorial standards, data sources, and corrections policy, see our <a href="/about/editorial-standards.html">editorial standards</a> page.</p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% import '_breadcrumb_schema.html' as bc %}
+
+{% block extra_head %}
+{{ bc.schema([
+    ('Home', '/'),
+    ('Guides', '/blog.html'),
+    ('How to use Medicare Care Compare', '/guides/how-to-use-medicare-care-compare.html'),
+]) }}
+{% endblock %}
+
+{% block content %}
+
+{{ bc.nav([
+    ('Home', '/'),
+    ('Guides', '/blog.html'),
+    ('How to use Medicare Care Compare', None),
+]) }}
+
+<section class="page-head">
+    <div class="site-container">
+        <span class="page-head__eyebrow">Guide</span>
+        <h1 class="page-head__title">How to use Medicare Care Compare for home health agencies.</h1>
+        <p class="page-head__lede">A walkthrough of the federal Care Compare tool — what it shows, how to read star ratings, what its limits are, and how to combine it with state licensing verification.</p>
+    </div>
+</section>
+
+<div class="site-container static-page">
+    <div class="static-page__body">
+        <div class="legal-prose">
+
+            <p>Medicare's <a href="https://www.medicare.gov/care-compare/" target="_blank" rel="noopener">Care Compare</a> tool is the closest thing the public has to an objective quality benchmark for Medicare-certified home health agencies. It's free, federally maintained, and drawn from the same survey data that determines whether an agency keeps its certification. For families considering a Medicare-certified home health agency, Care Compare is one of the four checks worth doing before engagement (the others — license verification, references, caregiver vetting — are covered in our <a href="/guides/how-to-verify-a-home-care-agency.html">companion guide</a>).</p>
+            <p>This guide walks through what Care Compare is, what it shows, how to read it, and where its limits are.</p>
+
+            <h2>What Care Compare is</h2>
+            <p>Care Compare is the consumer-facing tool that the Centers for Medicare &amp; Medicaid Services (CMS) publishes to make Medicare-certified provider quality data publicly searchable. It covers several provider categories — hospitals, nursing homes, hospice agencies, dialysis facilities, and home health agencies. For families researching home care, the home health agency section is the relevant one.</p>
+            <p>Two important boundaries: <strong>Care Compare only covers Medicare-certified agencies</strong>, and <strong>only covers their Medicare-certified service lines</strong>. Three implications follow from that:</p>
+            <ol>
+                <li>Private-pay companion-care and personal-care agencies that don't bill Medicare won't appear in Care Compare. Most non-medical home-care agencies fall in this category.</li>
+                <li>A Medicare-certified home health agency may also offer private-pay services that aren't captured in Care Compare data. The star rating reflects the agency's Medicare-certified work, not its full operation.</li>
+                <li>The federal data set is generated from CMS surveys, the standardized HHCAHPS patient-experience survey, and OASIS clinical assessment data. State-level licensing surveys and complaints filed with state regulators are captured separately on the state's own portal.</li>
+            </ol>
+
+            <h2>What data Care Compare shows</h2>
+            <p>For each Medicare-certified home health agency, Care Compare publishes:</p>
+            <ul>
+                <li><strong>Quality of patient care star rating</strong> (1 to 5 stars). This is calculated from a basket of OASIS clinical-improvement measures — whether patients improved in mobility, in bathing, in pain management, in shortness of breath, and several other conditions over the course of their home-health episode. The rating is published with a date stamp; CMS recalculates and reposts on a regular cadence.</li>
+                <li><strong>Patient survey star rating</strong> (1 to 5 stars). This is calculated from HHCAHPS responses — patients' or family members' answers to standardized questions about how the agency communicated, how courteous and professional caregivers were, and whether the patient would recommend the agency.</li>
+                <li><strong>Sample size for the patient survey.</strong> A four-star agency with five survey responses is statistically much weaker than a four-star agency with five hundred. CMS publishes the sample-size context.</li>
+                <li><strong>Survey results and any deficiencies</strong> found during recent CMS or state surveys, including the date of the most recent survey.</li>
+                <li><strong>Service offerings</strong> — which Medicare-covered services the agency actually delivers (skilled nursing, physical therapy, occupational therapy, speech therapy, medical social services, home health aide services).</li>
+                <li><strong>Languages and ownership</strong> — what languages caregivers speak, whether the agency is for-profit, nonprofit, or government-owned.</li>
+            </ul>
+
+            <h2>How to use it — step by step</h2>
+            <ol>
+                <li><strong>Open Care Compare</strong> at <a href="https://www.medicare.gov/care-compare/" target="_blank" rel="noopener">medicare.gov/care-compare</a>.</li>
+                <li><strong>Select "Home health services"</strong> as the provider type.</li>
+                <li><strong>Enter your loved one's ZIP code</strong> or city/state. The tool returns a list of Medicare-certified home health agencies serving that location, ordered by distance.</li>
+                <li><strong>Compare up to three agencies side by side.</strong> Care Compare's compare view displays the quality star rating, patient survey star rating, sample size, and service offerings in a single table.</li>
+                <li><strong>Click into an individual agency's page</strong> for the full detail — the date of the most recent CMS survey, any deficiencies cited, the patient-survey response breakdown, and ownership information.</li>
+            </ol>
+
+            <h2>How to read the data</h2>
+            <p>A few interpretive notes that matter:</p>
+            <ul>
+                <li><strong>Star ratings are relative, not absolute.</strong> A four-star quality rating means the agency's clinical-improvement scores fell in the second-best of CMS's five rating tiers — better than three-star agencies, lower than five-star. Two agencies with the same star rating are not necessarily equivalent; a three-star agency at the top of its tier and a three-star agency at the bottom of its tier are visually identical on the rating display but materially different in the underlying scores.</li>
+                <li><strong>Patient survey sample size matters.</strong> When the response count is very low (CMS notes when a sample is below the publication threshold), interpret the patient star rating with caution. An agency with twenty-five survey responses producing a four-star rating is more credible than the same star rating drawn from five responses.</li>
+                <li><strong>Recent survey deficiencies are the most actionable detail on the page.</strong> If CMS or a state surveyor cited the agency for medication-management lapses, infection-control issues, or aide-supervision shortcomings within the last year, that's specific and substantive — much more useful than the aggregate star rating for predicting how the agency will handle your loved one's care.</li>
+                <li><strong>Look at service offerings against your need.</strong> A five-star agency that doesn't offer occupational therapy is worse for your loved one than a four-star agency that does, if OT is what's needed.</li>
+            </ul>
+
+            <h2>What Care Compare doesn't cover</h2>
+            <p>Care Compare's limits matter for setting expectations:</p>
+            <ul>
+                <li><strong>Non-Medicare-certified home care.</strong> The largest segment of the home-care market — private-pay companion care, personal care, homemaking, non-medical respite — is not in Care Compare at all. For those, license verification through the state regulator and reference calls are the available oversight.</li>
+                <li><strong>Cost.</strong> Care Compare does not publish what an agency charges. Costs vary by service line, geography, payment source (Medicare vs. Medicaid vs. private pay vs. long-term care insurance), and individual care plan.</li>
+                <li><strong>Caregiver match quality.</strong> The HHCAHPS patient survey captures aggregate patient experience but not whether a specific caregiver was a good match for a specific client. Reference calls remain the most useful signal on caregiver match.</li>
+                <li><strong>State-licensing complaints filed but not yet escalated to CMS.</strong> Care Compare reflects CMS-level survey results. State regulators' complaint logs may carry additional information; check the state regulator's complaint portal in addition to Care Compare.</li>
+            </ul>
+
+            <h2>Combining Care Compare with the other verification steps</h2>
+            <p>Care Compare is one input. The other three from our <a href="/guides/how-to-verify-a-home-care-agency.html">verification guide</a> are:</p>
+            <ul>
+                <li><strong>Step 1 — State licensing verification.</strong> Confirm the agency holds the appropriate license type (home health, home care, both) for the services contracted.</li>
+                <li><strong>Step 2 — Real client references.</strong> Two or three families currently using the agency, named by the agency at your request, and asked the questions in the verification guide.</li>
+                <li><strong>Step 3 — Caregiver background-check and training.</strong> What the agency runs at hire and on a recurring basis; how supervision works; how the agency handles a caregiver mismatch.</li>
+            </ul>
+            <p>A family that does all four checks before engaging is doing the diligence the system relies on. Care Compare is the federally-published quality view; the other three are the family-side view that a federal data set cannot replicate.</p>
+
+            <h2>A note on the limits of any quality benchmark</h2>
+            <p>Quality star ratings — at Care Compare or anywhere else — are imperfect summaries of complex care. They are useful in the same way that a credit score is useful: as an aggregate signal that is right more often than it is wrong, that is most useful when read against context, and that is dangerous when treated as a single decisive number.</p>
+            <p>Care Compare's value is greatest as a starting filter (eliminate the lowest-tier agencies, surface the agencies in your area with stable patient-experience scores) and a sanity check after the family has done its own diligence. It is least useful as a one-touch decision tool.</p>
+            <p>The directory is informational. We do not endorse specific agencies. The four-step verification framework above is the strongest version of the family-side work we know how to share.</p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

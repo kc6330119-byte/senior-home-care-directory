@@ -31,19 +31,31 @@
                 Welcome to {{ site_name }}. By using this site, you agree to the terms below. If you don't agree, please don't use the site.
             </p>
 
-            <h2>What this site is — and isn't</h2>
+            <h2>What this site is</h2>
             <p>
-                {{ site_name }} is an informational directory of in-home care agencies. We are <strong>not</strong> a healthcare provider, referral service, care manager, or medical-advice site. We do not diagnose conditions, recommend specific agencies, or verify individual caregivers. The information on this site is not a substitute for professional medical advice or care.
+                {{ site_name }} is an informational directory of in-home care agencies operating in the United States. We compile listings from public sources (state licensing data when available, Medicare Care Compare federal data, agency-supplied profiles, and commercial business-data feeds), present them with verifying links to authoritative regulators, and publish editorial guides on how to evaluate a home-care agency before engagement.
+            </p>
+            <p>
+                We are not a healthcare provider, a licensed home-care agency, a referral service, a care manager, or a medical-advice site. We do not diagnose conditions, provide medical advice, recommend specific agencies, or maintain ongoing contractual relationships with the agencies listed. Information on this site is not a substitute for professional medical advice, professional care, or independent verification by the family.
             </p>
 
-            <h2>Listings are not endorsements</h2>
-            <p>
-                Inclusion of an agency in our directory does not mean we endorse or recommend it. We do not verify the credentials, licensing status, caregiver training, or quality of services of listed agencies on an ongoing basis. Every agency page includes a "How to verify this agency" checklist; please use it before engaging any agency.
-            </p>
+            <h2>What this site does</h2>
+            <p>To make our directory more useful than a raw list, we do the following:</p>
+            <ul>
+                <li><strong>Cross-reference Medicare Care Compare</strong> for Medicare-certified home health agencies. Federally-published quality ratings, patient survey results, and complaint history are linked from agency detail pages where applicable.</li>
+                <li><strong>Capture state licensing numbers</strong> from upstream data feeds and our internal records when available, and surface them in the agency detail page so families can verify the license against the state regulator's lookup.</li>
+                <li><strong>Link the state licensing authority</strong> for every state and DC, on every agency detail page, so families can perform the lookup with a single click. The full state-by-state directory of regulators lives in our <a href="/guides/how-to-verify-a-home-care-agency.html">verification guide</a>.</li>
+                <li><strong>Retire listings flagged for inaccuracy</strong> by users via our contact form.</li>
+                <li><strong>Re-validate the catalog</strong> against an internal categorical-relevance script when source data refreshes — listings that match institutional or residential venue patterns (assisted living, nursing home, retirement community, treatment center, retail) are noindexed rather than presented as in-home care providers.</li>
+                <li><strong>Disclose AI-assisted content</strong> where applicable. Some agency descriptions are restored from upstream marketing data; others are generated from structured agency data using an AI model with explicit anti-fabrication and anti-rating-claim constraints. See our <a href="/about/editorial-standards.html">editorial standards</a> for the full disclosure.</li>
+            </ul>
 
-            <h2>Accuracy of information</h2>
+            <h2>What this site does not do</h2>
             <p>
-                We try to keep agency listings accurate, but agency information can change without notice. We make no warranties about completeness or accuracy. If you spot an error, <a href="/contact.html">tell us</a> and we'll fix it.
+                We do not verify agencies on an ongoing basis. State regulators do that — that's their job, and they're better at it. We do not endorse specific agencies; inclusion in the directory is not a recommendation. We do not collect or pass leads to agencies. We are not paid by listed agencies for placement, ranking, or featured status.
+            </p>
+            <p>
+                The verification work — license lookup, reference calls, caregiver-vetting questions, contract review — is the family's responsibility before engaging any agency. Our <a href="/guides/how-to-verify-a-home-care-agency.html">how to verify a home care agency</a> guide is the framework we'd recommend using.
             </p>
 
             <h2>User submissions</h2>
@@ -52,14 +64,19 @@
             </p>
             <ul>
                 <li>The information you provide is accurate to the best of your knowledge.</li>
-                <li>You have the right to submit it (e.g., you're authorized to submit the agency on the agency's behalf).</li>
+                <li>You have the right to submit it (e.g., you're authorized to submit an agency on behalf of that agency).</li>
                 <li>We may use, edit for clarity, or publish the information as part of the directory.</li>
                 <li>We may decline to publish or remove any submission at our discretion.</li>
             </ul>
 
+            <h2>Corrections policy</h2>
+            <p>
+                If a listing is inaccurate — wrong address, wrong service area, retired agency, business-category mismatch — please <a href="/contact.html">contact us</a>. Include the listing URL and the specific inaccuracy. We review correction requests on a rolling basis. Substantiated corrections are applied to the next build; substantiated category-mismatch reports cause the listing to be moved to the noindex set pending review. Updates and removals are not typically processed by phone.
+            </p>
+
             <h2>Advertising disclosure</h2>
             <p>
-                We display advertising through Google AdSense. We do not have paid placement arrangements with any agency listed in the directory — agencies do not pay to appear, to rank higher, or to be marked "featured." The ads you see are selected by Google based on its own targeting, not by us.
+                We display advertising through Google AdSense. We have no paid placement arrangements with any agency listed in the directory — agencies do not pay to appear, to rank higher, or to be marked "featured." Ad selection is performed by Google based on its own targeting; ad content is not editorially reviewed by us. Editorial decisions (which agencies are listed, how they are categorized, what content appears in our guides) are insulated from advertising revenue.
             </p>
 
             <h2>Limitation of liability</h2>
@@ -69,22 +86,22 @@
 
             <h2>External links</h2>
             <p>
-                This site includes links to third-party websites (agency websites, Medicare Care Compare, state licensing boards, news articles, etc.). We don't control their content or practices and aren't responsible for their policies.
+                This site includes links to third-party websites (agency websites, Medicare Care Compare, state licensing boards, federal and state aging-services agencies, news articles). We don't control their content or their privacy practices and aren't responsible for their policies.
             </p>
 
             <h2>Intellectual property</h2>
             <p>
-                The content on this site — editorial copy, guides, visual design, structured data — is owned by {{ site_name }} and protected by copyright. Agency-submitted information remains usable by us under the terms of the submission. You may not reproduce, distribute, or create derivative works from our editorial content without permission.
+                Editorial content on this site — guides, articles, structured data we author — is owned by {{ site_name }} and protected by copyright. Agency-supplied information remains usable by us under the terms of submission. You may not reproduce, distribute, or create derivative works from our editorial content without permission.
             </p>
 
             <h2>Changes to these terms</h2>
             <p>
-                We may update these terms from time to time. Continued use of the site after changes constitutes acceptance of the new terms.
+                We may update these terms from time to time. The "Last updated" date above reflects the most recent change. Continued use after a change constitutes acceptance of the revised terms.
             </p>
 
             <h2>Contact</h2>
             <p>
-                Questions about these terms? <a href="/contact.html">Get in touch</a>.
+                Questions, corrections, or feedback: <a href="/contact.html">contact us</a>.
             </p>
         </div>
     </div>

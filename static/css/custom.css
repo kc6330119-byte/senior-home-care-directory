@@ -2537,6 +2537,69 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* -------------------------------------------------------------------------- */
+/*  State licensing table — used in the F2 verification guide                  */
+/* -------------------------------------------------------------------------- */
+
+.state-licensing-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-6) 0;
+    font-size: var(--font-size-sm);
+}
+
+.state-licensing-table thead th {
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 2px solid var(--color-border);
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+}
+
+.state-licensing-table tbody td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+}
+
+.state-licensing-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.state-licensing-table tbody td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.state-licensing-table a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+    .state-licensing-table thead { display: none; }
+    .state-licensing-table tbody td {
+        display: block;
+        padding: var(--space-1) 0;
+        border: 0;
+    }
+    .state-licensing-table tbody tr {
+        display: block;
+        padding: var(--space-3) 0;
+        border-bottom: 1px solid var(--color-border);
+    }
+}
+
+/* City editorial — shown on top-25 city pages */
+.city-editorial .legal-prose p {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-prose);
+    margin: 0 0 var(--space-4);
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Print                                                                      */
 /* -------------------------------------------------------------------------- */
 

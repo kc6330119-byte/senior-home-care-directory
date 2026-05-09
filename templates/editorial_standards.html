@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% import '_breadcrumb_schema.html' as bc %}
+
+{% block extra_head %}
+{{ bc.schema([
+    ('Home', '/'),
+    ('About', '/about.html'),
+    ('Editorial standards', '/about/editorial-standards.html'),
+]) }}
+{% endblock %}
+
+{% block content %}
+
+{{ bc.nav([
+    ('Home', '/'),
+    ('About', '/about.html'),
+    ('Editorial standards', None),
+]) }}
+
+<section class="page-head">
+    <div class="site-container">
+        <span class="page-head__eyebrow">About</span>
+        <h1 class="page-head__title">Editorial standards.</h1>
+        <p class="page-head__lede">How the directory is built. What's automated. What we verify. What's the family's responsibility.</p>
+    </div>
+</section>
+
+<div class="site-container static-page">
+    <div class="static-page__body">
+        <div class="legal-prose">
+
+            <p class="legal-prose__timestamp">Last reviewed: {{ current_year }}</p>
+
+            <p>Senior Home Care Finder is a directory of in-home care agencies operating across the United States. We publish listings, editorial guides, and the framework families use to verify an agency before engagement. We are not licensed home-care providers or medical professionals. We do not make endorsements. We do not provide medical advice. This page describes how the directory is built, how we handle content, and what the family should expect from us.</p>
+
+            <h2>Data sources</h2>
+            <p>Listings are compiled from a combination of sources, layered as follows:</p>
+            <ul>
+                <li><strong>Commercial business data feeds</strong> — primarily Outscraper Google Maps exports and equivalent public-business-records data — provide the seed list of home-care agencies in each state. This is where most agency names, addresses, phone numbers, and websites originate.</li>
+                <li><strong>Medicare Care Compare</strong> — the federal CMS database — is the source for Medicare-certified home health agency identifiers and federally-published quality-of-care and patient-experience data linked from agency detail pages.</li>
+                <li><strong>State licensing databases</strong> are the authoritative source for license numbers when accessible programmatically; otherwise, license numbers in our records come from the upstream business data feed and are subject to the family's verification against the state regulator's official lookup before engagement.</li>
+                <li><strong>Agency-supplied submissions</strong> through our agency-submission form add new listings or update existing ones. Submissions are reviewed before publication.</li>
+                <li><strong>User-flagged corrections</strong> via our contact form trigger review of specific listings. Substantiated corrections are applied at the next build cycle.</li>
+            </ul>
+            <p>We are honest about what's automated. The seed list is not hand-curated. Categorical relevance — whether each listing is actually a home-care agency rather than a senior-living facility, pharmacy, or other category that got pulled in by name-similarity — is enforced by an internal validation script (see "Listing inclusion criteria" below) and by manual review when sample anomalies surface.</p>
+
+            <h2>Listing inclusion criteria</h2>
+            <p>A listing must meet two criteria to be indexed and presented as an in-home-care agency:</p>
+            <ol>
+                <li><strong>Categorical relevance.</strong> The agency must operate as an in-home care provider — companion care, personal care, homemaking, respite care, dementia care at home, hospice support at home, post-surgery recovery at home, or Medicare-certified home health. Residential venues (senior living, assisted living, nursing homes, memory care facilities, adult family homes, hospice facilities, treatment centers) are not in-home care and are noindexed when they appear in the source data. The same applies to retail businesses with home-related names (medical-supply stores, pharmacies, hardware retailers), professional services (insurance, financial advisory, real estate), and trades (HVAC, lawn care, pest control) that the source data sometimes mislabels.</li>
+                <li><strong>Description sufficiency.</strong> The agency listing must include enough factual content for a useful directory entry — at minimum, a non-templated description of the agency, identifiable services, and contact information. Listings that fall below this threshold are noindexed pending data refresh.</li>
+            </ol>
+            <p>Listings that fail either criterion remain in our underlying database for record-keeping but are not indexed and do not appear in our sitemap, search index, or listing pages. Direct URL access to such records returns the page with a <code>noindex</code> directive so search engines do not surface it.</p>
+
+            <h2>Update cadence and re-validation</h2>
+            <p>Source data is refreshed on a quarterly cadence. Each refresh triggers a full re-run of our categorical-relevance validation script. Listings that newly match a residential or off-topic pattern are added to the noindex set; listings that newly meet the inclusion criteria are added to the indexed set. The categorical-relevance script's pattern list is itself updated as new mismatches are surfaced — most commonly through review of agency-page output during description refresh cycles.</p>
+            <p>Medicare Care Compare data is updated quarterly by CMS; we re-cross-reference our Medicare-certified subset against the latest CMS data on the same cadence.</p>
+            <p>State licensing data, where automated lookup is available, is verified at the same cadence. Where automated lookup is not available, licensing numbers in our records are presented as the value supplied by the upstream data feed at last refresh, with a clear instruction to families to re-verify before engagement.</p>
+
+            <h2>Description sourcing and AI-assisted content</h2>
+            <p>Some agency descriptions on this site are AI-assisted. We disclose this directly:</p>
+            <ul>
+                <li>A subset of descriptions is restored from the agency's website meta description or Google Business Profile "About" content, captured by the upstream business data feed.</li>
+                <li>A subset is generated by an AI model (currently Claude Haiku) using only the structured fact set we hold for the agency — name, location, services, payment options, languages, accreditation, year established. The AI is instructed to be factual, to never invent details not present in the inputs, to never make rating or review claims, and to use varied sentence structure to avoid templated content patterns. Outputs that contain marketing-template phrases or AI-refusal phrases are post-processed or regenerated.</li>
+                <li>For listings that the AI cannot describe factually with the available inputs (typically because the entity is not actually a home-care provider), no description is published; the listing is noindexed and reviewed.</li>
+            </ul>
+            <p>Editorial guides — articles like our <a href="/guides/how-to-verify-a-home-care-agency.html">verification guide</a>, <a href="/guides/how-to-use-medicare-care-compare.html">Medicare Care Compare guide</a>, and city-level editorials — are authored by us with reference to authoritative sources (state licensing portals, CMS Care Compare, federal aging-services agencies, state Medicaid program documentation). We do not generate guide content from prompts without source-citation review.</p>
+
+            <h2>Anti-positioning</h2>
+            <p>We are not licensed home-care providers. We are not medical professionals. We are not a referral service or a lead-generation business. We do not provide medical advice. We do not endorse specific agencies. Inclusion in our directory is not a recommendation. Verification before engagement is the family's responsibility; we provide the framework, the regulator links, and the federal-quality-data cross-reference, but the lookup itself is the family's work.</p>
+
+            <h2>Affiliate and advertising independence</h2>
+            <p>This site displays advertising through Google AdSense. We have no paid-placement, lead-sale, sponsored-listing, or affiliate-revenue arrangements with any home-care agency, franchise, or staffing service. Editorial decisions — which listings are indexed, which are noindexed, what content appears in our guides — are made independently of advertising revenue. Ad content is not editorially reviewed by us; ad selection is performed by Google's targeting systems.</p>
+            <p>If a future commercial relationship is added (e.g., affiliate revenue from a non-agency source like long-term care insurance comparison), it will be disclosed here at the time of introduction.</p>
+
+            <h2>Corrections policy</h2>
+            <p>If you spot an inaccuracy in a listing — wrong address, retired agency, mismatched service area, mislabeled business category, factual error in a guide — please <a href="/contact.html">contact us</a> with the listing URL and the specific inaccuracy. We review correction requests on a rolling basis. Substantiated corrections are applied at the next build; substantiated category mismatches cause the listing to be moved to the noindex set pending re-review.</p>
+            <p>We do not process correction requests by phone.</p>
+
+            <h2>Author and contact</h2>
+            <p>Senior Home Care Finder is operated by a small editorial team. Editorial questions, correction requests, and partnership inquiries: <a href="/contact.html">contact us</a>. Please mark editorial-policy questions clearly in the subject line so we can route them appropriately.</p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
