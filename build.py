@@ -672,9 +672,28 @@ def build_state_pages(env, agencies):
 
 
 def build_city_pages(env, agencies):
-    """Build one page per city (within state folders)."""
+    """Build one page per city (within state folders).
+
+    Two-layer noindex policy per AdSense pre-submission Q3:
+      - Cities with fewer than `MIN_AGENCIES_FOR_INDEX` agencies are noindex
+        (existing rule — these are doorway pages with no inventory).
+      - Of the remaining cities, only the top `config.TOP_INDEXED_CITY_COUNT`
+        by agency count stay indexed. The long tail receives noindex pending
+        the editorial sprint that adds 400-600 word per-city content for the
+        top tier. Without unique editorial, every city page renders the same
+        templated wrapper — which is the HVD doorway pattern at 388-page
+        scale, exactly what the audit flagged.
+    """
     template = env.get_template("city.html")
     grouped = group_agencies_by_city(agencies)
+
+    # Rank cities by agency count to identify the indexed top-N.
+    above_threshold = [
+        (key, ags) for key, ags in grouped.items()
+        if len(ags) >= MIN_AGENCIES_FOR_INDEX
+    ]
+    above_threshold.sort(key=lambda kv: -len(kv[1]))
+    indexed_keys = {key for key, _ in above_threshold[:config.TOP_INDEXED_CITY_COUNT]}
 
     indexed_cities = []
     noindex_count = 0
@@ -689,7 +708,8 @@ def build_city_pages(env, agencies):
         # Find state info
         state_info = next((s for s in config.US_STATES if s["slug"] == state_slug), {"name": state_name, "slug": state_slug, "abbr": ""})
 
-        noindex = len(city_agencies) < MIN_AGENCIES_FOR_INDEX
+        key = (state_slug, city_slug, city_name, state_name)
+        noindex = key not in indexed_keys
 
         if noindex:
             noindex_count += 1
@@ -709,23 +729,37 @@ def build_city_pages(env, agencies):
 
         output_path = state_folder / f"{city_slug}.html"
         output_path.write_text(html)
-        print(f"Built: state/{state_slug}/{city_slug}.html ({len(city_agencies)} agencies{' [noindex]' if noindex else ''})")
 
-    if noindex_count:
-        print(f"  Noindexed {noindex_count} city pages (< {MIN_AGENCIES_FOR_INDEX} agencies)")
+    print(f"Built: {len(grouped)} city pages — {len(indexed_cities)} indexed (top {config.TOP_INDEXED_CITY_COUNT} by listing count), {noindex_count} noindexed")
 
     return indexed_cities  # Return for sitemap filtering
 
 
-def build_agency_pages(env, agencies):
-    """Build individual agency detail pages."""
+def build_agency_pages(env, agencies, all_agencies=None):
+    """Build individual agency detail pages.
+
+    Pages for slugs in `config.AGENCY_NOINDEX_SLUGS` still build (so direct
+    URLs keep working) but emit `<meta name="robots" content="noindex, follow">`
+    and are excluded from the sitemap. They also do not appear in any listing
+    page's `agencies` list — the caller is expected to filter `agencies` to
+    indexable-only before passing it to the listing builders. `all_agencies`
+    (if supplied) is used to source related-agency cards so noindexed pages
+    still surface a few neighbors (those neighbors are themselves filtered
+    to indexable-only).
+    """
     template = env.get_template("agency.html")
+    candidate_pool = all_agencies if all_agencies is not None else agencies
 
     for agency in agencies:
-        # Related agencies: same city or same state
+        slug = agency["slug"]
+        is_noindex = slug in config.AGENCY_NOINDEX_SLUGS
+
+        # Related agencies: same city or state, indexable only.
         related = [
-            a for a in agencies
-            if a["slug"] != agency["slug"] and (
+            a for a in candidate_pool
+            if a["slug"] != slug
+            and a["slug"] not in config.AGENCY_NOINDEX_SLUGS
+            and (
                 a.get("city_slug") == agency.get("city_slug") or
                 a.get("state_slug") == agency.get("state_slug")
             )
@@ -741,6 +775,7 @@ def build_agency_pages(env, agencies):
             agency=agency,
             state=state_info,
             related_agencies=related,
+            noindex=is_noindex,
             page_title=f"{agency['name']} - {agency['city']}, {agency['state']} - {config.SITE_NAME}",
             meta_description=agency.get("description", "")[:160] or f"{agency['name']} provides in-home care services in {agency['city']}, {agency['state']}.",
             page_image=agency.get("photo_url", ""),
@@ -749,7 +784,7 @@ def build_agency_pages(env, agencies):
 
         output_path = config.OUTPUT_DIR / "agency" / f"{agency['slug']}.html"
         output_path.write_text(html)
-        print(f"Built: agency/{agency['slug']}.html")
+        print(f"Built: agency/{agency['slug']}.html{' [noindex]' if is_noindex else ''}")
 
 
 def build_service_pages(env, agencies):
@@ -886,8 +921,10 @@ def build_sitemap(agencies, posts, indexed_states=None, indexed_cities=None):
     for service in config.SERVICES:
         urls.append(f"{config.SITE_URL}/services/{service['slug']}.html")
 
-    # Agency pages
+    # Agency pages — exclude noindexed slugs from the sitemap.
     for agency in agencies:
+        if agency["slug"] in config.AGENCY_NOINDEX_SLUGS:
+            continue
         urls.append(f"{config.SITE_URL}/agency/{agency['slug']}.html")
 
     # Blog posts
@@ -1014,22 +1051,33 @@ def main():
 
     env = create_jinja_env()
 
+    # Split out noindexed agencies. Their detail pages still build (so direct
+    # URLs continue to work) but listing surfaces — homepage, state, city,
+    # service, related — see only the indexable subset. This eliminates
+    # internal links to residential / institutional venues that aren't
+    # in-home-care agencies and would otherwise be feeding Google a
+    # contradictory signal.
+    indexable_agencies = [a for a in agencies if a["slug"] not in config.AGENCY_NOINDEX_SLUGS]
+    noindexed_count = len(agencies) - len(indexable_agencies)
+    if noindexed_count:
+        print(f"  Noindexing {noindexed_count} agency pages (validate_listings.py LIKELY NOT HOME CARE)")
+
     print("\nBuilding pages...")
-    build_homepage(env, agencies, posts)
-    indexed_states = build_state_pages(env, agencies)
-    indexed_cities = build_city_pages(env, agencies)
-    build_agency_pages(env, agencies)
-    build_service_pages(env, agencies)
-    build_static_pages(env, agencies)
+    build_homepage(env, indexable_agencies, posts)
+    indexed_states = build_state_pages(env, indexable_agencies)
+    indexed_cities = build_city_pages(env, indexable_agencies)
+    build_agency_pages(env, agencies, all_agencies=indexable_agencies)
+    build_service_pages(env, indexable_agencies)
+    build_static_pages(env, indexable_agencies)
     build_blog_page(env, posts)
     build_post_pages(env, posts)
 
     print("\nBuilding SEO files...")
-    build_sitemap(agencies, posts, indexed_states, indexed_cities)
+    build_sitemap(indexable_agencies, posts, indexed_states, indexed_cities)
     build_robots()
     copy_ads_txt()
     copy_favicon()
-    build_search_index(agencies)
+    build_search_index(indexable_agencies)
 
     print(f"\n{'='*50}")
     print(f"Build complete! Output in: {config.OUTPUT_DIR}")

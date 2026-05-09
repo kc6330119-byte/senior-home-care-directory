@@ -198,3 +198,91 @@ DEFAULT_META_DESCRIPTION = SITE_DESCRIPTION
 ITEMS_PER_PAGE = 24
 FEATURED_COUNT = 6
 RECENT_COUNT = 8
+
+# AdSense pre-submission noindex policy
+# -------------------------------------
+# Listings whose NAME contains a residential / institutional venue type
+# are not in-home care agencies and should not be indexed. Generated from
+# the gitignored `validate_listings.py` after that script's HARD_FAIL list
+# was tightened on 2026-05-09.
+#
+# Re-derive after any new Outscraper batch by name-matching the agencies
+# table against the following set (lowercase, word-bounded substring match
+# on the Name field):
+#
+#   senior living, senior community, retirement community, retirement village,
+#   retirement home, assisted living, nursing home, skilled nursing facility,
+#   rehabilitation center, rehabilitation hospital, rehab center, rehab
+#   hospital, memory care, adult day care, adult day services, adult day
+#   center, hospice center, hospice facility, hospice house, the bungalows,
+#   the cottages, village at, manor at, the gardens at, estates at
+#
+# Notably absent: "hospice home" (matches inside "Hospice Home Health"
+# which is a legitimate home-health naming convention) and bare "skilled
+# nursing" / "adult day" (those are services some in-home agencies offer,
+# not an institutional venue type when on their own).
+#
+# These pages still build (so direct URLs continue to work) but receive
+# `<meta name="robots" content="noindex, follow">`, are dropped from the
+# sitemap, and are excluded from state / city / service / related-agency
+# listings.
+AGENCY_NOINDEX_SLUGS = {
+    "adorable-senior-living-hillsborough-nc",
+    "america-s-top-assisted-living-resources-llc-mesa-az",
+    "assisted-living-home-care-services-cheshire-ct",
+    "assisted-living-home-care-services-westport-ct",
+    "avanti-senior-living-at-lafayette-youngsville-la",
+    "azura-memory-care-of-oak-creek-oak-creek-wi",
+    "baycare-assisted-living-pocomoke-salisbury-pocomoke-city-md",
+    "bozeman-health-hillcrest-senior-living-birchwood-bozeman-mt",
+    "brightstar-senior-living-madison-wi",
+    "cardinal-senior-living-at-danville-danville-va",
+    "carepartners-adult-day-center-st-albans-city-vt",
+    "charter-senior-living-of-fredericksburg-falmouth-va",
+    "charter-senior-living-of-hazel-crest-hazel-crest-il",
+    "choptank-residential-assisted-living-denton-md",
+    "country-place-senior-living-of-fairhope-fairhope-al",
+    "country-view-assisted-living-oak-creek-wi",
+    "cozy-corner-adult-day-services-dubuque-ia",
+    "ecumenical-retirement-community-harrisburg-pa",
+    "effingham-healthcare-senior-living-effingham-il",
+    "elm-york-assisted-living-east-elmhurst-ny",
+    "glowcares-llc-senior-care-services-assisted-living-residential-assisted-living-respite-stays-mechanicsville-va",
+    "guardian-angels-engel-haus-senior-living-albertville-albertville-mn",
+    "hamilton-trace-family-first-senior-living-fishers-in",
+    "haven-assisted-living-mechanicsville-va",
+    "heritage-senior-living-soda-springs-soda-springs-id",
+    "heron-pointe-senior-living-monmouth-or",
+    "highgate-senior-living-bozeman-bozeman-mt",
+    "homestead-assisted-living-of-hiawatha-hiawatha-ks",
+    "homestead-senior-living-st-albans-city-vt",
+    "kg-care-homes-assisted-living-laveen-village-az",
+    "lantern-crest-senior-living-santee-ca",
+    "lilac-homes-enhanced-assisted-living-memory-care-dilworth-mn",
+    "logan-health-assisted-living-shelby-shelby-mt",
+    "majestic-care-of-toledo-assisted-living-toledo-oh",
+    "manchin-assisted-living-llc-bridgeport-wv",
+    "park-house-southfield-senior-living-southfield-mi",
+    "rivercrest-senior-living-new-albany-in",
+    "rose-senior-living-clinton-township-clinton-township-mi",
+    "sammamish-senior-living-afh-sammamish-wa",
+    "senior-community-care-of-kentucky-pace-louisville-ky",
+    "steelville-senior-living-steelville-mo",
+    "summer-village-senior-living-auburn-al",
+    "the-brennity-at-fairhope-senior-living-fairhope-al",
+    "the-bungalows-at-mayfield-mayfield-ky",
+    "the-heritage-assisted-living-adult-day-care-llc-las-cruces-nm",
+    "traceway-retirement-community-tupelo-ms",
+    "twin-towers-senior-living-community-cincinnati-oh",
+    "unity-homecare-agency-assisted-living-home-care-cecil-county-elkton-md-elkton-md",
+    "vibrant-life-senior-living-durand-durand-mi",
+    "vibrant-life-senior-living-temperance-temperance-mi",
+    "waterford-estates-independent-living-supportive-living-memory-care-hazel-crest-il",
+    "yama-services-adult-assisted-living-mechanicsville-va",
+}
+
+# How many city pages stay indexed. The top N cities by agency count keep
+# `index, follow` and (in a forthcoming editorial sprint) get hand-written
+# 400-600 word editorial. The remaining cities get `noindex, follow` and
+# drop from the sitemap. Per AdSense pre-submission Q3.
+TOP_INDEXED_CITY_COUNT = 25
