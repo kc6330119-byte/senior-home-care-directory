@@ -15,6 +15,14 @@ STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "dist"
 
+# Local data source (post-Airtable migration). When this CSV exists, build.py
+# reads agencies from it instead of Airtable — see build.get_agencies().
+AGENCIES_CSV = DATA_DIR / "agencies.csv"
+
+# Committed export of the Airtable Blog Posts table. Used as a fallback in
+# build.fetch_blog_posts() so the blog still builds if Airtable is removed.
+BLOG_POSTS_CSV = DATA_DIR / "blog_posts.csv"
+
 # Site Configuration
 SITE_NAME = "Senior Home Care Finder"
 SITE_DESCRIPTION = "Find trusted in-home care agencies for your aging loved ones. Compare services, read reviews, and connect with local caregivers."

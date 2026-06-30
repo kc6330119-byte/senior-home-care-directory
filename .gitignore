@@ -24,6 +24,10 @@ Thumbs.db
 # Data files
 *.csv
 *.xlsx
+# Exception: the committed post-Airtable data sources. Must be tracked so
+# Netlify builds the site from these CSVs once Airtable access is removed.
+!data/agencies.csv
+!data/blog_posts.csv
 # Content folder (local data & blog drafts)
 content/
 

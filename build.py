@@ -5,6 +5,7 @@ Senior Home Care Finder - Static Site Generator
 Fetches home care agency listings from Airtable and generates a static HTML site.
 Falls back to sample data if Airtable is not configured.
 """
+import csv
 import json
 import os
 import shutil
@@ -197,6 +198,64 @@ def _to_list(val):
     return []
 
 
+def _num(value, default=0):
+    """Coerce a value to a number. CSV cells are strings; Airtable returns native
+    numbers — this makes both sources emit identical JSON-LD / map numerics.
+    Integral floats collapse to int (so 4.0 -> 4, matching Airtable number fields).
+    """
+    if value is None or (isinstance(value, str) and not value.strip()):
+        return default
+    try:
+        f = float(value)
+        return int(f) if f.is_integer() else f
+    except (TypeError, ValueError):
+        return default
+
+
+def _build_agency_dict(fields, airtable_id=""):
+    """Map one record's fields to the agency dict the templates consume.
+
+    Shared by fetch_from_airtable() (Airtable record fields) and
+    load_agencies_from_csv() (CSV row) so both data sources produce identical
+    agency objects. Numeric fields are coerced so the CSV's string cells match
+    Airtable's native number types in JSON-LD and the state-map payload.
+    """
+    state_name = fields.get("State", "")
+    city_name = fields.get("City", "")
+    return {
+        "name": fields.get("Name", ""),
+        "slug": fields.get("Slug") or slugify(fields.get("Name", "") + "-" + city_name),
+        "description": fields.get("Description", ""),
+        "address": fields.get("Address", ""),
+        "city": city_name,
+        "state": state_name,
+        "state_slug": slugify(state_name),
+        "city_slug": slugify(city_name),
+        "zip": fields.get("Zip", ""),
+        "county": fields.get("County", ""),
+        "phone": fields.get("Phone", ""),
+        "website_url": fields.get("Website URL", ""),
+        "google_maps_url": fields.get("Google Maps URL", ""),
+        "photo_url": fields.get("Photo URL", ""),
+        "hours": fields.get("Hours", ""),
+        "services": _to_list(fields.get("Services", [])),
+        "care_types": _to_list(fields.get("Care Types", [])),
+        "payment_options": _to_list(fields.get("Payment Options", [])),
+        "licensing": fields.get("Licensing", ""),
+        "accreditation": _to_list(fields.get("Accreditation", [])),
+        "languages": _to_list(fields.get("Languages", [])),
+        "service_area": fields.get("Service Area", ""),
+        "year_established": fields.get("Year Established", ""),
+        "rating": _num(fields.get("Rating", 0), 0),
+        "review_count": _num(fields.get("Review Count", 0), 0),
+        "status": fields.get("Status", "Active"),
+        "date_added": fields.get("Date Added", ""),
+        "latitude": _num(fields.get("Latitude"), ""),
+        "longitude": _num(fields.get("Longitude"), ""),
+        "_airtable_id": airtable_id,
+    }
+
+
 def clear_airtable_photo_url(airtable_id):
     """Clear the Photo URL field in Airtable for an agency with an expired/broken URL."""
     if not config.AIRTABLE_API_KEY or not config.AIRTABLE_BASE_ID or not airtable_id:
@@ -318,46 +377,9 @@ def fetch_from_airtable():
         agencies = []
         for record in records:
             fields = record.get("fields", {})
-
-            # Skip drafts
             if fields.get("Status") == "Draft":
                 continue
-
-            state_name = fields.get("State", "")
-            city_name = fields.get("City", "")
-            agency = {
-                "name": fields.get("Name", ""),
-                "slug": fields.get("Slug") or slugify(fields.get("Name", "") + "-" + city_name),
-                "description": fields.get("Description", ""),
-                "address": fields.get("Address", ""),
-                "city": city_name,
-                "state": state_name,
-                "state_slug": slugify(state_name),
-                "city_slug": slugify(city_name),
-                "zip": fields.get("Zip", ""),
-                "county": fields.get("County", ""),
-                "phone": fields.get("Phone", ""),
-                "website_url": fields.get("Website URL", ""),
-                "google_maps_url": fields.get("Google Maps URL", ""),
-                "photo_url": fields.get("Photo URL", ""),
-                "hours": fields.get("Hours", ""),
-                "services": _to_list(fields.get("Services", [])),
-                "care_types": _to_list(fields.get("Care Types", [])),
-                "payment_options": _to_list(fields.get("Payment Options", [])),
-                "licensing": fields.get("Licensing", ""),
-                "accreditation": _to_list(fields.get("Accreditation", [])),
-                "languages": _to_list(fields.get("Languages", [])),
-                "service_area": fields.get("Service Area", ""),
-                "year_established": fields.get("Year Established", ""),
-                "rating": fields.get("Rating", 0),
-                "review_count": fields.get("Review Count", 0),
-                "status": fields.get("Status", "Active"),
-                "date_added": fields.get("Date Added", ""),
-                "latitude": fields.get("Latitude", ""),
-                "longitude": fields.get("Longitude", ""),
-                "_airtable_id": record.get("id", ""),
-            }
-            agencies.append(agency)
+            agencies.append(_build_agency_dict(fields, record.get("id", "")))
 
         print(f"Fetched {len(agencies)} agencies from Airtable.")
         return agencies
@@ -367,8 +389,33 @@ def fetch_from_airtable():
         return None
 
 
+def load_agencies_from_csv(path=None):
+    """Load agencies from the committed CSV export — the post-Airtable data
+    source. Produces the same agency dicts as fetch_from_airtable(); returns
+    None when the file is absent so the Airtable fallback can take over."""
+    path = Path(path) if path else config.AGENCIES_CSV
+    if not path or not path.exists():
+        return None
+    agencies = []
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            # Drop empty cells so .get(key, default) mirrors Airtable's
+            # absent-field semantics (e.g. a blank Status defaults to Active).
+            fields = {k: v for k, v in row.items()
+                      if k and v is not None and str(v).strip() != ""}
+            if fields.get("Status") == "Draft":
+                continue
+            agencies.append(_build_agency_dict(fields, ""))
+    print(f"Loaded {len(agencies)} agencies from {path.name}.")
+    return agencies
+
+
 def get_agencies():
-    """Get agencies from Airtable or fall back to sample data."""
+    """Get agencies. Prefers the committed CSV (data/agencies.csv) so the site
+    builds with no Airtable dependency; falls back to Airtable, then sample data."""
+    agencies = load_agencies_from_csv()
+    if agencies is not None:
+        return agencies
     agencies = fetch_from_airtable()
     if agencies is None:
         agencies = get_sample_data()
@@ -424,8 +471,39 @@ def load_local_blog_posts():
     return posts
 
 
+def load_blog_posts_from_csv(path=None):
+    """Load blog posts from a committed CSV export of the Airtable Blog Posts
+    table. Used as a fallback so the blog still builds if Airtable access is
+    removed; returns [] when the file is absent. Mirrors the Airtable post shape."""
+    path = Path(path) if path else config.BLOG_POSTS_CSV
+    if not path or not path.exists():
+        return []
+    posts = []
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            if (row.get("Status") or "").strip() != "Published":
+                continue
+            title = (row.get("Title") or "").strip()
+            slug = ((row.get("Slug") or "") or slugify(title)).strip()
+            posts.append({
+                "title": title,
+                "slug": slug,
+                "content": row.get("Content", "") or "",
+                "excerpt": row.get("Excerpt", "") or "",
+                "author": row.get("Author") or "Senior Home Care Finder Staff",
+                "publish_date": row.get("Publish Date", "") or "",
+                "featured_image": row.get("Featured Image", "") or "",
+                "meta_description": row.get("Meta Description", "") or "",
+                "status": "Published",
+                "featured": str(row.get("Featured", "")).strip().lower() in ("true", "1", "yes", "checked"),
+                "category": row.get("Category", "") or "",
+            })
+    return posts
+
+
 def fetch_blog_posts():
-    """Fetch published blog posts from Airtable, merged with local markdown files."""
+    """Fetch published blog posts. Order of precedence per slug: local markdown,
+    then Airtable, then the committed CSV export (Airtable fallback)."""
     # Load local posts first
     local_posts = load_local_blog_posts()
     local_slugs = {p["slug"] for p in local_posts}
@@ -479,6 +557,19 @@ def fetch_blog_posts():
             print(f"Note: Could not fetch blog posts ({e})")
 
     all_posts = local_posts + airtable_posts
+
+    # Fallback: fill any post not already supplied by local markdown or Airtable
+    # from the committed CSV export, so the blog still builds with no Airtable.
+    covered = {p["slug"] for p in all_posts}
+    csv_added = 0
+    for post in load_blog_posts_from_csv():
+        if post["slug"] not in covered:
+            all_posts.append(post)
+            covered.add(post["slug"])
+            csv_added += 1
+    if csv_added:
+        print(f"Loaded {csv_added} blog posts from {config.BLOG_POSTS_CSV.name} (Airtable fallback).")
+
     all_posts.sort(key=lambda x: x.get("publish_date", ""), reverse=True)
     return all_posts
 
